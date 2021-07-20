@@ -1,0 +1,67 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] | Contact Application | UIUC</title>
+    <link type="text/css" rel="stylesheet" href="https://cdn.brand.illinois.edu/toolkit/2/toolkit.css">
+    <link type="text/css" rel="stylesheet" href="https://cdn.brand.illinois.edu/toolkit/2/icons.css">
+    <script src="https://cdn.brand.illinois.edu/toolkit/2/toolkit.js"></script>
+    <link type="text/css" rel="stylesheet" href="css/site.css">
+</head>
+<body>
+    <header>
+        <il-header>
+            <div slot="wordmark">
+                <il-unit-wordmark>
+                    <p class="il-primary-unit"><a href="https://education.illinois.edu">College of Education </a></p>
+                    <h1>Contact Application</h1>
+                </il-unit-wordmark>
+            </div>
+            <div slot="search">
+                <partial name="_LoginPartial" />
+            </div>
+        </il-header>
+    </header>
+    <main role="main" class="il-formatted">
+        @RenderBody()
+    </main>
+
+    <footer>
+        <il-footer>
+
+            <div slot="contact" class="il-footer-contact uofi_address">
+                <p><a href="/" id="link-1">College of Education</a></p>
+            </div>
+
+            <div slot="social" class="il-footer-social">
+                <ul>
+                    <li><a href="https://www.instagram.com/educationillinois/"></a></li>
+                    <li><a href="https://www.facebook.com/educationatillinois?ref=ts"></a></li>
+                    <li><a href="https://twitter.com/edILLINOIS"></a></li>
+                    <li><a href="https://www.youtube.com/user/educationatillinois"></a></li>
+                    <li><a href="https://www.linkedin.com/in/educationatillinois"></a></li>
+                </ul>
+            </div>
+
+            <div slot="parent" class="il-footer-parent">
+            </div>
+
+            <div class="il-footer-navigation">
+            </div>
+
+            <nav slot="links" class="il-footer-links">
+                <h2 class="il-invisible">Additional links</h2>
+                <ul>
+                    <li><button id="ot-sdk-btn" class="ot-sdk-show-settings">About Cookies</button></li>
+                    <li><a href="#">Privacy Policy</a></li>
+                    <li>&#169; 2021 University of Illinois Board of Trustees</li>
+                    <li><a href="#">College Bylaws</a></li>
+                    <li><a href="#">Login</a></li>
+                </ul>
+            </nav>
+        </il-footer>
+    </footer>
+    @RenderSection("Scripts", required: false)
+</body>
+</html>

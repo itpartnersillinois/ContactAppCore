@@ -1,0 +1,8 @@
+@if (User.Identity.IsAuthenticated)
+{
+    <a class="il-button" asp-area="AzureAD" asp-controller="Account" asp-action="SignOut">@User.Identity.Name -- Sign out</a>
+}
+else
+{
+    <a class="il-button" asp-area="AzureAD" asp-controller="Account" asp-action="SignIn">Sign in</a>
+}

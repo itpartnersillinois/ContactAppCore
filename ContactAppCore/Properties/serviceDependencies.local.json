@@ -1,0 +1,10 @@
+{
+  "dependencies": {
+    "identityapp1": {
+      "type": "identityapp.aad"
+    },
+    "secrets1": {
+      "type": "secrets.user"
+    }
+  }
+}

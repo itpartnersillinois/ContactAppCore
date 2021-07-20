@@ -1,0 +1,60 @@
+﻿@page
+@model ContactAppCore.Pages.AdminModel
+
+@inject SecurityHelper Security
+@{
+    ViewData["Title"] = "Administration";
+
+    if (!Security.IsFullAdmin(User).Result)
+    {
+        Response.Redirect("/Index");
+    }
+}
+
+<h1>Administration - Full Administrators</h1>
+
+<ul id="names">
+</ul>
+
+<hr />
+
+<form id="newpersonform">
+    <label for="name">Adding a new person: </label>
+    <input type="text" id="name" name="name" />
+    <button id="addperson" class="il-button" onclick="addPerson(); return false;">Add Person</button>
+</form>
+@section Scripts
+{
+    <script type="text/javascript">
+        document.addEventListener('DOMContentLoaded', function (event) {
+            loadPeople();
+        });
+
+        function addPerson() {
+            let formData = new FormData();
+            formData.append('name', document.getElementById('name').value);
+            fetch('/Api/EditPerson/AddFullAdmin', {
+                method: 'POST',
+                body: formData
+            }).then(res => loadPeople());
+        }
+
+        function loadPeople() {
+            document.getElementById('name').value = '';
+            fetch('/Api/Person/Admin', {
+                method: 'GET',
+                headers: {
+                    "Content-type": "application/x-www-form-urlencoded; charset=UTF-8"
+                }
+            }).then(res => res.json()).then(data => {
+                let list = document.getElementById('names');
+                list.innerHTML = '';
+                data.forEach(element => {
+                    const li = document.createElement('li');
+                    li.innerHTML = element.title;
+                    list.appendChild(li);
+                });
+            });
+        }
+    </script>
+}

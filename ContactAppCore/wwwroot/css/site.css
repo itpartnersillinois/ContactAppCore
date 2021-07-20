@@ -1,0 +1,9 @@
+﻿body {
+    margin: 0;
+}
+
+    body main {
+        max-width: var(--il-content-max-width);
+        margin: auto;
+        margin-top: 20px;
+    }
