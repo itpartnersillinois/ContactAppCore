@@ -12,7 +12,7 @@
     <div><label for="title">Area Name:</label><input id="title" name="title" class="long" /></div>
     <div>
         <label for="audience">Audience:</label><input id="audience" name="audience" class="long" />
-        <div class="notes">For external items, this is displayed as "who would be interested in this area". For internal items, this can be used as a generic second line of information.</div>
+        <div class="notes">For external areas, this is displayed as "who would be interested in this area". For internal areas, this can be used as a generic second line of information.</div>
     </div>
     <div>
         <label for="areatype">Area Type:</label><select id="areatype" name="areatype">
@@ -145,7 +145,7 @@
                 }
                 document.getElementById('title').value = data.title;
                 document.getElementById('audience').value = data.audience;
-                document.getElementById('areatype').value = data.officeType;
+                document.getElementById('areatype').value = data.areaType;
                 document.getElementById('externalurl').value = data.externalUrl;
                 document.getElementById('internalurl').value = data.internalUrl;
 
@@ -153,7 +153,7 @@
                     quillInfo.setContents(quillInfo.clipboard.convert(data.notes), 'silent');
                 }
                 document.getElementById('searchterms').value = data.searchTerms;
-                document.getElementById('isactive').checked = data.isactive;
+                document.getElementById('isactive').checked = data.isActive;
                 document.getElementById('internalcode').value = data.internalCode;
                 document.getElementById('internalnotes').value = data.internalNotes;
                 document.getElementById('internalorder').value = data.internalOrder;

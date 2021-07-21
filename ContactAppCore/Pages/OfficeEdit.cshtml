@@ -12,7 +12,7 @@
     <div><label for="title">Office Name:</label><input id="title" name="title" class="long" /></div>
     <div>
         <label for="audience">Audience:</label><input id="audience" name="audience" class="long" />
-        <div class="notes">For external items, this is displayed as "who would be interested in this area". For internal items, this can be used as a generic second line of information.</div>
+        <div class="notes">For external offices, this is displayed as "who would be interested in this office". For internal offices, this can be used as a generic second line of information.</div>
     </div>
     <div>
         <label for="officetype">Office Type:</label><select id="officetype" name="officetype">
@@ -209,7 +209,7 @@
                     quillInfo.setContents(quillInfo.clipboard.convert(data.notes), 'silent');
                 }
                 document.getElementById('searchterms').value = data.searchTerms;
-                document.getElementById('isactive').checked = data.isactive;
+                document.getElementById('isactive').checked = data.isActive;
                 document.getElementById('internalcode').value = data.internalCode;
                 document.getElementById('internalnotes').value = data.internalNotes;
                 document.getElementById('internalorder').value = data.internalOrder;
