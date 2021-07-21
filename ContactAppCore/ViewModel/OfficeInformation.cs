@@ -20,7 +20,6 @@ namespace ContactAppCore.ViewModel
             Email = office.Email;
             ExternalUrl = office.ExternalUrl;
             Id = office.Id;
-            InternalOrder = office.InternalOrder;
             InternalUrl = office.InternalUrl;
             Notes = office.Notes;
             OfficeType = office.OfficeType.ToString();
@@ -67,9 +66,7 @@ namespace ContactAppCore.ViewModel
 
         public int Id { get; set; }
 
-        public string InternalNotes { get; set; }
         public bool InternalOnly { get; set; }
-        public int InternalOrder { get; set; }
         public string InternalUrl { get; set; }
 
         public string Notes { get; set; }

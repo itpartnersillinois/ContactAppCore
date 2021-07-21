@@ -102,6 +102,12 @@
 </form>
 
 <hr />
+<h2>Instructions to pull information</h2>
+<p>This is the link used to get the office information.</p>
+<p><a href="#" id="tutorialurlid" target="_blank"></a></p>
+<p><a href="#" id="tutorialurlcode" target="_blank"></a></p>
+
+<hr />
 
 <h2>Office Administrator List</h2>
 <p>These people will be able to update office information. </p>
@@ -160,6 +166,15 @@
                     "Content-type": "application/x-www-form-urlencoded; charset=UTF-8"
                 }
             }).then(res => res.json()).then(data => {
+                let rootUrl = 'https://' + window.location.host + '/';
+                let tutorialUrlId = rootUrl + 'Api/Contact/Office/' + data.id;
+                let tutorialUrlCode = rootUrl + 'Api/Contact/OfficeCode/' + data.internalCode;
+                document.getElementById('tutorialurlid').innerHTML = tutorialUrlId;
+                document.getElementById('tutorialurlid').setAttribute('href', tutorialUrlId);
+                if (data.internalCode != null && data.internalCode != '') {
+                    document.getElementById('tutorialurlcode').innerHTML = tutorialUrlCode;
+                    document.getElementById('tutorialurlcode').setAttribute('href', tutorialUrlCode);
+                }
                 document.getElementById('title').value = data.title;
                 document.getElementById('audience').value = data.audience;
                 document.getElementById('officetype').value = data.officeType;
