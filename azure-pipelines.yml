@@ -39,5 +39,5 @@ steps:
     azureSubscription: 'Bryan Jonker - VSEnterprise(6ca10db3-c3c2-4d61-aa0d-b7865ec37309)'
     appType: 'webApp'
     WebAppName: 'illinois-contactapp'
-    packageForLinux: '$(System.DefaultWorkingDirectory)/**/*.zip'
+    packageForLinux: '$(Build.ArtifactStagingDirectory)/**/*.zip'
 
