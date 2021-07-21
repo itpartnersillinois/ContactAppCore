@@ -5,16 +5,11 @@ using Microsoft.AspNetCore.Authentication.AzureAD.UI;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace ContactAppCore
 {
@@ -74,7 +69,9 @@ namespace ContactAppCore
 
             services.AddScoped<IContactRepository, ContactRepository>(sp => new ContactRepository(sp.GetRequiredService<IDbContextFactory<ContactContext>>()));
 
-            services.AddScoped<SecurityHelper>(sp => new SecurityHelper(sp.GetRequiredService<IContactRepository>()));
+            services.AddScoped(sp => new SecurityHelper(sp.GetRequiredService<IContactRepository>()));
+
+            services.AddScoped(sp => new ListHelper(sp.GetRequiredService<IContactRepository>()));
         }
     }
 }

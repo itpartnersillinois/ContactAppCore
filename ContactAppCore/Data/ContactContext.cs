@@ -3,7 +3,6 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace ContactAppCore.Data
@@ -21,6 +20,8 @@ namespace ContactAppCore.Data
         public DbSet<Area> Areas { get; set; }
 
         public DbSet<ExternalLink> ExternalLinks { get; set; }
+
+        public DbSet<Log> Logs { get; set; }
 
         public DbSet<Office> Offices { get; set; }
 
@@ -43,7 +44,12 @@ namespace ContactAppCore.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             Debug.WriteLine($"{id} context starting initial setup.");
-            modelBuilder.Entity<Person>().HasData(new Person { Title = "jonker@illinois.edu", Id = -1, AreaId = null, OfficeId = null, IsActive = true, IsFullAdmin = true, LastUpdated = DateTime.Now });
+            var people = new List<Person>
+            {
+                new Person { Title = "jonker@illinois.edu", Id = -1, AreaId = null, OfficeId = null, IsActive = true, IsFullAdmin = true, LastUpdated = DateTime.Now },
+                new Person { Title = "rbwatson@illinois.edu", Id = -2, AreaId = null, OfficeId = null, IsActive = true, IsFullAdmin = true, LastUpdated = DateTime.Now }
+            };
+            modelBuilder.Entity<Person>().HasData(people);
             Debug.WriteLine($"{id} context finishing initial setup.");
         }
     }

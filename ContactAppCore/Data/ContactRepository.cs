@@ -1,8 +1,6 @@
 ﻿using ContactAppCore.Data.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace ContactAppCore.Data
@@ -66,13 +64,13 @@ namespace ContactAppCore.Data
 
         public T Read<T>(Func<ContactContext, T> work)
         {
-            using var context = factory.CreateDbContext();
+            var context = factory.CreateDbContext();
             return work(context);
         }
 
         public async Task<T> ReadAsync<T>(Func<ContactContext, T> work)
         {
-            using var context = factory.CreateDbContext();
+            var context = factory.CreateDbContext();
             return await Task.Run(() => work(context));
         }
 

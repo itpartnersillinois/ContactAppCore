@@ -10,19 +10,20 @@
         Response.Redirect("/Index");
     }
 }
-
-<h1>Administration - Full Administrators</h1>
-
-<ul id="names">
+<h1>Full Administrator List</h1>
+<p>These people will be able to update all areas and offices. They are the only people who can add and delete new areas. </p>
+<ul id="names" class="listofitems">
 </ul>
 
 <hr />
 
 <form id="newpersonform">
-    <label for="name">Adding a new person: </label>
+    <label for="name">Add a new full administrator: </label>
     <input type="text" id="name" name="name" />
-    <button id="addperson" class="il-button" onclick="addPerson(); return false;">Add Person</button>
+    <button id="addperson" class="il-button narrow" onclick="return addPerson();">Add Person</button>
 </form>
+<a href="/List">Back to Area List</a>
+
 @section Scripts
 {
     <script type="text/javascript">
@@ -37,6 +38,16 @@
                 method: 'POST',
                 body: formData
             }).then(res => loadPeople());
+            return false;
+        }
+
+        function removePerson(i) {
+            if (confirm('Are you sure you want to remove this person?')) {
+                fetch('/Api/EditPerson/Delete/' + i, {
+                    method: 'POST',
+                }).then(res => loadPeople());
+            }
+            return false;
         }
 
         function loadPeople() {
@@ -51,7 +62,14 @@
                 list.innerHTML = '';
                 data.forEach(element => {
                     const li = document.createElement('li');
+                    const anchor = document.createElement('a');
+                    anchor.innerHTML = 'Remove person';
+                    anchor.setAttribute('data-index', element.id);
+                    anchor.setAttribute('href', '#');
+                    anchor.setAttribute('onclick', 'return removePerson(' + element.id + ');');
+                    anchor.setAttribute('class', 'il-button narrow');
                     li.innerHTML = element.title;
+                    li.appendChild(anchor);
                     list.appendChild(li);
                 });
             });

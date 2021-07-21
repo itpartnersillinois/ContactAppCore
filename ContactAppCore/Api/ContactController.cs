@@ -1,11 +1,15 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using ContactAppCore.Data;
+using ContactAppCore.Data.Models;
+using ContactAppCore.Helpers;
+using ContactAppCore.ViewModel;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace ContactAppCore.Api
 {
@@ -14,30 +18,119 @@ namespace ContactAppCore.Api
     [AllowAnonymous]
     public class ContactController : ControllerBase
     {
-        // GET: api/<ContactController>
-        [HttpGet]
-        public IEnumerable<string> Get()
+        private IContactRepository contactRepository;
+
+        public ContactController(IContactRepository contactRepository)
         {
-            return new string[] { "value1", "value2" };
+            this.contactRepository = contactRepository;
         }
 
-        // GET api/<ContactController>/5
-        [HttpGet("{id}")]
-        public string Get(int id)
+        [HttpGet("Area/{id}")]
+        public async Task<AreaInformation> GetArea(int id)
         {
-            return "value";
+            var area = await contactRepository.ReadAsync(c => c.Areas.Include(a => a.Offices).Where(o => o.IsActive).SingleOrDefault(o => o.Id == id));
+            return new AreaInformation(area, true, null);
         }
 
-        [HttpGet("GetOffice/{id}")]
-        public string GetOffice(int id)
+        [HttpGet("AreaCode/{id}")]
+        public async Task<AreaInformation> GetAreaCode(string id)
         {
-            return "value";
+            var area = await contactRepository.ReadAsync(c => c.Areas.Include(a => a.Offices).Where(a => a.IsActive).SingleOrDefault(a => a.InternalCode == id));
+            return new AreaInformation(area, true, null);
         }
 
-        [HttpGet("Search/{q}")]
-        public string Search(string q)
+        [HttpGet("AreaCode/External/{id}")]
+        public async Task<AreaInformation> GetAreaCodeExternal(string id)
         {
-            return "searchvalue" + q;
+            var area = await contactRepository.ReadAsync(c => c.Areas.Include(a => a.Offices).Where(a => a.IsActive && !a.InternalOnly).SingleOrDefault(a => a.InternalCode == id));
+            return new AreaInformation(area, false, null);
+        }
+
+        [HttpGet("Area/External/{id}")]
+        public async Task<AreaInformation> GetAreaExternal(int id)
+        {
+            var area = await contactRepository.ReadAsync(c => c.Areas.Include(a => a.Offices).Where(o => o.IsActive && !o.InternalOnly).SingleOrDefault(o => o.Id == id));
+            return new AreaInformation(area, false, null);
+        }
+
+        [HttpGet("Office/{id}")]
+        public async Task<OfficeInformation> GetOffice(int id)
+        {
+            var office = await contactRepository.ReadAsync(c => c.Offices.Include(a => a.Area).Where(o => o.IsActive).SingleOrDefault(o => o.Id == id));
+            return new OfficeInformation(office);
+        }
+
+        [HttpGet("OfficeCode/{id}")]
+        public async Task<OfficeInformation> GetOfficeCode(string id)
+        {
+            var office = await contactRepository.ReadAsync(c => c.Offices.Include(a => a.Area).Where(o => o.IsActive).SingleOrDefault(o => o.InternalCode == id));
+            return new OfficeInformation(office);
+        }
+
+        [HttpGet("Search/Areas")]
+        public async Task<IEnumerable<AreaInformation>> SearchAreas(string search, string areafilter, string officefilter)
+        {
+            var areaType = FilterHelper.TranslateArea(areafilter);
+            var officeType = FilterHelper.TranslateOffice(officefilter);
+            var areas = await contactRepository.ReadAsync(c => c.Areas.Include(a => a.Offices).Where(a => a.IsActive
+                && (search == "" || a.Title.Contains(search) || a.SearchTerms.Contains(search) || a.Audience.Contains(search) ||
+                a.Offices.Any(o => o.Title.Contains(search)) || a.Offices.Any(o => o.SearchTerms.Contains(search)) || a.Offices.Any(o => o.Audience.Contains(search)))
+                && (areaType == null || a.AreaType == areaType))
+                .OrderBy(a => a.InternalOrder).ThenBy(a => a.Title));
+            return areas.ToList().Select(a => new AreaInformation(a, true, officeType));
+        }
+
+        [HttpGet("Search/Areas/External")]
+        public async Task<IEnumerable<AreaInformation>> SearchAreasExternal(string search, string areafilter, string officefilter)
+        {
+            var areaType = FilterHelper.TranslateArea(areafilter);
+            var officeType = FilterHelper.TranslateOffice(officefilter);
+            var areas = await contactRepository.ReadAsync(c => c.Areas.Include(a => a.Offices).Where(a => a.IsActive && !a.InternalOnly
+                && (search == "" || a.Title.Contains(search) || a.SearchTerms.Contains(search) || a.Audience.Contains(search) ||
+                a.Offices.Any(o => o.Title.Contains(search)) || a.Offices.Any(o => o.SearchTerms.Contains(search)) || a.Offices.Any(o => o.Audience.Contains(search)))
+                && (areaType == null || a.AreaType == areaType))
+            .OrderBy(a => a.InternalOrder).ThenBy(a => a.Title));
+            return areas.ToList().Select(a => new AreaInformation(a, false, officeType));
+        }
+
+        [HttpGet("Search/Offices")]
+        public async Task<IEnumerable<OfficeInformation>> SearchOffices(string search, string areafilter, string officefilter)
+        {
+            var areaType = FilterHelper.TranslateArea(areafilter);
+            var officeType = FilterHelper.TranslateOffice(officefilter);
+            var offices = await contactRepository.ReadAsync(c => c.Offices.Include(a => a.Area).Where(o => o.IsActive
+                && (search == "" || o.Title.Contains(search) || o.SearchTerms.Contains(search) || o.Audience.Contains(search) ||
+                o.Area.Title.Contains(search) || o.Area.SearchTerms.Contains(search) || o.Area.Audience.Contains(search))
+                && (areaType == null || o.Area.AreaType == areaType)
+                && (officeType == null || o.OfficeType == officeType))
+            .OrderBy(o => o.Title));
+            return offices.ToList().Select(o => new OfficeInformation(o));
+        }
+
+        [HttpGet("Search/Offices/ByArea")]
+        public async Task<IEnumerable<OfficeInformation>> SearchOfficesByArea(string search, int areaId, string officefilter)
+        {
+            var officeType = FilterHelper.TranslateOffice(officefilter);
+            var offices = await contactRepository.ReadAsync(c => c.Offices.Include(a => a.Area).Where(o => o.IsActive
+                && (search == "" || o.Title.Contains(search) || o.SearchTerms.Contains(search) || o.Audience.Contains(search) ||
+                o.Area.Title.Contains(search) || o.Area.SearchTerms.Contains(search) || o.Area.Audience.Contains(search))
+                && (o.AreaId == areaId)
+                && (officeType == null || o.OfficeType == officeType))
+            .OrderBy(o => o.InternalOrder).ThenBy(o => o.Title));
+            return offices.ToList().Select(o => new OfficeInformation(o));
+        }
+
+        [HttpGet("Search/Offices/ByAreaCode")]
+        public async Task<IEnumerable<OfficeInformation>> SearchOfficesByArea(string search, string areaCode, string officefilter)
+        {
+            var officeType = FilterHelper.TranslateOffice(officefilter);
+            var offices = await contactRepository.ReadAsync(c => c.Offices.Include(a => a.Area).Where(o => o.IsActive
+                && (search == "" || o.Title.Contains(search) || o.SearchTerms.Contains(search) || o.Audience.Contains(search) ||
+                o.Area.Title.Contains(search) || o.Area.SearchTerms.Contains(search) || o.Area.Audience.Contains(search))
+                && (o.Area.InternalCode == areaCode)
+                && (officeType == null || o.OfficeType == officeType))
+            .OrderBy(o => o.InternalOrder).ThenBy(o => o.Title));
+            return offices.ToList().Select(o => new OfficeInformation(o));
         }
     }
 }

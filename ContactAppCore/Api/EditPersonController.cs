@@ -1,12 +1,7 @@
 ﻿using ContactAppCore.Data;
 using ContactAppCore.Data.Models;
 using ContactAppCore.Helpers;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
 using System.Threading.Tasks;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -37,7 +32,7 @@ namespace ContactAppCore.Api
         }
 
         [HttpPost("AddToArea")]
-        public async Task<int> AddToArea(string name, int areaId)
+        public async Task<int> AddToArea([FromForm] string name, [FromForm] int areaId)
         {
             if (!securityHelper.AllowArea(User, areaId).Result)
             {
@@ -47,13 +42,24 @@ namespace ContactAppCore.Api
         }
 
         [HttpPost("AddToOffice")]
-        public async Task<int> AddToOffice(string name, int officeId)
+        public async Task<int> AddToOffice([FromForm] string name, [FromForm] int officeId)
         {
             if (!securityHelper.AllowOffice(User, officeId).Result)
             {
                 return default;
             }
-            return await contactRepository.CreateAsync(new Person(name, officeId));
+            return await contactRepository.CreateAsync(new Person(name, null, officeId));
+        }
+
+        [HttpPost("Delete/{id}")]
+        public async Task<int> Delete(int id)
+        {
+            // TODO Open this up to more people, but still restrict user information
+            if (!securityHelper.IsFullAdmin(User).Result)
+            {
+                return default;
+            }
+            return await contactRepository.DeleteAsync(new Person { Id = id });
         }
     }
 }

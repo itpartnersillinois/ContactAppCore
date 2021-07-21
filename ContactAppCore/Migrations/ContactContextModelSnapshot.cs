@@ -26,11 +26,41 @@ namespace ContactAppCore.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<int>("AreaType")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Audience")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ExternalUrl")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("InternalCode")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("InternalNotes")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("InternalOnly")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("InternalOrder")
+                        .HasColumnType("int");
+
+                    b.Property<string>("InternalUrl")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
                     b.Property<DateTime>("LastUpdated")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("Notes")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("SearchTerms")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Title")
                         .HasColumnType("nvarchar(max)");
@@ -67,6 +97,36 @@ namespace ContactAppCore.Migrations
                     b.ToTable("ExternalLinks");
                 });
 
+            modelBuilder.Entity("ContactAppCore.Data.Models.Log", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("LastUpdated")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("NewData")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("OldData")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Title")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Logs");
+                });
+
             modelBuilder.Entity("ContactAppCore.Data.Models.Office", b =>
                 {
                     b.Property<int>("Id")
@@ -98,32 +158,62 @@ namespace ContactAppCore.Migrations
                     b.Property<string>("ExternalUrl")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("HoursFriday")
+                    b.Property<string>("HoursFridayEnd")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("HoursFridayStart")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("HoursIncludeHolidayMessage")
+                        .HasColumnType("bit");
 
                     b.Property<string>("HoursMessage")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("HoursMonday")
+                    b.Property<string>("HoursMondayEnd")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("HoursSaturday")
+                    b.Property<string>("HoursMondayStart")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("HoursSunday")
+                    b.Property<string>("HoursSaturdayEnd")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("HoursThursday")
+                    b.Property<string>("HoursSaturdayStart")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("HoursTuesday")
+                    b.Property<string>("HoursSundayEnd")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("HoursWednesday")
+                    b.Property<string>("HoursSundayStart")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("HoursThursdayEnd")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("HoursThursdayStart")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("HoursTuesdayEnd")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("HoursTuesdayStart")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("HoursWednesdayEnd")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("HoursWednesdayStart")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("InternalCode")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("InternalNotes")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("InternalOnly")
+                        .HasColumnType("bit");
 
                     b.Property<int>("InternalOrder")
                         .HasColumnType("int");
@@ -144,6 +234,9 @@ namespace ContactAppCore.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Phone")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Room")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("SearchTerms")
@@ -204,8 +297,16 @@ namespace ContactAppCore.Migrations
                             Id = -1,
                             IsActive = true,
                             IsFullAdmin = true,
-                            LastUpdated = new DateTime(2021, 7, 19, 15, 10, 41, 580, DateTimeKind.Local).AddTicks(4757),
+                            LastUpdated = new DateTime(2021, 7, 21, 7, 31, 6, 230, DateTimeKind.Local).AddTicks(3437),
                             Title = "jonker@illinois.edu"
+                        },
+                        new
+                        {
+                            Id = -2,
+                            IsActive = true,
+                            IsFullAdmin = true,
+                            LastUpdated = new DateTime(2021, 7, 21, 7, 31, 6, 235, DateTimeKind.Local).AddTicks(6743),
+                            Title = "rbwatson@illinois.edu"
                         });
                 });
 

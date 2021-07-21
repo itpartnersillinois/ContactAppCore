@@ -4,6 +4,56 @@
 
     body main {
         max-width: var(--il-content-max-width);
-        margin: auto;
-        margin-top: 20px;
+        margin: 20px auto;
     }
+
+.il-formatted .il-button.narrow {
+    padding: 2px 20px;
+    margin-left: 20px;
+}
+
+ul.listofitems li {
+    margin-bottom: 5px;
+}
+
+form.large label {
+    min-width: 200px;
+    display: inline-block;
+    text-align: right;
+    margin-right: 10px;
+}
+
+    form.large label.to {
+        min-width: initial;
+        display: inline-block;
+        text-align: center;
+        margin: 0 10px;
+    }
+
+form.large input {
+    width: 80px;
+}
+
+    form.large input[type=checkbox] {
+        width: initial;
+    }
+
+    form.large input.long {
+        width: 400px;
+    }
+
+form .fulltext {
+    border: thin solid black;
+    margin-bottom: 10px;
+}
+
+.notes {
+    margin-left: 210px;
+    font-size: .9rem;
+}
+
+    .notes.side {
+        display: inline;
+        margin-left: 10px;
+    }
+}

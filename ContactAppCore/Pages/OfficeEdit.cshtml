@@ -1,4 +1,293 @@
 ﻿@page
 @model ContactAppCore.Pages.OfficeEditModel
 @{
+    ViewData["Title"] = "Edit Office";
+}
+<link rel="stylesheet" href="/css/quill.bubble.css" />
+
+<h1>Edit Office Information</h1>
+
+<form id="office" class="large">
+    <h2>General Information</h2>
+    <div><label for="title">Office Name:</label><input id="title" name="title" class="long" /></div>
+    <div>
+        <label for="audience">Audience:</label><input id="audience" name="audience" class="long" />
+        <div class="notes">For external items, this is displayed as "who would be interested in this area". For internal items, this can be used as a generic second line of information.</div>
+    </div>
+    <div>
+        <label for="officetype">Office Type:</label><select id="officetype" name="officetype">
+            <option value="0">Unknown</option>
+            <option value="1">IT</option>
+            <option value="2">HR</option>
+            <option value="3">Business Operations</option>
+            <option value="4">Facilities</option>
+            <option value="4">Academic</option>
+            <option value="9">Other</option>
+        </select>
+    </div>
+
+    <h2>Contact Information</h2>
+    <div><label for="email">Email:</label><input id="email" name="email" class="long" /></div>
+    <div>
+        <label for="externalurl">External URL:</label><input id="externalurl" name="externalurl" class="long" />
+        <div class="notes side"><a href="#" onclick="return checkLink('externalurl');">Test link for your external website.</a></div>
+    </div>
+    <div>
+        <label for="internalurl">Internal URL:</label><input id="internalurl" name="internalurl" class="long" />
+        <div class="notes side"><a href="#" onclick="return checkLink('internalurl');">Test link for your internal website (for faculty, staff, etc.).</a></div>
+    </div>
+    <div>
+        <label for="ticketurl">URL for Tickets:</label><input id="ticketurl" name="ticketurl" class="long" />
+        <div class="notes side"><a href="#" onclick="return checkLink('ticketurl');">Test link for your TDX ticket site.</a></div>
+    </div>
+    <div><label for="phone">Phone:</label><input id="phone" name="phone" /></div>
+
+    <h2>Physical Information</h2>
+    <div><label for="room">Room #:</label><input id="room" name="room" /></div>
+    <div><label for="building">Building:</label><input id="building" name="building" class="long" /></div>
+    <div>
+        <label for="buildingcode">Building Code:</label><input id="buildingcode" name="buildingcode" />
+        <div class="notes">The four digit building code can be found on <a href="https://fs.illinois.edu/about-us/building-list-by-building-number" target="_blank">the F&amp;S Website</a>.</div>
+    </div>
+    <div><label for="address">Address:</label><input id="address" name="address" class="long" /></div>
+    <div><label for="city">City:</label><input id="city" name="city" class="long" /></div>
+    <div><label for="zipcode">Zip Code:</label><input id="zipcode" name="zipcode" /></div>
+
+    <h2>Hours</h2>
+    <div><label for="hourssun1">Sunday:</label><input id="hourssun1" name="hourssun1" class="hours" /> <label for="hourssun2" class="to">to</label> <input id="hourssun2" name="hourssun2" class="hours" /></div>
+    <div><label for="hoursmon1">Monday:</label><input id="hoursmon1" name="hoursmon1" class="hours" /> <label for="hoursmon2" class="to">to</label> <input id="hoursmon2" name="hoursmon2" class="hours" /></div>
+    <div><label for="hourstue1">Tuesday:</label><input id="hourstue1" name="hourstue1" class="hours" /> <label for="hourstue2" class="to">to</label> <input id="hourstue2" name="hourstue2" class="hours" /></div>
+    <div><label for="hourswed1">Wednesday:</label><input id="hourswed1" name="hourswed1" class="hours" /> <label for="hourswed2" class="to">to</label> <input id="hourswed2" name="hourswed2" class="hours" /></div>
+    <div><label for="hoursthu1">Thursday:</label><input id="hoursthu1" name="hoursthu1" class="hours" /> <label for="hoursthu2" class="to">to</label> <input id="hoursthu2" name="hoursthu2" class="hours" /></div>
+    <div><label for="hoursfri1">Friday:</label><input id="hoursfri1" name="hoursfri1" class="hours" /> <label for="hoursfri2" class="to">to</label> <input id="hoursfri2" name="hoursfri2" class="hours" /></div>
+    <div>
+        <label for="hourssat1">Saturday:</label><input id="hourssat1" name="hourssat1" class="hours" /> <label for="hourssat2" class="to">to</label> <input id="hourssat2" name="hourssat2" class="hours" />
+        <div class="notes side">If you leave either the opening or closing time blank, it will not display the day of the week.</div>
+    </div>
+    <div><label for="hoursincludeholidaymessage">Include "Closed During University Holidays" message?:</label><input type="checkbox" id="hoursincludeholidaymessage" name="hoursincludeholidaymessage" /></div>
+    <div><label for="hournotes">Notes:</label><input id="hournotes" name="hournotes" class="long" /></div>
+
+    <h2>More Information</h2>
+    <div><label for="notes">General Notes:</label><div id='notes' class='fulltext'></div></div>
+    <div>
+        <label for="searchterms">Search Term Information:</label><input id="searchterms" name="searchterms" class="long" />
+        <div class="notes">This is information that is not displayed, but will show up if someone does a search for a phrase.</div>
+    </div>
+    <div>
+        <label for="internalcode">Internal Code:</label><input id="internalcode" name="internalcode" class="long" />
+        <div class="notes">This is used to query information in place of your ID.</div>
+    </div>
+    <div>
+        <label for="internalnotes">Internal Notes:</label><input id="internalnotes" name="internalnotes" class="long" />
+        <div class="notes">This is not displayed anywhere and is used for internal records.</div>
+    </div>
+    <div><label for="isactive">Is Active?:</label><input type="checkbox" id="isactive" name="isactive" /></div>
+    <div>
+        <label for="internalonly">Internal Only?:</label><input type="checkbox" id="internalonly" name="internalonly" />
+        <div class="notes side">Mark this as true if you don't want this to display on the external TDX list.</div>
+    </div>
+    <div>
+        <label for="internalorder">Internal Order:</label>
+        <select id="internalorder" name="internalorder">
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3 (default)</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+        </select>
+        <div class="notes side">This is used to order items in relation to other offices. Please do not change this unless instructed by an administrator.</div>
+    </div>
+
+    <button class="il-button" onclick="return update();">Update Office Information</button>
+</form>
+
+<hr />
+
+<h2>Office Administrator List</h2>
+<p>These people will be able to update office information. </p>
+<ul id="names" class="listofitems">
+</ul>
+
+<form id="newpersonform">
+    <label for="personname">Add a new office administrator: </label>
+    <input type="text" id="personname" name="personname" />
+    <button id="addperson" class="il-button narrow" onclick="return addPerson();">Add Person</button>
+</form>
+
+<a href="/List">Back to Area List</a>
+
+@section Scripts
+{
+    <script src="~/js/quill.min.js" type="text/javascript"></script>
+    <script type="text/javascript">
+        var quillInfo = new Quill('#notes', {
+            modules: {
+                toolbar: [
+                    ['bold', 'italic', 'link', { 'list': 'ordered' }, { 'list': 'bullet' }, 'clean']
+                ],
+                keyboard: {
+                    bindings: {
+                        tab: {
+                            key: 9,
+                            handler: () => { document.getElementById('searchterm').focus(); },
+                        },
+                        'remove tab': {
+                            key: 9,
+                            shiftKey: true,
+                            collapsed: true,
+                            prefix: /\t$/,
+                            handler: () => { },
+                        }
+                    }
+                }
+            },
+            placeholder: 'Enter notes about your office ...',
+            theme: 'bubble'
+        });
+
+        document.addEventListener('DOMContentLoaded', function (event) {
+            loadItems();
+            loadPeople();
+        });
+
+        function loadItems() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const id = urlParams.get('id');
+
+            fetch('/Api/EditOffice/' + id, {
+                method: 'GET',
+                headers: {
+                    "Content-type": "application/x-www-form-urlencoded; charset=UTF-8"
+                }
+            }).then(res => res.json()).then(data => {
+                document.getElementById('title').value = data.title;
+                document.getElementById('audience').value = data.audience;
+                document.getElementById('officetype').value = data.officeType;
+                document.getElementById('email').value = data.email;
+                document.getElementById('externalurl').value = data.externalUrl;
+                document.getElementById('internalurl').value = data.internalUrl;
+                document.getElementById('ticketurl').value = data.ticketUrl;
+                document.getElementById('phone').value = data.phone;
+                document.getElementById('room').value = data.room;
+                document.getElementById('building').value = data.building;
+                document.getElementById('buildingcode').value = data.buildingCode;
+                document.getElementById('address').value = data.address;
+                document.getElementById('city').value = data.city;
+                document.getElementById('zipcode').value = data.zipCode;
+                document.getElementById('hourssun1').value = data.hoursSundayStart;
+                document.getElementById('hourssun2').value = data.hoursSundayEnd;
+                document.getElementById('hoursmon1').value = data.hoursMondayStart;
+                document.getElementById('hoursmon2').value = data.hoursMondayEnd;
+                document.getElementById('hourstue1').value = data.hoursTuesdayStart;
+                document.getElementById('hourstue2').value = data.hoursTuesdayEnd;
+                document.getElementById('hourswed1').value = data.hoursWednesdayStart;
+                document.getElementById('hourswed2').value = data.hoursWednesdayEnd;
+                document.getElementById('hoursthu1').value = data.hoursThursdayStart;
+                document.getElementById('hoursthu2').value = data.hoursThursdayEnd;
+                document.getElementById('hoursfri1').value = data.hoursFridayStart;
+                document.getElementById('hoursfri2').value = data.hoursFridayEnd;
+                document.getElementById('hourssat1').value = data.hoursSaturdayStart;
+                document.getElementById('hourssat2').value = data.hoursSaturdayEnd;
+                document.getElementById('hournotes').value = data.hoursMessage;
+                document.getElementById('hoursincludeholidaymessage').checked = data.hoursIncludeHolidayMessage
+                if (data.notes != null) {
+                    quillInfo.setContents(quillInfo.clipboard.convert(data.notes), 'silent');
+                }
+                document.getElementById('searchterms').value = data.searchTerms;
+                document.getElementById('isactive').checked = data.isactive;
+                document.getElementById('internalcode').value = data.internalCode;
+                document.getElementById('internalnotes').value = data.internalNotes;
+                document.getElementById('internalorder').value = data.internalOrder;
+                document.getElementById('internalonly').checked = data.internalOnly;
+
+            });
+        }
+
+        function update() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const id = urlParams.get('id');
+
+            let object = {};
+            let formElement = document.querySelector("form#office");
+            let formData = new FormData(formElement);
+            formData.forEach((value, key) => object[key] = value);
+            object['id'] = id;
+            object['notes'] = cleanQuill(quillInfo.root.innerHTML);
+            var json = JSON.stringify(object);
+            console.log(json);
+            fetch('/Api/EditOffice/Update', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: json
+            });
+            return false;
+        }
+
+        function cleanQuill(s) {
+            if (s == '<br />' || s == '<br>' || s == '<p><br></p>') {
+                return '';
+            }
+            return s;
+        }
+
+        function checkLink(inputbox) {
+            var url = document.getElementById(inputbox).value
+            if (url === '') {
+                document.getElementById(inputbox).value = 'https://illinois.edu';
+                url = 'https://illinois.edu';
+            }
+            window.open(url, '_blank');
+            return false;
+        }
+
+        function addPerson() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const id = urlParams.get('id');
+            let formData = new FormData();
+            formData.append('name', document.getElementById('personname').value);
+            formData.append('officeId', id);
+            fetch('/Api/EditPerson/AddToOffice', {
+                method: 'POST',
+                body: formData
+            }).then(res => loadPeople());
+            return false;
+        }
+
+        function removePerson(i) {
+            if (confirm('Are you sure you want to remove this person?')) {
+                fetch('/Api/EditPerson/Delete/' + i, {
+                    method: 'POST',
+                }).then(res => loadPeople());
+            }
+            return false;
+        }
+
+        function loadPeople() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const id = urlParams.get('id');
+
+            document.getElementById('personname').value = '';
+            fetch('/Api/Person/Office/' + id, {
+                method: 'GET',
+                headers: {
+                    "Content-type": "application/x-www-form-urlencoded; charset=UTF-8"
+                }
+            }).then(res => res.json()).then(data => {
+                let list = document.getElementById('names');
+                list.innerHTML = '';
+                data.forEach(element => {
+                    const li = document.createElement('li');
+                    const anchor = document.createElement('a');
+                    anchor.innerHTML = 'Remove person';
+                    anchor.setAttribute('data-index', element.id);
+                    anchor.setAttribute('href', '#');
+                    anchor.setAttribute('onclick', 'return removePerson(' + element.id + ');');
+                    anchor.setAttribute('class', 'il-button narrow');
+                    li.innerHTML = element.title;
+                    li.appendChild(anchor);
+                    list.appendChild(li);
+                });
+            });
+        }
+    </script>
 }

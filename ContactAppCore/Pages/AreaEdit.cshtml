@@ -2,3 +2,236 @@
 @model ContactAppCore.Pages.AreaEditModel
 @{
 }
+
+<link rel="stylesheet" href="/css/quill.bubble.css" />
+
+<h1>Edit Area Information</h1>
+
+<form id="area" class="large">
+    <h2>General Information</h2>
+    <div><label for="title">Area Name:</label><input id="title" name="title" class="long" /></div>
+    <div>
+        <label for="audience">Audience:</label><input id="audience" name="audience" class="long" />
+        <div class="notes">For external items, this is displayed as "who would be interested in this area". For internal items, this can be used as a generic second line of information.</div>
+    </div>
+    <div>
+        <label for="areatype">Area Type:</label><select id="areatype" name="areatype">
+            <option value="0">Unknown</option>
+            <option value="1">System</option>
+            <option value="2">Campus</option>
+            <option value="3">College</option>
+            <option value="4">Research</option>
+            <option value="9">Other</option>
+        </select>
+    </div>
+
+    <h2>Contact Information</h2>
+    <div>
+        <label for="externalurl">External URL:</label><input id="externalurl" name="externalurl" class="long" />
+        <div class="notes side"><a href="#" onclick="return checkLink('externalurl');">Test link for your external website.</a></div>
+    </div>
+    <div>
+        <label for="internalurl">Internal URL:</label><input id="internalurl" name="internalurl" class="long" />
+        <div class="notes side"><a href="#" onclick="return checkLink('internalurl');">Test link for your internal website (for faculty, staff, etc.).</a></div>
+    </div>
+
+    <h2>More Information</h2>
+    <div><label for="notes">General Notes:</label><div id='notes' class='fulltext'></div></div>
+    <div>
+        <label for="searchterms">Search Term Information:</label><input id="searchterms" name="searchterms" class="long" />
+        <div class="notes">This is information that is not displayed, but will show up if someone does a search for a phrase.</div>
+    </div>
+    <div>
+        <label for="internalcode">Internal Code:</label><input id="internalcode" name="internalcode" class="long" />
+        <div class="notes">This is used to query information in place of your ID.</div>
+    </div>
+    <div>
+        <label for="internalnotes">Internal Notes:</label><input id="internalnotes" name="internalnotes" class="long" />
+        <div class="notes">This is not displayed anywhere and is used for internal records.</div>
+    </div>
+    <div><label for="isactive">Is Active?:</label><input type="checkbox" id="isactive" name="isactive" /></div>
+    <div>
+        <label for="internalonly">Internal Only?:</label><input type="checkbox" id="internalonly" name="internalonly" />
+        <div class="notes side">Mark this as true if you don't want this to display on the external TDX list.</div>
+    </div>
+    <div>
+        <label for="internalorder">Internal Order:</label>
+        <select id="internalorder" name="internalorder">
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3 (default)</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+        </select>
+        <div class="notes side">This is used to order items in relation to other areas. Please do not change this unless instructed by an administrator.</div>
+    </div>
+
+    <button class="il-button" onclick="return update();">Update Area Information</button>
+</form>
+
+<hr />
+
+<h2>Area Administrator List</h2>
+<p>These people will be able to update area information. They will also be able to add offices to this area.</p>
+<ul id="names" class="listofitems">
+</ul>
+
+<form id="newpersonform">
+    <label for="personname">Add a new area administrator: </label>
+    <input type="text" id="personname" name="personname" />
+    <button id="addperson" class="il-button narrow" onclick="return addPerson();">Add Person</button>
+</form>
+
+<a href="/List">Back to Area List</a>
+
+@section Scripts
+{
+    <script src="~/js/quill.min.js" type="text/javascript"></script>
+    <script type="text/javascript">
+        var quillInfo = new Quill('#notes', {
+            modules: {
+                toolbar: [
+                    ['bold', 'italic', 'link', { 'list': 'ordered' }, { 'list': 'bullet' }, 'clean']
+                ],
+                keyboard: {
+                    bindings: {
+                        tab: {
+                            key: 9,
+                            handler: () => { document.getElementById('searchterm').focus(); },
+                        },
+                        'remove tab': {
+                            key: 9,
+                            shiftKey: true,
+                            collapsed: true,
+                            prefix: /\t$/,
+                            handler: () => { },
+                        }
+                    }
+                }
+            },
+            placeholder: 'Enter notes about your area ...',
+            theme: 'bubble'
+        });
+
+        document.addEventListener('DOMContentLoaded', function (event) {
+            loadItems();
+            loadPeople();
+        });
+
+        function loadItems() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const id = urlParams.get('id');
+
+            fetch('/Api/EditArea/' + id, {
+                method: 'GET',
+                headers: {
+                    "Content-type": "application/x-www-form-urlencoded; charset=UTF-8"
+                }
+            }).then(res => res.json()).then(data => {
+                document.getElementById('title').value = data.title;
+                document.getElementById('audience').value = data.audience;
+                document.getElementById('areatype').value = data.officeType;
+                document.getElementById('externalurl').value = data.externalUrl;
+                document.getElementById('internalurl').value = data.internalUrl;
+
+                if (data.notes != null) {
+                    quillInfo.setContents(quillInfo.clipboard.convert(data.notes), 'silent');
+                }
+                document.getElementById('searchterms').value = data.searchTerms;
+                document.getElementById('isactive').checked = data.isactive;
+                document.getElementById('internalcode').value = data.internalCode;
+                document.getElementById('internalnotes').value = data.internalNotes;
+                document.getElementById('internalorder').value = data.internalOrder;
+                document.getElementById('internalonly').checked = data.internalOnly;
+
+            });
+        }
+
+        function update() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const id = urlParams.get('id');
+
+            let object = {};
+            let formElement = document.querySelector("form#area");
+            let formData = new FormData(formElement);
+            formData.forEach((value, key) => object[key] = value);
+            object['id'] = id;
+            object['notes'] = cleanQuill(quillInfo.root.innerHTML);
+            var json = JSON.stringify(object);
+            console.log(json);
+            fetch('/Api/EditArea/Update', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: json
+            });
+            return false;
+        }
+
+        function cleanQuill(s) {
+            if (s == '<br />' || s == '<br>' || s == '<p><br></p>') {
+                return '';
+            }
+            return s;
+        }
+
+        function checkLink(inputbox) {
+            var url = document.getElementById(inputbox).value
+            if (url === '') {
+                document.getElementById(inputbox).value = 'https://illinois.edu';
+                url = 'https://illinois.edu';
+            }
+            window.open(url, '_blank');
+            return false;
+        }
+
+        function addPerson() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const id = urlParams.get('id');
+            let formData = new FormData();
+            formData.append('name', document.getElementById('personname').value);
+            formData.append('officeId', id);
+            fetch('/Api/EditPerson/AddToArea', {
+                method: 'POST',
+                body: formData
+            }).then(res => loadPeople());
+            return false;
+        }
+
+        function removePerson(i) {
+            if (confirm('Are you sure you want to remove this person?')) {
+                fetch('/Api/EditPerson/Delete/' + i, {
+                    method: 'POST',
+                }).then(res => loadPeople());
+            }
+            return false;
+        }
+
+        function loadPeople() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const id = urlParams.get('id');
+
+            document.getElementById('personname').value = '';
+            fetch('/Api/Person/Area/' + id, {
+                method: 'GET',
+                headers: {
+                    "Content-type": "application/x-www-form-urlencoded; charset=UTF-8"
+                }
+            }).then(res => res.json()).then(data => {
+                let list = document.getElementById('names');
+                list.innerHTML = '';
+                data.forEach(element => {
+                    const li = document.createElement('li');
+                    const anchor = document.createElement('a');
+                    anchor.innerHTML = 'Remove person';
+                    anchor.setAttribute('data-index', element.id);
+                    anchor.setAttribute('href', '#');
+                    anchor.setAttribute('onclick', 'return removePerson(' + element.id + ');');
+                    anchor.setAttribute('class', 'il-button narrow');
+                    li.innerHTML = element.title;
+                    li.appendChild(anchor);
+                    list.appendChild(li);
+                });
+            });
+        }
+    </script>
+}

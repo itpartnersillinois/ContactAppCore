@@ -1,4 +1,148 @@
 ﻿@page
-@model ContactAppCore.Pages.AreaListModel
+@model ContactAppCore.Pages.ListModel
 @{
+    ViewData["Title"] = "List";
+}
+
+<h1>List of Areas / Offices</h1>
+<p>This is a list of areas and offices you can update.</p>
+<div style="display: flex; gap: 10px;">
+    <div style="flex: 1 1;">
+        <h2>Available Areas</h2>
+        <ul id="areas" class="listofitems">
+        </ul>
+        <div id="fulladmin" style="display: none;">
+            <hr />
+            <form id="newareaform">
+                <label for="name">Add a new area: </label>
+                <input type="text" id="name" name="name" />
+                <button id="addarea" class="il-button narrow" onclick="return addArea();">Add Area</button>
+            </form>
+            <a href="/Admin">Maintain full administrator list</a>
+        </div>
+    </div>
+    <div style="flex: 1 1;">
+        <h2>Available Offices</h2>
+        <ul id="offices" class="listofitems">
+        </ul>
+        <div id="areaadmin" style="display: none;">
+            <hr />
+            <form id="newofficeform">
+                <label for="nameoffice">Add a new office: </label>
+                <input type="text" id="nameoffice" name="nameOffice" />
+                <input type="hidden" id="areaid" name="areaid" />
+                <button id="addoffice" class="il-button narrow" onclick="return addOffice();">Add Office</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts
+{
+    <script type="text/javascript">
+        document.addEventListener('DOMContentLoaded', function (event) {
+            loadItems();
+        });
+
+        function addArea() {
+            let formData = new FormData();
+            formData.append('title', document.getElementById('name').value);
+            fetch('/Api/EditArea/Add', {
+                method: 'POST',
+                body: formData
+            }).then(res => loadItems());
+            return false;
+        }
+
+        function addOffice() {
+            let formData = new FormData();
+            formData.append('title', document.getElementById('nameoffice').value);
+            formData.append('areaid', document.getElementById('areaid').value);
+            fetch('/Api/EditArea/AddOffice', {
+                method: 'POST',
+                body: formData
+            }).then(res => loadOfficeItems(document.getElementById('areaid').value));
+            return false;
+        }
+
+        function loadItems() {
+            document.getElementById('name').value = '';
+            fetch('/Api/Item/', {
+                method: 'GET',
+                headers: {
+                    "Content-type": "application/x-www-form-urlencoded; charset=UTF-8"
+                }
+            }).then(res => res.json()).then(data => {
+                if (data.isDeniedAccess) {
+                    console.log('does not have access -- redirect');
+                }
+                if (data.isFullAdmin) {
+                    document.getElementById('fulladmin').style.display = '';
+                }
+
+                let arealist = document.getElementById('areas');
+                let officelist = document.getElementById('offices');
+                arealist.innerHTML = '';
+                officelist.innerHTML = '';
+
+                data.areas.forEach(element => {
+                    const li = document.createElement('li');
+                    const anchor = document.createElement('a');
+                    anchor.innerHTML = 'View Offices';
+                    anchor.setAttribute('href', '#');
+                    anchor.setAttribute('class', 'il-button narrow');
+                    anchor.setAttribute('onclick', 'return loadOfficeItems(' + element.id + ');');
+                    const anchorItem = document.createElement('a');
+                    anchorItem.innerHTML = element.title;
+                    anchorItem.setAttribute('href', '/AreaEdit?id=' + element.id);
+                    li.appendChild(anchorItem);
+                    li.appendChild(anchor);
+                    arealist.appendChild(li);
+                });
+                if (data.areas.length <= 1) {
+                    data.offices.forEach(element => {
+                        const li = document.createElement('li');
+                        const anchorItem = document.createElement('a');
+                        anchorItem.innerHTML = element.title;
+                        anchorItem.setAttribute('href', '/OfficeEdit?id=' + element.id);
+                        li.appendChild(anchorItem);
+                        officelist.appendChild(li);
+                    });
+                    if (data.areas.length == 1) {
+                        document.getElementById('areaid').value = data.areas[0].id;
+                        document.getElementById('areaadmin').style.display = '';
+                    }
+                }
+            });
+        }
+
+        function loadOfficeItems(i) {
+            document.getElementById('name').value = '';
+            fetch('/Api/Item/Area/' + i, {
+                method: 'GET',
+                headers: {
+                    "Content-type": "application/x-www-form-urlencoded; charset=UTF-8"
+                }
+            }).then(res => res.json()).then(data => {
+                if (data.isDeniedAccess) {
+                    console.log('does not have access -- redirect');
+                }
+                if (data.isFullAdmin) {
+                    document.getElementById('areaid').value = i;
+                    document.getElementById('areaadmin').style.display = '';
+                }
+                let officelist = document.getElementById('offices');
+                officelist.innerHTML = '';
+                data.offices.forEach(element => {
+                    const li = document.createElement('li');
+                    const anchorItem = document.createElement('a');
+                    anchorItem.innerHTML = element.title;
+                    anchorItem.setAttribute('href', '/OfficeEdit?id=' + element.id);
+                    li.appendChild(anchorItem);
+                    officelist.appendChild(li);
+                });
+            });
+            return false;
+        }
+    </script>
 }

@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace ContactAppCore.Migrations
 {
-    public partial class Inital : Migration
+    public partial class Initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -13,6 +13,16 @@ namespace ContactAppCore.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
+                    AreaType = table.Column<int>(type: "int", nullable: false),
+                    Audience = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ExternalUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    InternalCode = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    InternalNotes = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    InternalOnly = table.Column<bool>(type: "bit", nullable: false),
+                    InternalOrder = table.Column<int>(type: "int", nullable: false),
+                    InternalUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Notes = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    SearchTerms = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     IsActive = table.Column<bool>(type: "bit", nullable: false),
                     LastUpdated = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Title = table.Column<string>(type: "nvarchar(max)", nullable: true)
@@ -40,6 +50,24 @@ namespace ContactAppCore.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Logs",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    NewData = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    OldData = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false),
+                    LastUpdated = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Title = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Logs", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Offices",
                 columns: table => new
                 {
@@ -53,20 +81,31 @@ namespace ContactAppCore.Migrations
                     City = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Email = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ExternalUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    HoursFriday = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    HoursFridayEnd = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    HoursFridayStart = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    HoursIncludeHolidayMessage = table.Column<bool>(type: "bit", nullable: false),
                     HoursMessage = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    HoursMonday = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    HoursSaturday = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    HoursSunday = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    HoursThursday = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    HoursTuesday = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    HoursWednesday = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    HoursMondayEnd = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    HoursMondayStart = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    HoursSaturdayEnd = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    HoursSaturdayStart = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    HoursSundayEnd = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    HoursSundayStart = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    HoursThursdayEnd = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    HoursThursdayStart = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    HoursTuesdayEnd = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    HoursTuesdayStart = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    HoursWednesdayEnd = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    HoursWednesdayStart = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    InternalCode = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     InternalNotes = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    InternalOnly = table.Column<bool>(type: "bit", nullable: false),
                     InternalOrder = table.Column<int>(type: "int", nullable: false),
                     InternalUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Notes = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     OfficeType = table.Column<int>(type: "int", nullable: false),
                     Phone = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Room = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     SearchTerms = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     TicketUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ZipCode = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -140,7 +179,12 @@ namespace ContactAppCore.Migrations
             migrationBuilder.InsertData(
                 table: "People",
                 columns: new[] { "Id", "AreaId", "IsActive", "IsFullAdmin", "LastUpdated", "OfficeId", "Title" },
-                values: new object[] { -1, null, true, true, new DateTime(2021, 7, 19, 15, 10, 41, 580, DateTimeKind.Local).AddTicks(4757), null, "jonker@illinois.edu" });
+                values: new object[] { -1, null, true, true, new DateTime(2021, 7, 21, 7, 31, 6, 230, DateTimeKind.Local).AddTicks(3437), null, "jonker@illinois.edu" });
+
+            migrationBuilder.InsertData(
+                table: "People",
+                columns: new[] { "Id", "AreaId", "IsActive", "IsFullAdmin", "LastUpdated", "OfficeId", "Title" },
+                values: new object[] { -2, null, true, true, new DateTime(2021, 7, 21, 7, 31, 6, 235, DateTimeKind.Local).AddTicks(6743), null, "rbwatson@illinois.edu" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Offices_AreaId",
@@ -167,6 +211,9 @@ namespace ContactAppCore.Migrations
         {
             migrationBuilder.DropTable(
                 name: "ExternalLinks");
+
+            migrationBuilder.DropTable(
+                name: "Logs");
 
             migrationBuilder.DropTable(
                 name: "People");
