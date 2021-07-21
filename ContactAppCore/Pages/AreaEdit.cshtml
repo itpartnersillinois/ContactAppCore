@@ -204,7 +204,7 @@
             const id = urlParams.get('id');
             let formData = new FormData();
             formData.append('name', document.getElementById('personname').value);
-            formData.append('officeId', id);
+            formData.append('areaid', id);
             fetch('/Api/EditPerson/AddToArea', {
                 method: 'POST',
                 body: formData
