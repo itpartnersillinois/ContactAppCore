@@ -28,7 +28,16 @@ steps:
     platform: '$(buildPlatform)'
     configuration: '$(buildConfiguration)'
 
-- task: VSTest@2
+- task: PublishBuildArtifacts@1
   inputs:
-    platform: '$(buildPlatform)'
-    configuration: '$(buildConfiguration)'
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+    ArtifactName: 'drop'
+    publishLocation: 'Container'
+- task: AzureRmWebAppDeployment@4
+  inputs:
+    ConnectionType: 'AzureRM'
+    azureSubscription: 'Bryan Jonker - VSEnterprise(6ca10db3-c3c2-4d61-aa0d-b7865ec37309)'
+    appType: 'webApp'
+    WebAppName: 'illinois-contactapp'
+    packageForLinux: '$(System.DefaultWorkingDirectory)/**/*.zip'
+
