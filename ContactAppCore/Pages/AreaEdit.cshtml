@@ -54,6 +54,8 @@
         <label for="internalonly">Internal Only?:</label><input type="checkbox" id="internalonly" name="internalonly" />
         <div class="notes side">Mark this as true if you don't want this to display on the external TDX list.</div>
     </div>
+    <div><label for="allowbeta">Allow Beta Access?:</label><input type="checkbox" id="allowbeta" name="allowbeta" /></div>
+    <div><label for="allowpeople">Allow to add People?:</label><input type="checkbox" id="allowpeople" name="allowpeople" /></div>
     <div>
         <label for="internalorder">Internal Order:</label>
         <select id="internalorder" name="internalorder">
@@ -158,7 +160,8 @@
                 document.getElementById('internalnotes').value = data.internalNotes;
                 document.getElementById('internalorder').value = data.internalOrder;
                 document.getElementById('internalonly').checked = data.internalOnly;
-
+                document.getElementById('allowbeta').checked = data.allowBeta;
+                document.getElementById('allowpeople').checked = data.allowPeople;
             });
         }
 

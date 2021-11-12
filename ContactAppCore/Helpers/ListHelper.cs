@@ -28,7 +28,7 @@ namespace ContactAppCore.Helpers
             {
                 var offices = await contactRepository.ReadAsync(c => c.Offices
                     .Where(c => c.AreaId == areaId)
-                    .Select(c => new AreaOfficeItem { Id = c.Id, Title = c.Title }));
+                    .Select(c => new AreaOfficeItem { Id = c.Id, Title = c.Title }).OrderBy(a => a.Title));
 
                 return new ItemList
                 {
@@ -66,9 +66,9 @@ namespace ContactAppCore.Helpers
             if (isAdmin)
             {
                 var areas = await contactRepository.ReadAsync(c => c.Areas
-                    .Select(c => new AreaOfficeItem { Id = c.Id, Title = c.Title }));
+                    .Select(c => new AreaOfficeItem { Id = c.Id, Title = c.Title }).OrderBy(a => a.Title));
                 var offices = await contactRepository.ReadAsync(c => c.Offices
-                    .Select(c => new AreaOfficeItem { Id = c.Id, Title = c.Title }));
+                    .Select(c => new AreaOfficeItem { Id = c.Id, Title = c.Title }).OrderBy(o => o.Title));
 
                 return new ItemList
                 {
@@ -83,12 +83,12 @@ namespace ContactAppCore.Helpers
                 var areas = await contactRepository.ReadAsync(c => c.People
                     .Join(c.Areas, p => p.AreaId, a => a.Id, (p, a) => new { p, a })
                     .Where(c => c.p.Title == name && c.p.IsActive)
-                    .Select(c => new AreaOfficeItem { Id = c.a.Id, Title = c.a.Title }));
+                    .Select(c => new AreaOfficeItem { Id = c.a.Id, Title = c.a.Title }).OrderBy(a => a.Title));
                 var offices = await contactRepository.ReadAsync(c => c.People
                     .Join(c.Offices, p => p.OfficeId, o => o.Id, (p, o) => new { p, o })
                     .Join(c.Areas, co => co.o.AreaId, a => a.Id, (co, a) => new { co, a })
                     .Where(c => c.co.p.Title == name && c.co.p.IsActive)
-                    .Select(c => new AreaOfficeItem { Id = c.co.o.Id, Title = $"{c.a.Title} {c.co.o.Title}" }));
+                    .Select(c => new AreaOfficeItem { Id = c.co.o.Id, Title = $"{c.a.Title} {c.co.o.Title}" }).OrderBy(o => o.Title));
 
                 return new ItemList
                 {

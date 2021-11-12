@@ -63,12 +63,12 @@ namespace ContactAppCore.Api
         {
             var jsonObject = (dynamic)JObject.Parse(json.ToString());
             int id = int.Parse(jsonObject.id.ToString());
-            if (!securityHelper.AllowOffice(User, id).Result)
+            if (!securityHelper.AllowArea(User, id).Result)
             {
                 return default;
             }
             var originalObject = await contactRepository.ReadAsync(c => c.Areas.SingleOrDefault(a => a.Id == id));
-
+            var isFullAdmin = securityHelper.IsFullAdmin(User).Result;
             await contactRepository.CreateAsync(new Log { IsActive = true, Title = originalObject.Id.ToString(), Name = User.Identity.Name, OldData = JsonConvert.SerializeObject(originalObject), NewData = json.ToString() });
 
             return await contactRepository.UpdateAsync(new Area
@@ -83,9 +83,11 @@ namespace ContactAppCore.Api
                 SearchTerms = jsonObject.searchterm,
                 InternalNotes = jsonObject.internalnotes,
                 InternalCode = jsonObject.internalcode,
-                InternalOrder = jsonObject.internalorder,
+                InternalOrder = isFullAdmin ? jsonObject.internalorder : originalObject.InternalOrder,
                 IsActive = JsonHelper.TranslateBoolean(jsonObject.isactive),
-                InternalOnly = JsonHelper.TranslateBoolean(jsonObject.internalonly)
+                InternalOnly = JsonHelper.TranslateBoolean(jsonObject.internalonly),
+                AllowBeta = isFullAdmin ? JsonHelper.TranslateBoolean(jsonObject.allowbeta) : originalObject.AllowBeta,
+                AllowPeople = isFullAdmin ? JsonHelper.TranslateBoolean(jsonObject.allowpeople) : originalObject.AllowPeople,
             });
         }
     }

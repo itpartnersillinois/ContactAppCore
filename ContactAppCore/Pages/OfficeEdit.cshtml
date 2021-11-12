@@ -21,7 +21,8 @@
             <option value="2">HR</option>
             <option value="3">Business Operations</option>
             <option value="4">Facilities</option>
-            <option value="4">Academic</option>
+            <option value="5">Academic</option>
+            <option value="6">General</option>
             <option value="9">Other</option>
         </select>
     </div>
@@ -66,7 +67,7 @@
     </div>
     <div><label for="hoursincludeholidaymessage">Include "Closed During University Holidays" message?:</label><input type="checkbox" id="hoursincludeholidaymessage" name="hoursincludeholidaymessage" /></div>
     <div><label for="hournotes">Notes:</label><input id="hournotes" name="hournotes" class="long" /></div>
-
+    <div><label for="covidsupport">COVID-19 Vaccine Card upload support?:</label><input type="checkbox" id="covidsupport" name="covidsupport" /></div>
     <h2>More Information</h2>
     <div><label for="notes">General Notes:</label><div id='notes' class='fulltext'></div></div>
     <div>
@@ -210,6 +211,7 @@
                 }
                 document.getElementById('searchterms').value = data.searchTerms;
                 document.getElementById('isactive').checked = data.isActive;
+                document.getElementById('covidsupport').checked = data.covidSupport;
                 document.getElementById('internalcode').value = data.internalCode;
                 document.getElementById('internalnotes').value = data.internalNotes;
                 document.getElementById('internalorder').value = data.internalOrder;
