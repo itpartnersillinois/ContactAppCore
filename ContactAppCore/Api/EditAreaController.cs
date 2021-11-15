@@ -85,7 +85,7 @@ namespace ContactAppCore.Api
                 InternalCode = jsonObject.internalcode,
                 InternalOrder = isFullAdmin ? jsonObject.internalorder : originalObject.InternalOrder,
                 IsActive = JsonHelper.TranslateBoolean(jsonObject.isactive),
-                InternalOnly = JsonHelper.TranslateBoolean(jsonObject.internalonly),
+                InternalOnly = isFullAdmin ? JsonHelper.TranslateBoolean(jsonObject.internalonly) : originalObject.InternalOnly,
                 AllowBeta = isFullAdmin ? JsonHelper.TranslateBoolean(jsonObject.allowbeta) : originalObject.AllowBeta,
                 AllowPeople = isFullAdmin ? JsonHelper.TranslateBoolean(jsonObject.allowpeople) : originalObject.AllowPeople,
             });

@@ -88,7 +88,7 @@ namespace ContactAppCore.Helpers
                     .Join(c.Offices, p => p.OfficeId, o => o.Id, (p, o) => new { p, o })
                     .Join(c.Areas, co => co.o.AreaId, a => a.Id, (co, a) => new { co, a })
                     .Where(c => c.co.p.Title == name && c.co.p.IsActive)
-                    .Select(c => new AreaOfficeItem { Id = c.co.o.Id, Title = $"{c.a.Title} {c.co.o.Title}" }).OrderBy(o => o.Title));
+                    .Select(c => new AreaOfficeItem { Id = c.co.o.Id, Title = c.a.Title + " " + c.co.o.Title }).OrderBy(o => o.Title));
 
                 return new ItemList
                 {

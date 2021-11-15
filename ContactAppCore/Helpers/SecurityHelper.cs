@@ -23,6 +23,16 @@ namespace ContactAppCore.Helpers
             return await contactRepository.ReadAsync(c => c.People.Any(p => p.Title == claim.Identity.Name && p.IsActive && (p.IsFullAdmin || p.AreaId == id)));
         }
 
+        public async Task<bool> AllowAreaForOffice(ClaimsPrincipal claim, int id)
+        {
+            if (claim == null || claim.Identity == null || string.IsNullOrWhiteSpace(claim.Identity.Name))
+            {
+                return false;
+            }
+            var areaId = contactRepository.Read(c => c.Offices.Single(o => o.Id == id).AreaId);
+            return await contactRepository.ReadAsync(c => c.People.Any(p => p.Title == claim.Identity.Name && p.IsActive && (p.IsFullAdmin || p.AreaId == areaId)));
+        }
+
         public async Task<bool> AllowOffice(ClaimsPrincipal claim, int id)
         {
             if (claim == null || claim.Identity == null || string.IsNullOrWhiteSpace(claim.Identity.Name))

@@ -88,7 +88,7 @@ namespace ContactAppCore.Api
                 InternalCode = jsonObject.internalcode,
                 InternalOrder = isAreaAdmin ? jsonObject.internalorder : originalObject.InternalOrder,
                 IsActive = JsonHelper.TranslateBoolean(jsonObject.isactive),
-                InternalOnly = JsonHelper.TranslateBoolean(jsonObject.internalonly),
+                InternalOnly = isAreaAdmin ? JsonHelper.TranslateBoolean(jsonObject.internalonly) : originalObject.InternalOnly,
                 CovidSupport = JsonHelper.TranslateBoolean(jsonObject.covidsupport)
             });
         }
