@@ -6,7 +6,7 @@ namespace ContactAppCore.Data.Models
 {
     public enum OfficeTypeEnum
     {
-        NotListed, IT, HR, Business, Facilities, Academic, Other = 9
+        NotListed, IT, HR, Business, Facilities, Academic, General, Other = 9
     }
 
     public class Office : BaseDataItem
@@ -48,6 +48,8 @@ namespace ContactAppCore.Data.Models
         public string BuildingCode { get; set; }
 
         public string City { get; set; }
+
+        public bool CovidSupport { get; set; }
 
         public string Email { get; set; }
 

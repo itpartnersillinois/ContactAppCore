@@ -26,28 +26,28 @@ namespace ContactAppCore.Api
         public async Task<AreaInformation> GetArea(int id)
         {
             var area = await contactRepository.ReadAsync(c => c.Areas.Include(a => a.Offices).Where(o => o.IsActive).SingleOrDefault(o => o.Id == id));
-            return new AreaInformation(area, true, null);
+            return new AreaInformation(area, true, false, "", null);
         }
 
         [HttpGet("AreaCode/{id}")]
         public async Task<AreaInformation> GetAreaCode(string id)
         {
             var area = await contactRepository.ReadAsync(c => c.Areas.Include(a => a.Offices).Where(a => a.IsActive).SingleOrDefault(a => a.InternalCode == id));
-            return new AreaInformation(area, true, null);
+            return new AreaInformation(area, true, false, "", null);
         }
 
         [HttpGet("AreaCode/External/{id}")]
         public async Task<AreaInformation> GetAreaCodeExternal(string id)
         {
             var area = await contactRepository.ReadAsync(c => c.Areas.Include(a => a.Offices).Where(a => a.IsActive && !a.InternalOnly).SingleOrDefault(a => a.InternalCode == id));
-            return new AreaInformation(area, false, null);
+            return new AreaInformation(area, false, false, "", null);
         }
 
         [HttpGet("Area/External/{id}")]
         public async Task<AreaInformation> GetAreaExternal(int id)
         {
             var area = await contactRepository.ReadAsync(c => c.Areas.Include(a => a.Offices).Where(o => o.IsActive && !o.InternalOnly).SingleOrDefault(o => o.Id == id));
-            return new AreaInformation(area, false, null);
+            return new AreaInformation(area, false, false, "", null);
         }
 
         [HttpGet("Office/{id}")]
@@ -65,33 +65,33 @@ namespace ContactAppCore.Api
         }
 
         [HttpGet("Search/Areas")]
-        public async Task<IEnumerable<AreaInformation>> SearchAreas(string search, string areafilter, string officefilter)
+        public async Task<IEnumerable<AreaInformation>> SearchAreas(string search = "", string areafilter = "", string officefilter = "", bool isCovid = false)
         {
             var areaType = FilterHelper.TranslateArea(areafilter);
             var officeType = FilterHelper.TranslateOffice(officefilter);
             var areas = await contactRepository.ReadAsync(c => c.Areas.Include(a => a.Offices).Where(a => a.IsActive
                 && (search == "" || a.Title.Contains(search) || a.SearchTerms.Contains(search) || a.Audience.Contains(search) ||
                 a.Offices.Any(o => o.Title.Contains(search)) || a.Offices.Any(o => o.SearchTerms.Contains(search)) || a.Offices.Any(o => o.Audience.Contains(search)))
-                && (areaType == null || a.AreaType == areaType))
+                && (areaType == null || a.AreaType == areaType) && (a.Offices.Any(o => o.CovidSupport) || !isCovid))
                 .OrderBy(a => a.InternalOrder).ThenBy(a => a.Title));
-            return areas.ToList().Select(a => new AreaInformation(a, true, officeType));
+            return areas.ToList().Select(a => new AreaInformation(a, true, isCovid, search, officeType));
         }
 
         [HttpGet("Search/Areas/External")]
-        public async Task<IEnumerable<AreaInformation>> SearchAreasExternal(string search, string areafilter, string officefilter)
+        public async Task<IEnumerable<AreaInformation>> SearchAreasExternal(string search = "", string areafilter = "", string officefilter = "", bool isCovid = false)
         {
             var areaType = FilterHelper.TranslateArea(areafilter);
             var officeType = FilterHelper.TranslateOffice(officefilter);
             var areas = await contactRepository.ReadAsync(c => c.Areas.Include(a => a.Offices).Where(a => a.IsActive && !a.InternalOnly
                 && (search == "" || a.Title.Contains(search) || a.SearchTerms.Contains(search) || a.Audience.Contains(search) ||
                 a.Offices.Any(o => o.Title.Contains(search)) || a.Offices.Any(o => o.SearchTerms.Contains(search)) || a.Offices.Any(o => o.Audience.Contains(search)))
-                && (areaType == null || a.AreaType == areaType))
+                && (areaType == null || a.AreaType == areaType) && (a.Offices.Any(o => o.CovidSupport) || !isCovid))
             .OrderBy(a => a.InternalOrder).ThenBy(a => a.Title));
-            return areas.ToList().Select(a => new AreaInformation(a, false, officeType));
+            return areas.ToList().Select(a => new AreaInformation(a, false, isCovid, search, officeType));
         }
 
         [HttpGet("Search/Offices")]
-        public async Task<IEnumerable<OfficeInformation>> SearchOffices(string search, string areafilter, string officefilter)
+        public async Task<IEnumerable<OfficeInformation>> SearchOffices(string search = "", string areafilter = "", string officefilter = "", bool isCovid = false)
         {
             var areaType = FilterHelper.TranslateArea(areafilter);
             var officeType = FilterHelper.TranslateOffice(officefilter);
@@ -99,13 +99,13 @@ namespace ContactAppCore.Api
                 && (search == "" || o.Title.Contains(search) || o.SearchTerms.Contains(search) || o.Audience.Contains(search) ||
                 o.Area.Title.Contains(search) || o.Area.SearchTerms.Contains(search) || o.Area.Audience.Contains(search))
                 && (areaType == null || o.Area.AreaType == areaType)
-                && (officeType == null || o.OfficeType == officeType))
+                && (officeType == null || o.OfficeType == officeType) && (o.CovidSupport || !isCovid))
             .OrderBy(o => o.Title));
             return offices.ToList().Select(o => new OfficeInformation(o));
         }
 
         [HttpGet("Search/Offices/ByArea")]
-        public async Task<IEnumerable<OfficeInformation>> SearchOfficesByArea(string search, int areaId, string officefilter)
+        public async Task<IEnumerable<OfficeInformation>> SearchOfficesByArea(int areaId, string search = "", string officefilter = "")
         {
             var officeType = FilterHelper.TranslateOffice(officefilter);
             var offices = await contactRepository.ReadAsync(c => c.Offices.Include(a => a.Area).Where(o => o.IsActive

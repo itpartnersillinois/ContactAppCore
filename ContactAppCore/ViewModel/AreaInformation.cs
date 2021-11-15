@@ -6,7 +6,7 @@ namespace ContactAppCore.ViewModel
 {
     public class AreaInformation
     {
-        public AreaInformation(Area area, bool useInternal, OfficeTypeEnum? officeType)
+        public AreaInformation(Area area, bool useInternal, bool isCovid, string search, OfficeTypeEnum? officeType)
         {
             AreaType = area.AreaType.ToString();
             Audience = area.Audience;
@@ -15,9 +15,29 @@ namespace ContactAppCore.ViewModel
             InternalUrl = area.InternalUrl;
             Notes = area.Notes;
             Title = area.Title;
-            Offices = area.Offices == null ? null :
-                useInternal ? area.Offices.Where(o => o.IsActive && (officeType == null || o.OfficeType == officeType)).OrderBy(o => o.InternalOrder).ThenBy(o => o.Title).Select(o => new OfficeInformation(o)).ToList() :
-                area.Offices.Where(o => !o.InternalOnly && o.IsActive && (officeType == null || o.OfficeType == officeType)).OrderBy(o => o.InternalOrder).ThenBy(o => o.Title).Select(o => new OfficeInformation(o)).ToList();
+            var officeGroup = area.Offices == null ? new List<Office>() : area.Offices.Where(o => o.IsActive);
+
+            if (!useInternal)
+            {
+                officeGroup = officeGroup.Where(o => !o.InternalOnly);
+            }
+            if (isCovid)
+            {
+                officeGroup = officeGroup.Where(o => o.CovidSupport);
+            }
+            if (officeType != null)
+            {
+                officeGroup = officeGroup.Where(o => o.OfficeType == officeType);
+            }
+            if (!string.IsNullOrEmpty(search))
+            {
+                if (officeGroup.Any(o => o.Title.Contains(search) || o.SearchTerms.Contains(search) || o.Audience.Contains(search)))
+                {
+                    officeGroup = officeGroup.Where(o => o.Title.Contains(search) || o.SearchTerms.Contains(search) || o.Audience.Contains(search));
+                }
+            }
+
+            Offices = officeGroup.OrderBy(o => o.InternalOrder).ThenBy(o => o.Title).Select(o => new OfficeInformation(o)).ToList();
         }
 
         public string AreaType { get; set; }

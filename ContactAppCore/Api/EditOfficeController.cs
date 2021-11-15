@@ -43,8 +43,9 @@ namespace ContactAppCore.Api
             {
                 return default;
             }
-            var originalObject = await contactRepository.ReadAsync(c => c.Offices.SingleOrDefault(o => o.Id == id));
 
+            var originalObject = await contactRepository.ReadAsync(c => c.Offices.SingleOrDefault(o => o.Id == id));
+            var isAreaAdmin = securityHelper.AllowArea(User, originalObject.AreaId).Result;
             await contactRepository.CreateAsync(new Log { IsActive = true, Title = originalObject.AreaId.ToString(), Name = User.Identity.Name, OldData = JsonConvert.SerializeObject(originalObject), NewData = json.ToString() });
 
             return await contactRepository.UpdateAsync(new Office
@@ -85,9 +86,10 @@ namespace ContactAppCore.Api
                 SearchTerms = jsonObject.searchterm,
                 InternalNotes = jsonObject.internalnotes,
                 InternalCode = jsonObject.internalcode,
-                InternalOrder = jsonObject.internalorder,
+                InternalOrder = isAreaAdmin ? jsonObject.internalorder : originalObject.InternalOrder,
                 IsActive = JsonHelper.TranslateBoolean(jsonObject.isactive),
-                InternalOnly = JsonHelper.TranslateBoolean(jsonObject.internalonly)
+                InternalOnly = isAreaAdmin ? JsonHelper.TranslateBoolean(jsonObject.internalonly) : originalObject.InternalOnly,
+                CovidSupport = JsonHelper.TranslateBoolean(jsonObject.covidsupport)
             });
         }
     }
