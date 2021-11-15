@@ -24,6 +24,8 @@ namespace ContactAppCore.Data.Models
 
         public virtual IEnumerable<Person> Admins { get; set; }
 
+        public bool AllowBeta { get; set; } = false;
+        public bool AllowPeople { get; set; } = false;
         public AreaTypeEnum AreaType { get; set; }
         public string Audience { get; set; }
         public string ExternalUrl { get; set; }

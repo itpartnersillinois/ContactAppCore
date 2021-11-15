@@ -21,7 +21,8 @@
             <option value="2">HR</option>
             <option value="3">Business Operations</option>
             <option value="4">Facilities</option>
-            <option value="4">Academic</option>
+            <option value="5">Academic</option>
+            <option value="6">General</option>
             <option value="9">Other</option>
         </select>
     </div>
@@ -66,7 +67,7 @@
     </div>
     <div><label for="hoursincludeholidaymessage">Include "Closed During University Holidays" message?:</label><input type="checkbox" id="hoursincludeholidaymessage" name="hoursincludeholidaymessage" /></div>
     <div><label for="hournotes">Notes:</label><input id="hournotes" name="hournotes" class="long" /></div>
-
+    <div><label for="covidsupport">COVID-19 Vaccine Card upload support?:</label><input type="checkbox" id="covidsupport" name="covidsupport" /></div>
     <h2>More Information</h2>
     <div><label for="notes">General Notes:</label><div id='notes' class='fulltext'></div></div>
     <div>
@@ -84,7 +85,7 @@
     <div><label for="isactive">Is Active?:</label><input type="checkbox" id="isactive" name="isactive" /></div>
     <div>
         <label for="internalonly">Internal Only?:</label><input type="checkbox" id="internalonly" name="internalonly" />
-        <div class="notes side">Mark this as true if you don't want this to display on the external TDX list.</div>
+        <div class="notes side">Mark this as true if you don't want this to display on the external TDX list. Contact an administrator to edit this.</div>
     </div>
     <div>
         <label for="internalorder">Internal Order:</label>
@@ -95,7 +96,7 @@
             <option value="4">4</option>
             <option value="5">5</option>
         </select>
-        <div class="notes side">This is used to order items in relation to other offices. Please do not change this unless instructed by an administrator.</div>
+        <div class="notes side">This is used to order items in relation to other offices. Contact an administrator to edit this.</div>
     </div>
 
     <button class="il-button" onclick="return update();">Update Office Information</button>
@@ -160,12 +161,26 @@
             const urlParams = new URLSearchParams(window.location.search);
             const id = urlParams.get('id');
 
-            fetch('/Api/EditOffice/' + id, {
-                method: 'GET',
-                headers: {
-                    "Content-type": "application/x-www-form-urlencoded; charset=UTF-8"
-                }
-            }).then(res => res.json()).then(data => {
+            Promise.all([
+                fetch('/Api/EditOffice/' + id, {
+                    method: 'GET',
+                    headers: {
+                        "Content-type": "application/x-www-form-urlencoded; charset=UTF-8"
+                    }
+                }),
+                fetch('/Api/Security/Area/' + id, {
+                    method: 'GET',
+                    headers: {
+                        "Content-type": "application/x-www-form-urlencoded; charset=UTF-8"
+                    }
+                })
+            ]).then(function (responses) {
+                return Promise.all(responses.map(function (response) {
+                    return response.json();
+                }));
+            }).then(fullData => {
+                let data = fullData[0];
+                let isAdmin = fullData[1];
                 let rootUrl = 'https://' + window.location.host + '/';
                 let tutorialUrlId = rootUrl + 'Api/Contact/Office/' + data.id;
                 let tutorialUrlCode = rootUrl + 'Api/Contact/OfficeCode/' + data.internalCode;
@@ -210,11 +225,15 @@
                 }
                 document.getElementById('searchterms').value = data.searchTerms;
                 document.getElementById('isactive').checked = data.isActive;
+                document.getElementById('covidsupport').checked = data.covidSupport;
                 document.getElementById('internalcode').value = data.internalCode;
                 document.getElementById('internalnotes').value = data.internalNotes;
                 document.getElementById('internalorder').value = data.internalOrder;
                 document.getElementById('internalonly').checked = data.internalOnly;
-
+                if (!isAdmin) {
+                    document.getElementById('internalorder').disabled = true;
+                    document.getElementById('internalonly').disabled = true;
+                }
             });
         }
 

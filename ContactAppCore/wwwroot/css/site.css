@@ -31,7 +31,7 @@ form.large label {
     }
 
 form.large input {
-    width: 80px;
+    width: 100px;
 }
 
     form.large input[type=checkbox] {
