@@ -8,7 +8,7 @@ namespace ContactAppCore.ViewModel
     {
         public AreaInformation(Area area, bool useInternal, bool isCovid, string search, OfficeTypeEnum? officeType)
         {
-            AreaType = area.AreaType.ToString();
+            AreaType = area.AreaType == AreaTypeEnum.NotListed ? "" : area.AreaType.ToString();
             Audience = area.Audience;
             ExternalUrl = area.ExternalUrl;
             Id = area.Id;
