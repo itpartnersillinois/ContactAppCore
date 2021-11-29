@@ -32,9 +32,9 @@ namespace ContactAppCore.ViewModel
             }
             if (!string.IsNullOrEmpty(search))
             {
-                if (officeGroup.Any(o => o.Title.Contains(search) || o.SearchTerms.Contains(search) || o.Audience.Contains(search)))
+                if (officeGroup.Any(o => (o.Title ?? "").Contains(search) || (o.SearchTerms ?? "").Contains(search) || (o.Audience ?? "").Contains(search)))
                 {
-                    officeGroup = officeGroup.Where(o => o.Title.Contains(search) || o.SearchTerms.Contains(search) || o.Audience.Contains(search));
+                    officeGroup = officeGroup.Where(o => (o.Title ?? "").Contains(search) || (o.SearchTerms ?? "").Contains(search) || (o.Audience ?? "").Contains(search));
                 }
             }
 
