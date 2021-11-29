@@ -5,7 +5,17 @@ namespace ContactAppCore.ViewModel
 {
     public class OfficeInformation
     {
-        private List<string> hoursList;
+        private List<HoursInformation> hoursList;
+
+        private Dictionary<OfficeTypeEnum, string> officeDictionary = new Dictionary<OfficeTypeEnum, string> {
+            { OfficeTypeEnum.Academic, "Academic" },
+            { OfficeTypeEnum.Business, "Business Operations" },
+            { OfficeTypeEnum.Facilities, "Facilities" },
+            { OfficeTypeEnum.General, "General" },
+            { OfficeTypeEnum.HR, "Human Resources" },
+            { OfficeTypeEnum.IT, "Information Technology" },
+            { OfficeTypeEnum.Other, "Other" }
+        };
 
         public OfficeInformation(Office office)
         {
@@ -16,12 +26,13 @@ namespace ContactAppCore.ViewModel
             Building = office.Building;
             BuildingUrl = string.IsNullOrWhiteSpace(office.BuildingCode) ? string.Empty : "https://map.illinois.edu/view?ACTION=MAP&buildingId=" + office.BuildingCode;
             City = office.City;
+            CovidSupport = office.CovidSupport;
             Email = office.Email;
             ExternalUrl = office.ExternalUrl;
             Id = office.Id;
             InternalUrl = office.InternalUrl;
             Notes = office.Notes;
-            OfficeType = office.OfficeType.ToString();
+            OfficeType = officeDictionary.ContainsKey(office.OfficeType) ? officeDictionary[office.OfficeType] : "";
             Phone = office.Phone;
             Priority = office.InternalOrder;
             Room = office.Room;
@@ -33,7 +44,7 @@ namespace ContactAppCore.ViewModel
             {
                 HoursMessage = ("Closed on University Holidays. " + HoursMessage).Trim();
             }
-            hoursList = new List<string>();
+            hoursList = new List<HoursInformation>();
             if (!string.IsNullOrWhiteSpace(office.HoursMondayStart))
             {
                 //Check Sun-Sat
@@ -102,11 +113,13 @@ namespace ContactAppCore.ViewModel
 
         public string City { get; set; }
 
+        public bool CovidSupport { get; set; }
+
         public string Email { get; set; }
 
         public string ExternalUrl { get; set; }
 
-        public string[] Hours { get; set; }
+        public HoursInformation[] Hours { get; set; }
 
         public string HoursMessage { get; set; }
 
@@ -136,11 +149,11 @@ namespace ContactAppCore.ViewModel
         {
             if (!string.IsNullOrWhiteSpace(time1) && !string.IsNullOrWhiteSpace(time2))
             {
-                hoursList.Add($"{header}: {time1}-{time2}");
+                hoursList.Add(new HoursInformation { Label = header, Time = $"{time1}-{time2}" });
             }
             else if (!string.IsNullOrWhiteSpace(time1))
             {
-                hoursList.Add($"{header}: {time1}");
+                hoursList.Add(new HoursInformation { Label = header, Time = time1 });
             }
         }
     }
