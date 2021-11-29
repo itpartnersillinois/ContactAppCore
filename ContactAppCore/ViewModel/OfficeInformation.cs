@@ -77,7 +77,7 @@ namespace ContactAppCore.ViewModel
                     if (!string.IsNullOrWhiteSpace(office.HoursSaturdayStart) &&
                         office.HoursSaturdayStart == office.HoursSundayStart && office.HoursSaturdayEnd == office.HoursSundayEnd)
                     {
-                        AddHours("Sat-Sun", office.HoursSaturdayStart, office.HoursSaturdayEnd);
+                        AddHours("Sun-Sat", office.HoursSaturdayStart, office.HoursSaturdayEnd);
                     }
                     else
                     {
