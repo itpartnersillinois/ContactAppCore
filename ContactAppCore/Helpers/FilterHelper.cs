@@ -57,6 +57,9 @@ namespace ContactAppCore.Helpers
                 case "tech":
                     return OfficeTypeEnum.IT;
 
+                case "general":
+                    return OfficeTypeEnum.General;
+
                 default:
                     return null;
             }
