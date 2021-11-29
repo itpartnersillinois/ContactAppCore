@@ -23,6 +23,7 @@ namespace ContactAppCore.ViewModel
             Notes = office.Notes;
             OfficeType = office.OfficeType.ToString();
             Phone = office.Phone;
+            Priority = office.InternalOrder;
             Room = office.Room;
             TicketUrl = office.TicketUrl;
             Title = office.Title;
@@ -120,6 +121,8 @@ namespace ContactAppCore.ViewModel
         public string OfficeType { get; set; }
 
         public string Phone { get; set; }
+
+        public int Priority { get; set; }
 
         public string Room { get; set; }
 
