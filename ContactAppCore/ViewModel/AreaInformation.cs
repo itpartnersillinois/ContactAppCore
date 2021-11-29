@@ -14,6 +14,7 @@ namespace ContactAppCore.ViewModel
             Id = area.Id;
             InternalUrl = area.InternalUrl;
             Notes = area.Notes;
+            Priority = area.InternalOrder;
             Title = area.Title;
             var officeGroup = area.Offices == null ? new List<Office>() : area.Offices.Where(o => o.IsActive);
 
@@ -53,6 +54,7 @@ namespace ContactAppCore.ViewModel
         public string Notes { get; set; }
 
         public IEnumerable<OfficeInformation> Offices { get; set; }
+        public int Priority { get; set; }
         public string Title { get; set; }
     }
 }
