@@ -2,6 +2,7 @@
 using ContactAppCore.Data.Models;
 using ContactAppCore.Helpers;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Linq;
@@ -31,7 +32,7 @@ namespace ContactAppCore.Api
             {
                 return default;
             }
-            return await contactRepository.ReadAsync(c => c.Offices.SingleOrDefault(o => o.Id == id));
+            return await contactRepository.ReadAsync(c => c.Offices.Include(o => o.Area).SingleOrDefault(o => o.Id == id));
         }
 
         [HttpPost("Update")]

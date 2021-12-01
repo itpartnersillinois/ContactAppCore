@@ -88,6 +88,8 @@ namespace ContactAppCore.Data.Models
         public int InternalOrder { get; set; }
         public string InternalUrl { get; set; }
 
+        public virtual IEnumerable<JobProfile> JobProfiles { get; set; }
+
         public string Notes { get; set; }
         public OfficeTypeEnum OfficeType { get; set; }
         public string Phone { get; set; }

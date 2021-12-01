@@ -67,8 +67,8 @@
     </div>
     <div><label for="hoursincludeholidaymessage">Include "Closed During University Holidays" message?:</label><input type="checkbox" id="hoursincludeholidaymessage" name="hoursincludeholidaymessage" /></div>
     <div><label for="hournotes">Notes:</label><input id="hournotes" name="hournotes" class="long" /></div>
-    <div><label for="covidsupport">COVID-19 Vaccine Card upload support?:</label><input type="checkbox" id="covidsupport" name="covidsupport" /></div>
     <h2>More Information</h2>
+    <div><label for="covidsupport">COVID-19 Vaccine Card upload support?:</label><input type="checkbox" id="covidsupport" name="covidsupport" /></div>
     <div><label for="notes">General Notes:</label><div id='notes' class='fulltext'></div></div>
     <div>
         <label for="searchterms">Search Term Information:</label><input id="searchterms" name="searchterms" class="long" />
@@ -107,6 +107,12 @@
 <p>This is the link used to get the office information.</p>
 <p><a href="#" id="tutorialurlid" target="_blank"></a></p>
 <p><a href="#" id="tutorialurlcode" target="_blank"></a></p>
+
+<div id="people" style="display: none;">
+    <hr />
+    <h2>List People</h2>
+    <p><a href="" id="peoplelink">Edit people in your office</a></p>
+</div>
 
 <hr />
 
@@ -234,6 +240,10 @@
                     document.getElementById('internalorder').disabled = true;
                     document.getElementById('internalonly').disabled = true;
                 }
+                if (data.area.allowPeople) {
+                    document.getElementById('peoplelink').setAttribute('href', '/JobList?id=' + id);
+                    document.getElementById('people').style.display = '';
+                }
             });
         }
 
@@ -248,7 +258,6 @@
             object['id'] = id;
             object['notes'] = cleanQuill(quillInfo.root.innerHTML);
             var json = JSON.stringify(object);
-            console.log(json);
             fetch('/Api/EditOffice/Update', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },

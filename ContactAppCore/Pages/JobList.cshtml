@@ -1,0 +1,70 @@
+﻿@page
+@model ContactAppCore.Pages.JobListModel
+@{
+}
+<h1>List of Job Profiles</h1>
+<p>This is a list of job profiles you can update.</p>
+
+<ul id="profiles" class="listofitems">
+</ul>
+<hr />
+<label for="personname">Add a new NetID for a job profile: </label>
+<input type="text" id="personname" name="personname" />
+<a id="addperson" class="il-button narrow">Add Job Profile</a>
+<hr />
+<a href="/List">Back to Area List</a>
+
+@section Scripts
+{
+    <script type="text/javascript">
+        function loadItems() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const id = urlParams.get('id');
+            let add = document.getElementById('addperson');
+            add.setAttribute('href', '/JobEdit?id=0&officeId=' + id)
+
+            fetch('/Api/Job/Office/' + id, {
+                method: 'GET',
+                headers: {
+                    "Content-type": "application/x-www-form-urlencoded; charset=UTF-8"
+                }
+            }).then(res => res.json()).then(data => {
+                let list = document.getElementById('profiles');
+                list.innerHTML = '';
+                data.forEach(element => {
+                    const li = document.createElement('li');
+
+                    const anchorEdit = document.createElement('a');
+                    anchorEdit.innerHTML = 'Edit Job Profile';
+                    anchorEdit.setAttribute('data-index', element.id);
+                    anchorEdit.setAttribute('href', '/JobEdit?id=' + element.id);
+                    anchorEdit.setAttribute('class', 'il-button narrow');
+
+                    const anchor = document.createElement('a');
+                    anchor.innerHTML = 'Remove';
+                    anchor.setAttribute('data-index', element.id);
+                    anchor.setAttribute('href', '#');
+                    anchor.setAttribute('onclick', 'return removePerson(' + element.id + ');');
+                    anchor.setAttribute('class', 'il-button narrow');
+                    li.innerHTML = element.employeeNetId + ' (' + element.title + ')';
+                    li.appendChild(anchorEdit);
+                    li.appendChild(anchor);
+                    list.appendChild(li);
+                });
+            });
+        }
+
+        function removePerson(i) {
+            if (confirm('Are you sure you want to remove this job?')) {
+                fetch('/Api/EditJob/Delete/' + i, {
+                    method: 'POST',
+                }).then(res => loadItems());
+            }
+            return false;
+        }
+
+        document.addEventListener('DOMContentLoaded', function (event) {
+            loadItems();
+        });
+    </script>
+}

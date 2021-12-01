@@ -4,14 +4,16 @@ using ContactAppCore.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace ContactAppCore.Migrations
 {
     [DbContext(typeof(ContactContext))]
-    partial class ContactContextModelSnapshot : ModelSnapshot
+    [Migration("20211130165601_Adding_People_Description")]
+    partial class Adding_People_Description
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -86,7 +88,7 @@ namespace ContactAppCore.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("EmployeeProfileId")
+                    b.Property<int?>("EmployeeProfileId")
                         .HasColumnType("int");
 
                     b.Property<int>("InternalOrder")
@@ -234,7 +236,7 @@ namespace ContactAppCore.Migrations
                     b.Property<string>("Biography")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("EmployeeProfileId")
+                    b.Property<int?>("EmployeeProfileId")
                         .HasColumnType("int");
 
                     b.Property<int>("InternalOrder")
@@ -246,8 +248,8 @@ namespace ContactAppCore.Migrations
                     b.Property<DateTime>("LastUpdated")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("OfficeId")
-                        .HasColumnType("int");
+                    b.Property<string>("OfficeInformation")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Phone")
                         .HasColumnType("nvarchar(max)");
@@ -258,8 +260,6 @@ namespace ContactAppCore.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("EmployeeProfileId");
-
-                    b.HasIndex("OfficeId");
 
                     b.ToTable("JobProfiles");
                 });
@@ -279,6 +279,9 @@ namespace ContactAppCore.Migrations
 
                     b.Property<DateTime>("LastUpdated")
                         .HasColumnType("datetime2");
+
+                    b.Property<int>("ProfileId")
+                        .HasColumnType("int");
 
                     b.Property<string>("Title")
                         .HasColumnType("nvarchar(max)");
@@ -493,7 +496,7 @@ namespace ContactAppCore.Migrations
                             Id = -1,
                             IsActive = true,
                             IsFullAdmin = true,
-                            LastUpdated = new DateTime(2021, 12, 1, 15, 22, 11, 50, DateTimeKind.Local).AddTicks(245),
+                            LastUpdated = new DateTime(2021, 11, 30, 10, 56, 1, 460, DateTimeKind.Local).AddTicks(3047),
                             Title = "jonker@illinois.edu"
                         },
                         new
@@ -501,7 +504,7 @@ namespace ContactAppCore.Migrations
                             Id = -2,
                             IsActive = true,
                             IsFullAdmin = true,
-                            LastUpdated = new DateTime(2021, 12, 1, 15, 22, 11, 53, DateTimeKind.Local).AddTicks(69),
+                            LastUpdated = new DateTime(2021, 11, 30, 10, 56, 1, 463, DateTimeKind.Local).AddTicks(2887),
                             Title = "rbwatson@illinois.edu"
                         });
                 });
@@ -534,13 +537,9 @@ namespace ContactAppCore.Migrations
 
             modelBuilder.Entity("ContactAppCore.Data.Models.EmployeeActivity", b =>
                 {
-                    b.HasOne("ContactAppCore.Data.Models.EmployeeProfile", "EmployeeProfile")
+                    b.HasOne("ContactAppCore.Data.Models.EmployeeProfile", null)
                         .WithMany("EmployeeActivities")
-                        .HasForeignKey("EmployeeProfileId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("EmployeeProfile");
+                        .HasForeignKey("EmployeeProfileId");
                 });
 
             modelBuilder.Entity("ContactAppCore.Data.Models.EmployeeLink", b =>
@@ -554,19 +553,9 @@ namespace ContactAppCore.Migrations
                 {
                     b.HasOne("ContactAppCore.Data.Models.EmployeeProfile", "EmployeeProfile")
                         .WithMany("Jobs")
-                        .HasForeignKey("EmployeeProfileId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("ContactAppCore.Data.Models.Office", "Office")
-                        .WithMany("JobProfiles")
-                        .HasForeignKey("OfficeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("EmployeeProfileId");
 
                     b.Navigation("EmployeeProfile");
-
-                    b.Navigation("Office");
                 });
 
             modelBuilder.Entity("ContactAppCore.Data.Models.JobProfileTag", b =>
@@ -631,8 +620,6 @@ namespace ContactAppCore.Migrations
             modelBuilder.Entity("ContactAppCore.Data.Models.Office", b =>
                 {
                     b.Navigation("Admins");
-
-                    b.Navigation("JobProfiles");
 
                     b.Navigation("Tags");
                 });

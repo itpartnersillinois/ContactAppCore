@@ -4,14 +4,16 @@ using ContactAppCore.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace ContactAppCore.Migrations
 {
     [DbContext(typeof(ContactContext))]
-    partial class ContactContextModelSnapshot : ModelSnapshot
+    [Migration("20211201193749_Add_JobProfile_Office_Link")]
+    partial class Add_JobProfile_Office_Link
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -280,6 +282,9 @@ namespace ContactAppCore.Migrations
                     b.Property<DateTime>("LastUpdated")
                         .HasColumnType("datetime2");
 
+                    b.Property<int>("ProfileId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Title")
                         .HasColumnType("nvarchar(max)");
 
@@ -493,7 +498,7 @@ namespace ContactAppCore.Migrations
                             Id = -1,
                             IsActive = true,
                             IsFullAdmin = true,
-                            LastUpdated = new DateTime(2021, 12, 1, 15, 22, 11, 50, DateTimeKind.Local).AddTicks(245),
+                            LastUpdated = new DateTime(2021, 12, 1, 13, 37, 48, 676, DateTimeKind.Local).AddTicks(1817),
                             Title = "jonker@illinois.edu"
                         },
                         new
@@ -501,7 +506,7 @@ namespace ContactAppCore.Migrations
                             Id = -2,
                             IsActive = true,
                             IsFullAdmin = true,
-                            LastUpdated = new DateTime(2021, 12, 1, 15, 22, 11, 53, DateTimeKind.Local).AddTicks(69),
+                            LastUpdated = new DateTime(2021, 12, 1, 13, 37, 48, 678, DateTimeKind.Local).AddTicks(7526),
                             Title = "rbwatson@illinois.edu"
                         });
                 });

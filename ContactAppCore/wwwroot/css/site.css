@@ -56,4 +56,50 @@ form .fulltext {
         display: inline;
         margin-left: 10px;
     }
+
+.uploader {
+    display: flex;
+    align-items: center;
+    column-gap: 20px;
 }
+
+    .uploader img, .uploader a, .uploader div, .uploader button {
+        flex: 1 0 0;
+    }
+
+.il-formatted ul.listing li {
+    list-style: none;
+    margin-left: 0;
+    padding-bottom: 10px;
+    border-bottom: thin solid var(--il-cloud-2);
+    margin-bottom: 10px;
+}
+
+    .il-formatted ul.listing li label.full {
+        min-width: 100px;
+        display: inline-block;
+        text-align: right;
+        margin-right: 10px;
+    }
+
+    .il-formatted ul.listing li label {
+        text-align: right;
+        margin-right: 10px;
+    }
+
+    .il-formatted ul.listing li input {
+        width: 400px;
+        margin-right: 10px;
+    }
+
+        .il-formatted ul.listing li input.full {
+            width: 1000px;
+        }
+
+        .il-formatted ul.listing li input.small {
+            width: 50px;
+        }
+
+    .il-formatted ul.listing li select {
+        margin-right: 10px;
+    }

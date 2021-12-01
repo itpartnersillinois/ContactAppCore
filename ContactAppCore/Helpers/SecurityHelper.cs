@@ -43,6 +43,15 @@ namespace ContactAppCore.Helpers
             return await contactRepository.ReadAsync(c => c.People.Any(p => p.Title == claim.Identity.Name && p.IsActive && (p.IsFullAdmin || p.AreaId == areaId || p.OfficeId == id)));
         }
 
+        public bool IsCurrentUser(ClaimsPrincipal claim, string username)
+        {
+            if (claim == null || claim.Identity == null || string.IsNullOrWhiteSpace(claim.Identity.Name))
+            {
+                return false;
+            }
+            return claim.Identity.Name == username + "@illinois.edu";
+        }
+
         public async Task<bool> IsFullAdmin(ClaimsPrincipal claim)
         {
             if (claim == null || claim.Identity == null || string.IsNullOrWhiteSpace(claim.Identity.Name))
