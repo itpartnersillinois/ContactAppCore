@@ -24,7 +24,7 @@ namespace ContactAppCore.Api
         [HttpPost("AddFullAdmin")]
         public async Task<int> AddFullAdmin([FromForm] string name)
         {
-            if (!securityHelper.IsFullAdmin(User).Result)
+            if (!securityHelper.IsFullAdmin(User))
             {
                 return default;
             }
@@ -34,7 +34,7 @@ namespace ContactAppCore.Api
         [HttpPost("AddToArea")]
         public async Task<int> AddToArea([FromForm] string name, [FromForm] int areaId)
         {
-            if (!securityHelper.AllowArea(User, areaId).Result)
+            if (!securityHelper.AllowArea(User, areaId))
             {
                 return default;
             }
@@ -44,7 +44,7 @@ namespace ContactAppCore.Api
         [HttpPost("AddToOffice")]
         public async Task<int> AddToOffice([FromForm] string name, [FromForm] int officeId)
         {
-            if (!securityHelper.AllowOffice(User, officeId).Result)
+            if (!securityHelper.AllowOffice(User, officeId))
             {
                 return default;
             }
@@ -55,7 +55,7 @@ namespace ContactAppCore.Api
         public async Task<int> Delete(int id)
         {
             // TODO Open this up to more people, but still restrict user information
-            if (!securityHelper.IsFullAdmin(User).Result)
+            if (!securityHelper.IsFullAdmin(User))
             {
                 return default;
             }

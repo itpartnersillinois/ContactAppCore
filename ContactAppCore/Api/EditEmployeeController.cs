@@ -38,7 +38,7 @@ namespace ContactAppCore.Api
             }
             await contactRepository.CreateAsync(new Log { IsActive = true, Title = "Employee CV Delete " + originalObject.Id.ToString() });
 
-            var path = fileHelper.DeleteCv(User.Identity.Name);
+            var path = fileHelper.DeleteCv(originalObject.Title);
 
             await contactRepository.UpdateAsync(new EmployeeProfile
             {
@@ -64,7 +64,7 @@ namespace ContactAppCore.Api
             }
             await contactRepository.CreateAsync(new Log { IsActive = true, Title = "Employee Photo Delete " + originalObject.Id.ToString() });
 
-            var path = fileHelper.DeletePhoto(User.Identity.Name);
+            var path = fileHelper.DeletePhoto(originalObject.Title);
 
             await contactRepository.UpdateAsync(new EmployeeProfile
             {
@@ -110,6 +110,7 @@ namespace ContactAppCore.Api
                     Title = originalObject.Title,
                     Biography = jsonObject.biography,
                     CVUrl = originalObject.CVUrl,
+                    PrimaryProfile = originalObject.PrimaryProfile,
                     PhotoUrl = originalObject.PhotoUrl,
                     LastUpdated = DateTime.Now,
                     IsActive = true
@@ -127,7 +128,7 @@ namespace ContactAppCore.Api
             }
             await contactRepository.CreateAsync(new Log { IsActive = true, Title = "Employee CV " + originalObject.Id.ToString(), Name = User.Identity.Name });
 
-            var path = fileHelper.AddCv(file.OpenReadStream(), User.Identity.Name, file.FileName);
+            var path = fileHelper.AddCv(file.OpenReadStream(), originalObject.Title, file.FileName);
 
             await contactRepository.UpdateAsync(new EmployeeProfile
             {
@@ -153,7 +154,7 @@ namespace ContactAppCore.Api
             }
             await contactRepository.CreateAsync(new Log { IsActive = true, Title = "Employee Photo " + originalObject.Id.ToString(), Name = User.Identity.Name });
 
-            var path = fileHelper.AddPhoto(file.OpenReadStream(), User.Identity.Name, file.FileName);
+            var path = fileHelper.AddPhoto(file.OpenReadStream(), originalObject.Title, file.FileName);
             if (path.Result == "")
             {
                 return "Error - File is not sized correctly";
@@ -171,6 +172,32 @@ namespace ContactAppCore.Api
             });
 
             return path.Result;
+        }
+
+        [HttpPost("UpdatePrimaryJob")]
+        public async Task<int> UpdatePrimaryJob([FromBody] dynamic json)
+        {
+            var jsonObject = (dynamic)JObject.Parse(json.ToString());
+            int id = int.Parse(jsonObject.id.ToString());
+            var originalObject = await contactRepository.ReadAsync(c => c.EmployeeProfiles.SingleOrDefault(o => o.Id == id));
+
+            if (!securityHelper.IsCurrentUser(User, originalObject.Title))
+            {
+                return default;
+            }
+            await contactRepository.CreateAsync(new Log { IsActive = true, Title = "Employee " + originalObject.Id.ToString(), Name = User.Identity.Name, OldData = JsonConvert.SerializeObject(originalObject), NewData = json.ToString() });
+
+            return await contactRepository.UpdateAsync(new EmployeeProfile
+            {
+                Id = originalObject.Id,
+                Title = originalObject.Title,
+                Biography = originalObject.Biography,
+                CVUrl = originalObject.CVUrl,
+                PrimaryProfile = jsonObject.jobid,
+                PhotoUrl = originalObject.PhotoUrl,
+                LastUpdated = DateTime.Now,
+                IsActive = true
+            });
         }
     }
 }

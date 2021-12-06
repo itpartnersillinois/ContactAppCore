@@ -8,6 +8,7 @@
 <form id="profile" class="large">
     <input id="id" name="id" type="hidden" value="0" />
     <input id="officeId" name="officeId" type="hidden" value="0" />
+    <input id="personId" name="personId" type="hidden" value="0" />
     <div><label for="netid">Net ID:</label><input id="netid" name="netid" class="long" /><span id="netid-display"></span></div>
     <div><label for="title">Job Title:</label><input id="title" name="title" class="long" /></div>
     <div>
@@ -34,9 +35,46 @@
         </select>
     </div>
     <div><label for="biography">Job-Specific Biography:</label><div id='biography' class='fulltext'></div></div>
-
-    <button class="il-button" id="updateGeneral" onclick="return update();">Update Job Profile Information</button>
 </form>
+
+<p><button class="il-button" id="updateGeneral" onclick="return update();">Update Job Profile Information</button></p>
+
+<div id="profile-addition" style="display: none;">
+    <h2>Main Biography</h2>
+    <div><label for="biography-full">Biography:</label><div id='biography-full' class='fulltext'></div></div>
+
+    <button class="il-button" id="updateGeneral" onclick="return updateFullBiogrpahy();">Update Office Information</button>
+
+    <h2>Job Profiles</h2>
+    <div>
+        <label for="jobs">Job Profiles:</label>
+        <select id="jobs" name="jobs"></select>
+        <button class="il-button narrow" onclick="return updateJob();">Make selected job primary</button>
+    </div>
+
+    <h2>Picture</h2>
+    <div class="uploader">
+        <img id="image-photo" />
+        <input type="file" id="picture-upload" name="picture-upload">
+        <div>
+            <button class="il-button narrow" onclick="return picture();">Upload Photo</button>
+            <button class="il-button narrow" onclick="return deletepicture();">Delete Photo</button>
+            <div id="picture-error" class="error"></div>
+        </div>
+    </div>
+
+    <h2>CV</h2>
+    <div class="uploader">
+        <a id="link-cv">Link to CV</a>
+        <input type="file" id="cv-upload" name="cv-upload">
+        <div>
+            <button class="il-button narrow" onclick="return cv();">Upload CV</button>
+            <button class="il-button narrow" onclick="return deletecv();">Delete CV</button>
+            <div id="cv-error" class="error"></div>
+        </div>
+    </div>
+</div>
+<p><a href="" id="back">Back to Job Profile List</a></p>
 
 @section Scripts
 {
@@ -67,11 +105,37 @@
             theme: 'bubble'
         });
 
+        var quillInfoFull = new Quill('#biography-full', {
+            modules: {
+                toolbar: [
+                    ['bold', 'italic', 'link', { 'list': 'ordered' }, { 'list': 'bullet' }, 'clean']
+                ],
+                keyboard: {
+                    bindings: {
+                        tab: {
+                            key: 9,
+                            handler: () => { document.getElementById('category').focus(); },
+                        },
+                        'remove tab': {
+                            key: 9,
+                            shiftKey: true,
+                            collapsed: true,
+                            prefix: /\t$/,
+                            handler: () => { },
+                        }
+                    }
+                }
+            },
+            placeholder: 'Enter a full biography ...',
+            theme: 'bubble'
+        });
+
         function loadInformation() {
             const urlParams = new URLSearchParams(window.location.search);
             const id = urlParams.get('id');
+            const officeId = urlParams.get('officeId');
+            document.getElementById('back').setAttribute('href', '/JobList?id=' + officeId);
             if (id == '0') {
-                const officeId = urlParams.get('officeId');
                 document.getElementById('officeId').value = officeId;
                 document.getElementById('netid').disabled = false;
                 document.getElementById('pageTitle').innerHTML = 'Add Job Profile';
@@ -79,6 +143,13 @@
                 updateButton.innerHTML = 'Add Job Profile Information';
                 updateButton.setAttribute('onclick', 'return add();');
             } else {
+                fetch('/Api/Security/AllowProfileEdit/' + officeId, {
+                    method: 'GET',
+                    headers: {
+                        "Content-type": "application/x-www-form-urlencoded; charset=UTF-8"
+                    }
+                }).then(res => res.json()).then(data => { if (data) { document.getElementById('profile-addition').style.display = ''; } else { document.getElementById('profile-addition').style.display = 'none'; } });
+
                 fetch('/Api/Job/' + id, {
                     method: 'GET',
                     headers: {
@@ -88,23 +159,56 @@
                     document.getElementById('netid').disabled = true;
                     document.getElementById('netid').style.display = 'none';
                     document.getElementById('netid-display').innerHTML = data.employeeNetId;
-                    if (data != null) {
-                        document.getElementById('id').value = data.id;
-                        document.getElementById('title').value = data.title;
-                        document.getElementById('internalorder').value = data.internalOrder;
-                        if (data.biography != null) {
-                            quillInfo.setContents(quillInfo.clipboard.convert(data.biography), 'silent');
-                        }
-                        data.tags.forEach(t => {
-                            if (t.title == 'faculty-finder') {
-                                document.getElementById('display').value = 'faculty-finder';
-                            } else {
-                                document.getElementById('category').value = t.title;
-                            }
-                        });
-                    } else {
-                        document.getElementById('id').value = '0';
+                    document.getElementById('personId').value = data.employeeProfileId
+                    document.getElementById('id').value = data.id;
+                    document.getElementById('title').value = data.title;
+                    document.getElementById('internalorder').value = data.internalOrder;
+                    if (data.biography != null) {
+                        quillInfo.setContents(quillInfo.clipboard.convert(data.biography), 'silent');
                     }
+                    data.tags.forEach(t => {
+                        if (t.title == 'faculty-finder') {
+                            document.getElementById('display').value = 'faculty-finder';
+                        } else {
+                            document.getElementById('category').value = t.title;
+                        }
+                    });
+
+                    fetch('/Api/Employee/ById/' + data.employeeProfileId, {
+                        method: 'GET',
+                        headers: {
+                            "Content-type": "application/x-www-form-urlencoded; charset=UTF-8"
+                        }
+                    }).then(res => res.json()).then(person => {
+                        if (person.biography != null) {
+                            quillInfoFull.setContents(quillInfoFull.clipboard.convert(person.biography), 'silent');
+                        }
+                        if (person.photoUrl != null && person.photoUrl != '') {
+                            document.getElementById('image-photo').setAttribute('src', person.photoUrl + '?id=' + new Date().getTime());
+                            document.getElementById('image-photo').style.display = '';
+                        } else {
+                            document.getElementById('image-photo').style.display = 'none';
+                        }
+                        if (person.cvUrl != null && person.cvUrl != '') {
+                            document.getElementById('link-cv').setAttribute('href', person.cvUrl);
+                            document.getElementById('link-cv').style.display = '';
+                        } else {
+                            document.getElementById('link-cv').style.display = 'none';
+                        }
+                        const jobs = document.getElementById('jobs');
+                        jobs.innerHTML = '';
+                        if (person.jobs != null) {
+                            person.jobs.forEach(j => {
+                                let option = document.createElement('option');
+                                option.value = j.id;
+                                option.innerHTML = j.title + ' ' + j.office.title;
+                                if (j.id === data.primaryProfile) {
+                                    option.setAttribute('selected', 'selected');
+                                }
+                                jobs.append(option);
+                            });
+                        }
+                    });
                 });
             }
         }
@@ -113,7 +217,6 @@
             let object = {};
             object['id'] = document.getElementById('id').value;
             object['biography'] = cleanQuill(quillInfo.root.innerHTML);
-            debugger;
             object['title'] = document.getElementById('title').value;
             document.querySelectorAll('#profile select').forEach(p => object[p.name] = p.value);
             var json = JSON.stringify(object);
@@ -139,6 +242,55 @@
                 body: json
             });
             return false;
+        }
+
+        function picture() {
+            var fd = new FormData();
+            var file_data = document.getElementById('picture-upload').files[0];
+            fd.append('file', file_data);
+            fd.append('id', document.getElementById('personId').value);
+            fetch('/Api/EditEmployee/Picture', {
+                method: 'POST',
+                body: fd
+            }).then(function (response) {
+                return response.text().then(function (text) {
+                    if (text.startsWith("Error")) {
+                        document.getElementById('picture-error').innerHTML = text;
+                    } else {
+                        document.getElementById('image-photo').setAttribute('src', text + '?id=' + new Date().getTime());
+                        document.getElementById('picture-error').innerHTML = '';
+                    }
+                });
+            });
+        }
+
+        function deletepicture() {
+            var fd = new FormData();
+            fd.append('id', document.getElementById('personId').value);
+            fetch('/Api/EditEmployee/DeletePicture', {
+                method: 'POST',
+                body: fd
+            }).then(loadInformation());
+        }
+
+        function cv() {
+            var fd = new FormData();
+            var file_data = document.getElementById('cv-upload').files[0];
+            fd.append('file', file_data);
+            fd.append('id', document.getElementById('personId').value);
+            fetch('/Api/EditEmployee/CV', {
+                method: 'POST',
+                body: fd
+            }).then(loadInformation());
+        }
+
+        function deletecv() {
+            var fd = new FormData();
+            fd.append('id', document.getElementById('personId').value);
+            fetch('/Api/EditEmployee/DeleteCV', {
+                method: 'POST',
+                body: fd
+            }).then(loadInformation());
         }
 
         function cleanQuill(s) {

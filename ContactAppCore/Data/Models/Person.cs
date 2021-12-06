@@ -17,9 +17,11 @@ namespace ContactAppCore.Data.Models
             this.IsActive = true;
             this.AreaId = areaId;
             this.OfficeId = officeId;
+            this.CanEditAllPeopleInUnit = false;
         }
 
         public int? AreaId { get; set; }
+        public bool CanEditAllPeopleInUnit { get; set; }
 
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]

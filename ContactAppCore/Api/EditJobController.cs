@@ -30,7 +30,7 @@ namespace ContactAppCore.Api
         {
             var jsonObject = (dynamic)JObject.Parse(json.ToString());
             int officeId = int.Parse(jsonObject.officeId.ToString());
-            if (!securityHelper.AllowOffice(User, officeId).Result)
+            if (!securityHelper.AllowOffice(User, officeId))
             {
                 return default;
             }
@@ -84,7 +84,7 @@ namespace ContactAppCore.Api
         {
             var originalObject = await contactRepository.ReadAsync(c => c.JobProfiles.Include(o => o.Tags).SingleOrDefault(o => o.Id == id));
             int officeId = originalObject.OfficeId;
-            if (!securityHelper.AllowOffice(User, officeId).Result)
+            if (!securityHelper.AllowOffice(User, officeId))
             {
                 return default;
             }
@@ -108,7 +108,7 @@ namespace ContactAppCore.Api
             int id = int.Parse(jsonObject.id.ToString());
             var originalObject = await contactRepository.ReadAsync(c => c.JobProfiles.Include(o => o.Tags).SingleOrDefault(o => o.Id == id));
             int officeId = originalObject.OfficeId;
-            if (!securityHelper.AllowOffice(User, officeId).Result)
+            if (!securityHelper.AllowOffice(User, officeId))
             {
                 return default;
             }

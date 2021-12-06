@@ -8,9 +8,7 @@
 <ul id="profiles" class="listofitems">
 </ul>
 <hr />
-<label for="personname">Add a new NetID for a job profile: </label>
-<input type="text" id="personname" name="personname" />
-<a id="addperson" class="il-button narrow">Add Job Profile</a>
+<p><a id="addperson" class="il-button narrow">Add Job Profile</a></p>
 <hr />
 <a href="/List">Back to Area List</a>
 
@@ -37,7 +35,7 @@
                     const anchorEdit = document.createElement('a');
                     anchorEdit.innerHTML = 'Edit Job Profile';
                     anchorEdit.setAttribute('data-index', element.id);
-                    anchorEdit.setAttribute('href', '/JobEdit?id=' + element.id);
+                    anchorEdit.setAttribute('href', '/JobEdit?id=' + element.id + '&officeId=' + id);
                     anchorEdit.setAttribute('class', 'il-button narrow');
 
                     const anchor = document.createElement('a');

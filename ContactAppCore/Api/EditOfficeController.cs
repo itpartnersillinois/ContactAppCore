@@ -28,7 +28,7 @@ namespace ContactAppCore.Api
         [HttpGet("{id}")]
         public async Task<Office> Get(int id)
         {
-            if (!securityHelper.AllowOffice(User, id).Result)
+            if (!securityHelper.AllowOffice(User, id))
             {
                 return default;
             }
@@ -40,13 +40,13 @@ namespace ContactAppCore.Api
         {
             var jsonObject = (dynamic)JObject.Parse(json.ToString());
             int id = int.Parse(jsonObject.id.ToString());
-            if (!securityHelper.AllowOffice(User, id).Result)
+            if (!securityHelper.AllowOffice(User, id))
             {
                 return default;
             }
 
             var originalObject = await contactRepository.ReadAsync(c => c.Offices.SingleOrDefault(o => o.Id == id));
-            var isAreaAdmin = securityHelper.AllowArea(User, originalObject.AreaId).Result;
+            var isAreaAdmin = securityHelper.AllowArea(User, originalObject.AreaId);
             await contactRepository.CreateAsync(new Log { IsActive = true, Title = originalObject.AreaId.ToString(), Name = User.Identity.Name, OldData = JsonConvert.SerializeObject(originalObject), NewData = json.ToString() });
 
             return await contactRepository.UpdateAsync(new Office

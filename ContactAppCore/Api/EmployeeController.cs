@@ -24,7 +24,14 @@ namespace ContactAppCore.Api
         public async Task<EmployeeProfile> GetEmployeeByName(string netid)
         {
             var nameShortened = netid.Replace("@illinois.edu", "");
-            var returnValue = await contactRepository.ReadAsync(c => c.EmployeeProfiles.Include(ep => ep.Jobs).Include(ep => ep.EmployeeLinks).Include(ep => ep.EmployeeActivities).FirstOrDefault(p => p.Title == nameShortened));
+            var returnValue = await contactRepository.ReadAsync(c => c.EmployeeProfiles.Include(ep => ep.Jobs).ThenInclude(j => j.Office).Include(ep => ep.EmployeeLinks).Include(ep => ep.EmployeeActivities).FirstOrDefault(p => p.Title == nameShortened));
+            return returnValue == null ? new EmployeeProfile() : returnValue;
+        }
+
+        [HttpGet("ById/{id}")]
+        public async Task<EmployeeProfile> GetEmployeeByName(int id)
+        {
+            var returnValue = await contactRepository.ReadAsync(c => c.EmployeeProfiles.Include(ep => ep.Jobs).ThenInclude(j => j.Office).Include(ep => ep.EmployeeLinks).Include(ep => ep.EmployeeActivities).FirstOrDefault(p => p.Id == id));
             return returnValue == null ? new EmployeeProfile() : returnValue;
         }
     }

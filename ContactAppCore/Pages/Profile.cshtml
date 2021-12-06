@@ -14,25 +14,40 @@
     <button class="il-button" id="updateGeneral" onclick="return update();">Update Office Information</button>
 </form>
 
-<h2>Picture</h2>
-<div class="uploader">
-    <img id="image-photo" />
-    <input type="file" id="picture-upload" name="picture-upload">
-    <button class="il-button narrow" onclick="return picture();">Upload Photo</button>
-    <button class="il-button narrow" onclick="return deletepicture();">Delete Photo</button>
-</div>
+<div id="existing">
+    <h2>Job Profiles</h2>
+    <div>
+        <label for="jobs">Job Profiles:</label>
+        <select id="jobs" name="jobs"></select>
+        <button class="il-button narrow" onclick="return updateJob();">Make selected job primary</button>
+    </div>
 
-<h2>CV</h2>
-<div class="uploader">
-    <a id="link-cv">Link to CV</a>
-    <input type="file" id="cv-upload" name="cv-upload">
-    <button class="il-button narrow" onclick="return cv();">Upload CV</button>
-    <button class="il-button narrow" onclick="return deletecv();">Delete CV</button>
-</div>
+    <h2>Picture</h2>
+    <div class="uploader">
+        <img id="image-photo" />
+        <input type="file" id="picture-upload" name="picture-upload">
+        <div>
+            <button class="il-button narrow" onclick="return picture();">Upload Photo</button>
+            <button class="il-button narrow" onclick="return deletepicture();">Delete Photo</button>
+            <div id="picture-error" class="error"></div>
+        </div>
+    </div>
 
-<h2>Activities</h2>
-<ul id="activities" class="listing">
-</ul>
+    <h2>CV</h2>
+    <div class="uploader">
+        <a id="link-cv">Link to CV</a>
+        <input type="file" id="cv-upload" name="cv-upload">
+        <div>
+            <button class="il-button narrow" onclick="return cv();">Upload CV</button>
+            <button class="il-button narrow" onclick="return deletecv();">Delete CV</button>
+            <div id="cv-error" class="error"></div>
+        </div>
+    </div>
+
+    <h2>Activities</h2>
+    <ul id="activities" class="listing">
+    </ul>
+</div>
 
 @section Scripts
 {
@@ -72,7 +87,12 @@
                 }
             }).then(res => res.json()).then(data => {
                 if (data != null) {
-                    document.getElementById('id').value = data.id;
+                    if (data.id == 0) {
+                        document.getElementById('existing').style.display = 'none';
+                    } else {
+                        document.getElementById('id').value = data.id;
+                        document.getElementById('existing').style.display = '';
+                    }
                     if (data.biography != null) {
                         quillInfo.setContents(quillInfo.clipboard.convert(data.biography), 'silent');
                     }
@@ -87,6 +107,19 @@
                         document.getElementById('link-cv').style.display = '';
                     } else {
                         document.getElementById('link-cv').style.display = 'none';
+                    }
+                    const jobs = document.getElementById('jobs');
+                    jobs.innerHTML = '';
+                    if (data.jobs != null) {
+                        data.jobs.forEach(j => {
+                            let option = document.createElement('option');
+                            option.value = j.id;
+                            option.innerHTML = j.title + ' ' + j.office.title;
+                            if (j.id === data.primaryProfile) {
+                                option.setAttribute('selected', 'selected');
+                            }
+                            jobs.append(option);
+                        });
                     }
                     const ul = document.getElementById('activities');
                     ul.innerHTML = '';
@@ -162,6 +195,7 @@
                 headers: { 'Content-Type': 'application/json' },
                 body: json
             });
+            document.getElementById('existing').style.display = '';
             return false;
         }
 
@@ -173,7 +207,16 @@
             fetch('/Api/EditEmployee/Picture', {
                 method: 'POST',
                 body: fd
-            }).then(loadInformation());
+            }).then(function (response) {
+                return response.text().then(function (text) {
+                    if (text.startsWith("Error")) {
+                        document.getElementById('picture-error').innerHTML = text;
+                    } else {
+                        document.getElementById('image-photo').setAttribute('src', text + '?id=' + new Date().getTime());
+                        document.getElementById('picture-error').innerHTML = '';
+                    }
+                });
+            });
         }
 
         function deletepicture() {
@@ -245,6 +288,19 @@
                     body: json
                 }).then(loadInformation());
             }
+            return false;
+        }
+
+        function updateJob() {
+            let object = {};
+            object['id'] = document.getElementById('id').value;
+            object['jobid'] = document.getElementById('jobs').value;
+            var json = JSON.stringify(object);
+            fetch('/Api/EditEmployee/UpdatePrimaryJob', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: json
+            });
             return false;
         }
 
