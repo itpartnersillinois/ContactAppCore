@@ -4,14 +4,16 @@ using ContactAppCore.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace ContactAppCore.Migrations
 {
     [DbContext(typeof(ContactContext))]
-    partial class ContactContextModelSnapshot : ModelSnapshot
+    [Migration("20211201193749_Add_JobProfile_Office_Link")]
+    partial class Add_JobProfile_Office_Link
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -280,6 +282,9 @@ namespace ContactAppCore.Migrations
                     b.Property<DateTime>("LastUpdated")
                         .HasColumnType("datetime2");
 
+                    b.Property<int>("ProfileId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Title")
                         .HasColumnType("nvarchar(max)");
 
@@ -464,9 +469,6 @@ namespace ContactAppCore.Migrations
                     b.Property<int?>("AreaId")
                         .HasColumnType("int");
 
-                    b.Property<bool>("CanEditAllPeopleInUnit")
-                        .HasColumnType("bit");
-
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
@@ -494,19 +496,17 @@ namespace ContactAppCore.Migrations
                         new
                         {
                             Id = -1,
-                            CanEditAllPeopleInUnit = false,
                             IsActive = true,
                             IsFullAdmin = true,
-                            LastUpdated = new DateTime(2021, 12, 6, 9, 48, 47, 363, DateTimeKind.Local).AddTicks(9245),
+                            LastUpdated = new DateTime(2021, 12, 1, 13, 37, 48, 676, DateTimeKind.Local).AddTicks(1817),
                             Title = "jonker@illinois.edu"
                         },
                         new
                         {
                             Id = -2,
-                            CanEditAllPeopleInUnit = false,
                             IsActive = true,
                             IsFullAdmin = true,
-                            LastUpdated = new DateTime(2021, 12, 6, 9, 48, 47, 367, DateTimeKind.Local).AddTicks(7692),
+                            LastUpdated = new DateTime(2021, 12, 1, 13, 37, 48, 678, DateTimeKind.Local).AddTicks(7526),
                             Title = "rbwatson@illinois.edu"
                         });
                 });

@@ -1,0 +1,334 @@
+﻿@page
+@model ContactAppCore.Pages.ProfileModel
+@{
+}
+<link rel="stylesheet" href="/css/quill.bubble.css" />
+<h1>Edit Profile</h1>
+
+<div id="existing">
+    <div id="job-profile-group">
+    <h2>Job Profiles</h2>
+    <div>
+        <label for="jobs">Job Profiles:</label>
+        <select id="jobs" name="jobs"></select>
+        <button class="il-button narrow" onclick="return updateJob();">Make selected job primary</button>
+    </div>
+    </div>
+
+    <h2>Picture</h2>
+    <div class="uploader">
+        <img id="image-photo" />
+        <input type="file" id="picture-upload" name="picture-upload">
+        <div>
+            <button class="il-button narrow" onclick="return picture();">Upload Photo</button>
+            <button class="il-button narrow" onclick="return deletepicture();">Delete Photo</button>
+            <div id="picture-error" class="error"></div>
+        </div>
+    </div>
+
+    <h2>CV</h2>
+    <div class="uploader">
+        <a id="link-cv">Link to CV</a>
+        <input type="file" id="cv-upload" name="cv-upload">
+        <div>
+            <button class="il-button narrow" onclick="return cv();">Upload CV</button>
+            <button class="il-button narrow" onclick="return deletecv();">Delete CV</button>
+            <div id="cv-error" class="error"></div>
+        </div>
+    </div>
+
+
+ 
+    <h2>General Information for @User.Identity.Name</h2>
+    <p>Note: if you have an <a href="https://experts.illinois.edu">Illinois Experts</a> profile, you should leave this blank and edit all your information at Illinois Experts. <a href="https://go.illinois.edu/experts-login">Log in to Illinois Experts</a>. 
+        For the College of Education, information on what goes in Illinois Experts is at <a href="https://help.uillinois.edu/TDClient/44/Portal/KB/ArticleDet?ID=2242">this Knowledge Base article.</a> </p>
+ 
+    <input id="netid" name="netid" type="hidden" value="@User.Identity.Name.Replace("@illinois.edu", "")" />
+    <input id="id" name="id" type="hidden" value="0" />
+    <div><h3>Biography</h3><div id='biography' class='fulltext'></div></div>
+
+    <button class="il-button" id="updateGeneral" onclick="return update();">Update Biography</button>
+
+    <h3>Activities</h3>
+    <ul id="activities" class="listing">
+    </ul>
+</div>
+
+@section Scripts
+{
+    <script src="~/js/quill.min.js" type="text/javascript"></script>
+    <script type="text/javascript">
+        var quillInfo = new Quill('#biography', {
+            modules: {
+                toolbar: [
+                    ['bold', 'italic', 'link', { 'list': 'ordered' }, { 'list': 'bullet' }, 'clean']
+                ],
+                keyboard: {
+                    bindings: {
+                        tab: {
+                            key: 9,
+                            handler: () => { document.getElementById('updateGeneral').focus(); },
+                        },
+                        'remove tab': {
+                            key: 9,
+                            shiftKey: true,
+                            collapsed: true,
+                            prefix: /\t$/,
+                            handler: () => { },
+                        }
+                    }
+                }
+            },
+            placeholder: 'Enter your biography ...',
+            theme: 'bubble'
+        });
+
+        function loadInformation() {
+            document.getElementsByTagName('main')[0].style.visibility = 'hidden';
+            document.getElementById('id').value = '';
+            fetch('/Api/Employee/ByName/@User.Identity.Name.Replace("@illinois.edu", "")', {
+                method: 'GET',
+                headers: {
+                    "Content-type": "application/x-www-form-urlencoded; charset=UTF-8"
+                }
+            }).then(res => res.json()).then(data => {
+                if (data != null) {
+                    if (data.id == 0) {
+                        document.getElementById('existing').style.display = 'none';
+                    } else {
+                        document.getElementById('id').value = data.id;
+                        document.getElementById('existing').style.display = '';
+                    }
+                    if (data.biography != null) {
+                        quillInfo.setContents(quillInfo.clipboard.convert(data.biography), 'silent');
+                    }
+                    if (data.photoUrl != null && data.photoUrl != '') {
+                        document.getElementById('image-photo').setAttribute('src', data.photoUrl + '?id=' + new Date().getTime());
+                        document.getElementById('image-photo').style.display = '';
+                    } else {
+                        document.getElementById('image-photo').style.display = 'none';
+                    }
+                    if (data.cvUrl != null && data.cvUrl != '') {
+                        document.getElementById('link-cv').setAttribute('href', data.cvUrl);
+                        document.getElementById('link-cv').style.display = '';
+                    } else {
+                        document.getElementById('link-cv').style.display = 'none';
+                    }
+                    const jobs = document.getElementById('jobs');
+                    jobs.innerHTML = '';
+                    if (data.jobs != null) {
+                        data.jobs.forEach(j => {
+                            let option = document.createElement('option');
+                            option.value = j.id;
+                            option.innerHTML = j.title + ' ' + j.office.title;
+                            if (j.id === data.primaryProfile) {
+                                option.setAttribute('selected', 'selected');
+                            }
+                            jobs.append(option);
+                        });
+                        if (data.jobs.length <= 1) {
+                            document.getElementById('job-profile-group').style.display = 'none';
+                        }
+                    }
+                    const ul = document.getElementById('activities');
+                    ul.innerHTML = '';
+                    if (data.employeeActivities != null) {
+                        data.employeeActivities.forEach(e => {
+                            const li = document.createElement('li');
+                            li.id = 'activity-' + e.id;
+                            const divName = document.createElement('div');
+                            const divDesc = document.createElement('div');
+                            const divOther = document.createElement('div');
+                            divName.innerHTML = `<label for="activityname-${e.id}" class="full">Name:</label><input id="activityname-${e.id}" name="name" value="${e.title.replace(/\"/g, '&quot;')}" />
+		<label for="activityurl-${e.id}" class="full">URL:</label><input id="activityurl-${e.id}" name="url" value="${e.url}" />`;
+                            divDesc.innerHTML = `<label for="activitydescription-${e.id}" class="full">Description:</label><input id="activitydescription-${e.id}" name="description" class="full" value="${e.description.replace(/\"/g, '&quot;')}" />`;
+                            divOther.innerHTML = `<label for="activityyearstarted-${e.id}" class="full">Year Started:</label><input id="activityyearstarted-${e.id}" name="yearStarted" class="small" value="${e.yearStarted}" />
+		<label for="activityyearended-${e.id}">Year Ended:</label><input id="activityyearended-${e.id}" name="yearEnded" class="small" value="${e.yearEnded}" />
+		<label for="activitytype-${e.id}">Type:</label><select id="activitytype-${e.id}" name="type">
+			<option value="publication">Publication</option>
+			<option value="presentation" ${e.type == 'presentation' ? 'selected' : ''}>Presentation</option>
+			<option value="education" ${e.type == 'education' ? 'selected' : ''}>Education</option>
+			<option value="appointment" ${e.type == 'appointment' ? 'selected' : ''}>Professional Appointment</option>
+		</select>
+		<label for="activitypriority-${e.id}">Priority:</label><select id="activitypriority-${e.id}" name="priority">
+			<option value="3">Medium</option>
+			<option value="1" ${e.internalOrder == 1 ? 'selected' : ""}>High</option>
+			<option value="5" ${e.internalOrder == 5 ? 'selected' : ""}>Low</option>
+		</select>
+		<button class="il-button narrow" onclick="return editactivity(this);" data-id="${e.id}">Edit</button><button class="il-button narrow" onclick="return deleteactivity(this);" data-id="${e.id}">Delete</button>`;
+                            li.appendChild(divName);
+                            li.appendChild(divDesc);
+                            li.appendChild(divOther);
+                            ul.appendChild(li);
+                        });
+                    }
+                    const liNew = document.createElement('li');
+                    liNew.id = 'activity-new';
+                    liNew.innerHTML = `<div>
+            <label for="activityname-new" class="full">Name:</label><input id="activityname-new" name="name" />
+            <label for="activityurl-new" class="full">URL:</label><input id="activityurl-new" name="url" />
+        </div>
+        <div>
+            <label for="activitydescription-new" class="full">Description:</label><input id="activitydescription-new" name="description" class="full" />
+        </div>
+        <div>
+            <label for="activityyearstarted-new" class="full">Year Started:</label><input id="activityyearstarted-new" name="yearStarted" class="small" />
+            <label for="activityyearended-new">Year Ended:</label><input id="activityyearended-new" name="yearEnded" class="small" />
+            <label for="activitytype-new">Type:</label><select id="activitytype-new" name="type">
+                <option value="publication">Publication</option>
+                <option value="presentation">Presentation</option>
+                <option value="education">Education</option>
+                <option value="appointment">Professional Appointment</option>
+            </select>
+            <label for="activitypriority-new">Priority:</label><select id="activitypriority-new" name="priority">
+                <option value="3">Medium</option>
+                <option value="1">High</option>
+                <option value="5">Low</option>
+            </select>
+            <button class="il-button narrow" onclick="return addactivity();">Add New Activity</button>
+        </div>`;
+                    ul.appendChild(liNew);
+                } else {
+                    document.getElementById('id').value = '0';
+                }
+                document.getElementsByTagName('main')[0].style.visibility = '';
+            });
+        }
+
+        function update() {
+            let object = {};
+            object['id'] = document.getElementById('id').value;
+            object['biography'] = cleanQuill(quillInfo.root.innerHTML);
+            var json = JSON.stringify(object);
+            fetch('/Api/EditEmployee/Update', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: json
+            });
+            document.getElementById('existing').style.display = '';
+            return false;
+        }
+
+        function picture() {
+            var fd = new FormData();
+            var file_data = document.getElementById('picture-upload').files[0];
+            fd.append('file', file_data);
+            fd.append('id', document.getElementById('id').value);
+            fetch('/Api/EditEmployee/Picture', {
+                method: 'POST',
+                body: fd
+            }).then(function (response) {
+                return response.text().then(function (text) {
+                    if (text.startsWith("Error")) {
+                        document.getElementById('picture-error').innerHTML = text;
+                    } else {
+                        document.getElementById('image-photo').setAttribute('src', text + '?id=' + new Date().getTime());
+                        document.getElementById('image-photo').style.display = '';
+                        document.getElementById('picture-error').innerHTML = '';
+                    }
+                });
+            });
+        }
+
+        function deletepicture() {
+            var fd = new FormData();
+            fd.append('id', document.getElementById('id').value);
+            fetch('/Api/EditEmployee/DeletePicture', {
+                method: 'POST',
+                body: fd
+            }).then(document.getElementById('image-photo').style.display = 'none');
+        }
+
+        function cv() {
+            var fd = new FormData();
+            var file_data = document.getElementById('cv-upload').files[0];
+            fd.append('file', file_data);
+            fd.append('id', document.getElementById('id').value);
+            fetch('/Api/EditEmployee/CV', {
+                method: 'POST',
+                body: fd
+            }).then(function (response) {
+                return response.text().then(function (text) {
+                    document.getElementById('link-cv').setAttribute('href', text); 
+                    document.getElementById('link-cv').style.display = '';
+                });
+            });
+        }
+
+        function deletecv() {
+            var fd = new FormData();
+            fd.append('id', document.getElementById('id').value);
+            fetch('/Api/EditEmployee/DeleteCV', {
+                method: 'POST',
+                body: fd
+            }).then(document.getElementById('link-cv').style.display = 'none');
+        }
+
+        function addactivity() {
+            let object = {};
+            object['employeeId'] = document.getElementById('id').value;
+            document.querySelectorAll("#activity-new select, #activity-new input").forEach(p => object[p.name] = p.value);
+            var json = JSON.stringify(object);
+            fetch('/Api/EditEmployeeActivity/Add', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: json
+            }).then(loadInformation());
+            return false;
+        }
+
+        function editactivity(button) {
+            let object = {};
+            object['employeeId'] = document.getElementById('id').value;
+            let activityId = button.getAttribute('data-id');
+            object['id'] = activityId;
+            document.querySelectorAll("#activity-" + activityId + " select, #activity-" + activityId + " input").forEach(p => object[p.name] = p.value);
+            var json = JSON.stringify(object);
+            fetch('/Api/EditEmployeeActivity/Edit', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: json
+            });
+            return false;
+        }
+
+        function deleteactivity(button) {
+            if (confirm("This will delete the activity. Are you sure?")) {
+                let object = {};
+                object['employeeId'] = document.getElementById('id').value;
+                object['id'] = button.getAttribute('data-id');
+                var json = JSON.stringify(object);
+                fetch('/Api/EditEmployeeActivity/Delete', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: json
+                }).then(loadInformation());
+            }
+            return false;
+        }
+
+        function updateJob() {
+            let object = {};
+            object['id'] = document.getElementById('id').value;
+            object['jobid'] = document.getElementById('jobs').value;
+            var json = JSON.stringify(object);
+            fetch('/Api/EditEmployee/UpdatePrimaryJob', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: json
+            });
+            return false;
+        }
+
+        function cleanQuill(s) {
+            if (s == '<br />' || s == '<br>' || s == '<p><br></p>') {
+                return '';
+            }
+            return s;
+        }
+
+        document.addEventListener('DOMContentLoaded', function (event) {
+            loadInformation();
+        });
+    </script>
+}

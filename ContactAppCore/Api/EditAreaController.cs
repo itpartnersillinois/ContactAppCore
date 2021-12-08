@@ -27,31 +27,31 @@ namespace ContactAppCore.Api
         [HttpPost("Add")]
         public async Task<int> Add([FromForm] string title)
         {
-            if (!securityHelper.IsFullAdmin(User).Result)
+            if (!securityHelper.IsFullAdmin(User))
             {
                 return default;
             }
             var area = new Area(title);
-            await contactRepository.CreateAsync(new Log { IsActive = true, Title = "New Area", Name = User.Identity.Name, NewData = JsonConvert.SerializeObject(area) });
+            await LogHelper.CreateLog(contactRepository, "Adding Area", User.Identity.Name, "", JsonConvert.SerializeObject(area));
             return await contactRepository.CreateAsync(area);
         }
 
         [HttpPost("AddOffice")]
         public async Task<int> AddOffice([FromForm] string title, [FromForm] int areaId)
         {
-            if (!securityHelper.AllowArea(User, areaId).Result)
+            if (!securityHelper.AllowArea(User, areaId))
             {
                 return default;
             }
             var office = new Office(title, areaId);
-            await contactRepository.CreateAsync(new Log { IsActive = true, Title = areaId.ToString(), Name = User.Identity.Name, NewData = JsonConvert.SerializeObject(office) });
+            await LogHelper.CreateLog(contactRepository, "Adding Office to Area " + areaId.ToString(), User.Identity.Name, "", JsonConvert.SerializeObject(office));
             return await contactRepository.CreateAsync(office);
         }
 
         [HttpGet("{id}")]
         public async Task<Area> Get(int id)
         {
-            if (!securityHelper.AllowOffice(User, id).Result)
+            if (!securityHelper.AllowOffice(User, id))
             {
                 return default;
             }
@@ -63,13 +63,13 @@ namespace ContactAppCore.Api
         {
             var jsonObject = (dynamic)JObject.Parse(json.ToString());
             int id = int.Parse(jsonObject.id.ToString());
-            if (!securityHelper.AllowArea(User, id).Result)
+            if (!securityHelper.AllowArea(User, id))
             {
                 return default;
             }
             var originalObject = await contactRepository.ReadAsync(c => c.Areas.SingleOrDefault(a => a.Id == id));
-            var isFullAdmin = securityHelper.IsFullAdmin(User).Result;
-            await contactRepository.CreateAsync(new Log { IsActive = true, Title = originalObject.Id.ToString(), Name = User.Identity.Name, OldData = JsonConvert.SerializeObject(originalObject), NewData = json.ToString() });
+            var isFullAdmin = securityHelper.IsFullAdmin(User);
+            await LogHelper.CreateLog(contactRepository, "Updating Area " + originalObject.Id.ToString(), User.Identity.Name, JsonConvert.SerializeObject(originalObject), json.ToString());
 
             return await contactRepository.UpdateAsync(new Area
             {

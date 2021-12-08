@@ -5,7 +5,7 @@
 @{
     ViewData["Title"] = "Administration";
 
-    if (!Security.IsFullAdmin(User).Result)
+    if (!Security.IsFullAdmin(User))
     {
         Response.Redirect("/Index");
     }

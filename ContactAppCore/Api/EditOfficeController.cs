@@ -2,6 +2,7 @@
 using ContactAppCore.Data.Models;
 using ContactAppCore.Helpers;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Linq;
@@ -27,11 +28,11 @@ namespace ContactAppCore.Api
         [HttpGet("{id}")]
         public async Task<Office> Get(int id)
         {
-            if (!securityHelper.AllowOffice(User, id).Result)
+            if (!securityHelper.AllowOffice(User, id))
             {
                 return default;
             }
-            return await contactRepository.ReadAsync(c => c.Offices.SingleOrDefault(o => o.Id == id));
+            return await contactRepository.ReadAsync(c => c.Offices.Include(o => o.Area).SingleOrDefault(o => o.Id == id));
         }
 
         [HttpPost("Update")]
@@ -39,14 +40,14 @@ namespace ContactAppCore.Api
         {
             var jsonObject = (dynamic)JObject.Parse(json.ToString());
             int id = int.Parse(jsonObject.id.ToString());
-            if (!securityHelper.AllowOffice(User, id).Result)
+            if (!securityHelper.AllowOffice(User, id))
             {
                 return default;
             }
 
             var originalObject = await contactRepository.ReadAsync(c => c.Offices.SingleOrDefault(o => o.Id == id));
-            var isAreaAdmin = securityHelper.AllowArea(User, originalObject.AreaId).Result;
-            await contactRepository.CreateAsync(new Log { IsActive = true, Title = originalObject.AreaId.ToString(), Name = User.Identity.Name, OldData = JsonConvert.SerializeObject(originalObject), NewData = json.ToString() });
+            var isAreaAdmin = securityHelper.AllowArea(User, originalObject.AreaId);
+            await LogHelper.CreateLog(contactRepository, "Editing Area " + originalObject.AreaId.ToString(), User.Identity.Name, JsonConvert.SerializeObject(originalObject), json.ToString());
 
             return await contactRepository.UpdateAsync(new Office
             {

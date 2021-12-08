@@ -4,14 +4,16 @@ using ContactAppCore.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace ContactAppCore.Migrations
 {
     [DbContext(typeof(ContactContext))]
-    partial class ContactContextModelSnapshot : ModelSnapshot
+    [Migration("20211130162819_Adding_People")]
+    partial class Adding_People
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -83,10 +85,7 @@ namespace ContactAppCore.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("EmployeeProfileId")
+                    b.Property<int?>("EmployeeProfileId")
                         .HasColumnType("int");
 
                     b.Property<int>("InternalOrder")
@@ -234,7 +233,7 @@ namespace ContactAppCore.Migrations
                     b.Property<string>("Biography")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("EmployeeProfileId")
+                    b.Property<int?>("EmployeeProfileId")
                         .HasColumnType("int");
 
                     b.Property<int>("InternalOrder")
@@ -246,8 +245,8 @@ namespace ContactAppCore.Migrations
                     b.Property<DateTime>("LastUpdated")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("OfficeId")
-                        .HasColumnType("int");
+                    b.Property<string>("OfficeInformation")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Phone")
                         .HasColumnType("nvarchar(max)");
@@ -258,8 +257,6 @@ namespace ContactAppCore.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("EmployeeProfileId");
-
-                    b.HasIndex("OfficeId");
 
                     b.ToTable("JobProfiles");
                 });
@@ -279,6 +276,9 @@ namespace ContactAppCore.Migrations
 
                     b.Property<DateTime>("LastUpdated")
                         .HasColumnType("datetime2");
+
+                    b.Property<int>("ProfileId")
+                        .HasColumnType("int");
 
                     b.Property<string>("Title")
                         .HasColumnType("nvarchar(max)");
@@ -464,9 +464,6 @@ namespace ContactAppCore.Migrations
                     b.Property<int?>("AreaId")
                         .HasColumnType("int");
 
-                    b.Property<bool>("CanEditAllPeopleInUnit")
-                        .HasColumnType("bit");
-
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
@@ -494,19 +491,17 @@ namespace ContactAppCore.Migrations
                         new
                         {
                             Id = -1,
-                            CanEditAllPeopleInUnit = false,
                             IsActive = true,
                             IsFullAdmin = true,
-                            LastUpdated = new DateTime(2021, 12, 6, 9, 48, 47, 363, DateTimeKind.Local).AddTicks(9245),
+                            LastUpdated = new DateTime(2021, 11, 30, 10, 28, 19, 277, DateTimeKind.Local).AddTicks(4272),
                             Title = "jonker@illinois.edu"
                         },
                         new
                         {
                             Id = -2,
-                            CanEditAllPeopleInUnit = false,
                             IsActive = true,
                             IsFullAdmin = true,
-                            LastUpdated = new DateTime(2021, 12, 6, 9, 48, 47, 367, DateTimeKind.Local).AddTicks(7692),
+                            LastUpdated = new DateTime(2021, 11, 30, 10, 28, 19, 281, DateTimeKind.Local).AddTicks(582),
                             Title = "rbwatson@illinois.edu"
                         });
                 });
@@ -539,13 +534,9 @@ namespace ContactAppCore.Migrations
 
             modelBuilder.Entity("ContactAppCore.Data.Models.EmployeeActivity", b =>
                 {
-                    b.HasOne("ContactAppCore.Data.Models.EmployeeProfile", "EmployeeProfile")
+                    b.HasOne("ContactAppCore.Data.Models.EmployeeProfile", null)
                         .WithMany("EmployeeActivities")
-                        .HasForeignKey("EmployeeProfileId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("EmployeeProfile");
+                        .HasForeignKey("EmployeeProfileId");
                 });
 
             modelBuilder.Entity("ContactAppCore.Data.Models.EmployeeLink", b =>
@@ -559,19 +550,9 @@ namespace ContactAppCore.Migrations
                 {
                     b.HasOne("ContactAppCore.Data.Models.EmployeeProfile", "EmployeeProfile")
                         .WithMany("Jobs")
-                        .HasForeignKey("EmployeeProfileId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("ContactAppCore.Data.Models.Office", "Office")
-                        .WithMany("JobProfiles")
-                        .HasForeignKey("OfficeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("EmployeeProfileId");
 
                     b.Navigation("EmployeeProfile");
-
-                    b.Navigation("Office");
                 });
 
             modelBuilder.Entity("ContactAppCore.Data.Models.JobProfileTag", b =>
@@ -636,8 +617,6 @@ namespace ContactAppCore.Migrations
             modelBuilder.Entity("ContactAppCore.Data.Models.Office", b =>
                 {
                     b.Navigation("Admins");
-
-                    b.Navigation("JobProfiles");
 
                     b.Navigation("Tags");
                 });
