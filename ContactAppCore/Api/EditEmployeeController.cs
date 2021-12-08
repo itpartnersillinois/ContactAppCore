@@ -36,7 +36,7 @@ namespace ContactAppCore.Api
             {
                 return default;
             }
-            await contactRepository.CreateAsync(new Log { IsActive = true, Title = "Employee CV Delete " + originalObject.Id.ToString() });
+            await LogHelper.CreateLog(contactRepository, "Deleting Employee CV " + originalObject.Id.ToString(), User.Identity.Name);
 
             var path = fileHelper.DeleteCv(originalObject.Title);
 
@@ -62,7 +62,7 @@ namespace ContactAppCore.Api
             {
                 return default;
             }
-            await contactRepository.CreateAsync(new Log { IsActive = true, Title = "Employee Photo Delete " + originalObject.Id.ToString() });
+            await LogHelper.CreateLog(contactRepository, "Deleting Employee Photo " + originalObject.Id.ToString(), User.Identity.Name);
 
             var path = fileHelper.DeletePhoto(originalObject.Title);
 
@@ -102,7 +102,7 @@ namespace ContactAppCore.Api
                 {
                     return default;
                 }
-                await contactRepository.CreateAsync(new Log { IsActive = true, Title = "Employee " + originalObject.Id.ToString(), Name = User.Identity.Name, OldData = JsonConvert.SerializeObject(originalObject), NewData = json.ToString() });
+                await LogHelper.CreateLog(contactRepository, "Editing Employee " + originalObject.Id.ToString(), User.Identity.Name, JsonConvert.SerializeObject(originalObject).ToString(), json.ToString());
 
                 return await contactRepository.UpdateAsync(new EmployeeProfile
                 {
@@ -126,7 +126,7 @@ namespace ContactAppCore.Api
             {
                 return default;
             }
-            await contactRepository.CreateAsync(new Log { IsActive = true, Title = "Employee CV " + originalObject.Id.ToString(), Name = User.Identity.Name });
+            await LogHelper.CreateLog(contactRepository, "Updating Employee CV " + originalObject.Id.ToString(), User.Identity.Name);
 
             var path = fileHelper.AddCv(file.OpenReadStream(), originalObject.Title, file.FileName);
 
@@ -152,7 +152,7 @@ namespace ContactAppCore.Api
             {
                 return default;
             }
-            await contactRepository.CreateAsync(new Log { IsActive = true, Title = "Employee Photo " + originalObject.Id.ToString(), Name = User.Identity.Name });
+            await LogHelper.CreateLog(contactRepository, "Updating Employee Photo " + originalObject.Id.ToString(), User.Identity.Name);
 
             var path = fileHelper.AddPhoto(file.OpenReadStream(), originalObject.Title, file.FileName);
             if (path.Result == "")
@@ -185,7 +185,7 @@ namespace ContactAppCore.Api
             {
                 return default;
             }
-            await contactRepository.CreateAsync(new Log { IsActive = true, Title = "Employee " + originalObject.Id.ToString(), Name = User.Identity.Name, OldData = JsonConvert.SerializeObject(originalObject), NewData = json.ToString() });
+            await LogHelper.CreateLog(contactRepository, "Editing Employee " + originalObject.Id.ToString(), User.Identity.Name, JsonConvert.SerializeObject(originalObject), json.ToString());
 
             return await contactRepository.UpdateAsync(new EmployeeProfile
             {

@@ -2,6 +2,7 @@
 using ContactAppCore.Data.Models;
 using ContactAppCore.Helpers;
 using Microsoft.AspNetCore.Mvc;
+using System.Linq;
 using System.Threading.Tasks;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -28,6 +29,7 @@ namespace ContactAppCore.Api
             {
                 return default;
             }
+            await LogHelper.CreateLog(contactRepository, "Security Add Full Admin", User.Identity.Name, "", name);
             return await contactRepository.CreateAsync(new Person(name));
         }
 
@@ -38,6 +40,7 @@ namespace ContactAppCore.Api
             {
                 return default;
             }
+            await LogHelper.CreateLog(contactRepository, "Security Add Admin To Area " + areaId, User.Identity.Name, "", name);
             return await contactRepository.CreateAsync(new Person(name, areaId));
         }
 
@@ -48,6 +51,7 @@ namespace ContactAppCore.Api
             {
                 return default;
             }
+            await LogHelper.CreateLog(contactRepository, "Security Add Admin To Office " + officeId, User.Identity.Name, "", name);
             return await contactRepository.CreateAsync(new Person(name, null, officeId));
         }
 
@@ -59,6 +63,12 @@ namespace ContactAppCore.Api
             {
                 return default;
             }
+            var person = await contactRepository.ReadAsync(c => c.People.FirstOrDefault(p => p.Id == id));
+            if (person == null)
+            {
+                return default;
+            }
+            await LogHelper.CreateLog(contactRepository, "Security Delete Admin", User.Identity.Name, person.Title);
             return await contactRepository.DeleteAsync(new Person { Id = id });
         }
     }

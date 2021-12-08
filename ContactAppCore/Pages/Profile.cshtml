@@ -5,21 +5,14 @@
 <link rel="stylesheet" href="/css/quill.bubble.css" />
 <h1>Edit Profile</h1>
 
-<form id="profile">
-    <h2>General Information for @User.Identity.Name</h2>
-    <input id="netid" name="netid" type="hidden" value="@User.Identity.Name.Replace("@illinois.edu", "")" />
-    <input id="id" name="id" type="hidden" value="0" />
-    <div><label for="biography">Biography:</label><div id='biography' class='fulltext'></div></div>
-
-    <button class="il-button" id="updateGeneral" onclick="return update();">Update Office Information</button>
-</form>
-
 <div id="existing">
+    <div id="job-profile-group">
     <h2>Job Profiles</h2>
     <div>
         <label for="jobs">Job Profiles:</label>
         <select id="jobs" name="jobs"></select>
         <button class="il-button narrow" onclick="return updateJob();">Make selected job primary</button>
+    </div>
     </div>
 
     <h2>Picture</h2>
@@ -44,7 +37,19 @@
         </div>
     </div>
 
-    <h2>Activities</h2>
+
+ 
+    <h2>General Information for @User.Identity.Name</h2>
+    <p>Note: if you have an <a href="https://experts.illinois.edu">Illinois Experts</a> profile, you should leave this blank and edit all your information at Illinois Experts. <a href="https://go.illinois.edu/experts-login">Log in to Illinois Experts</a>. 
+        For the College of Education, information on what goes in Illinois Experts is at <a href="https://help.uillinois.edu/TDClient/44/Portal/KB/ArticleDet?ID=2242">this Knowledge Base article.</a> </p>
+ 
+    <input id="netid" name="netid" type="hidden" value="@User.Identity.Name.Replace("@illinois.edu", "")" />
+    <input id="id" name="id" type="hidden" value="0" />
+    <div><h3>Biography</h3><div id='biography' class='fulltext'></div></div>
+
+    <button class="il-button" id="updateGeneral" onclick="return update();">Update Biography</button>
+
+    <h3>Activities</h3>
     <ul id="activities" class="listing">
     </ul>
 </div>
@@ -79,6 +84,7 @@
         });
 
         function loadInformation() {
+            document.getElementsByTagName('main')[0].style.visibility = 'hidden';
             document.getElementById('id').value = '';
             fetch('/Api/Employee/ByName/@User.Identity.Name.Replace("@illinois.edu", "")', {
                 method: 'GET',
@@ -120,6 +126,9 @@
                             }
                             jobs.append(option);
                         });
+                        if (data.jobs.length <= 1) {
+                            document.getElementById('job-profile-group').style.display = 'none';
+                        }
                     }
                     const ul = document.getElementById('activities');
                     ul.innerHTML = '';
@@ -182,6 +191,7 @@
                 } else {
                     document.getElementById('id').value = '0';
                 }
+                document.getElementsByTagName('main')[0].style.visibility = '';
             });
         }
 
@@ -213,6 +223,7 @@
                         document.getElementById('picture-error').innerHTML = text;
                     } else {
                         document.getElementById('image-photo').setAttribute('src', text + '?id=' + new Date().getTime());
+                        document.getElementById('image-photo').style.display = '';
                         document.getElementById('picture-error').innerHTML = '';
                     }
                 });
@@ -225,7 +236,7 @@
             fetch('/Api/EditEmployee/DeletePicture', {
                 method: 'POST',
                 body: fd
-            }).then(loadInformation());
+            }).then(document.getElementById('image-photo').style.display = 'none');
         }
 
         function cv() {
@@ -236,7 +247,12 @@
             fetch('/Api/EditEmployee/CV', {
                 method: 'POST',
                 body: fd
-            }).then(loadInformation());
+            }).then(function (response) {
+                return response.text().then(function (text) {
+                    document.getElementById('link-cv').setAttribute('href', text); 
+                    document.getElementById('link-cv').style.display = '';
+                });
+            });
         }
 
         function deletecv() {
@@ -245,7 +261,7 @@
             fetch('/Api/EditEmployee/DeleteCV', {
                 method: 'POST',
                 body: fd
-            }).then(loadInformation());
+            }).then(document.getElementById('link-cv').style.display = 'none');
         }
 
         function addactivity() {

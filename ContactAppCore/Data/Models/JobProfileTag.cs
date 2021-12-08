@@ -8,5 +8,7 @@ namespace ContactAppCore.Data.Models
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public override int Id { get; set; }
+
+        public int JobProfileId { get; set; }
     }
 }

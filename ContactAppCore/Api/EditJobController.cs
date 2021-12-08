@@ -34,32 +34,16 @@ namespace ContactAppCore.Api
             {
                 return default;
             }
-            string netid = jsonObject.netid;
 
-            await contactRepository.CreateAsync(new Log { IsActive = true, Title = "Job Adding " + officeId, Name = User.Identity.Name, NewData = json.ToString() });
-            var employeeProfile = await contactRepository.ReadAsync(c => c.EmployeeProfiles.SingleOrDefault(o => o.Title == netid));
+            var employeeProfile = CreateEmployeeProfileIfNeeded(jsonObject.netid.ToString());
 
-            int employeeId = 0;
-
-            if (employeeProfile == null)
-            {
-                var employee = new EmployeeProfile
-                {
-                    Title = netid
-                };
-                contactRepository.Create(employee);
-                employeeId = employee.Id;
-            }
-            else
-            {
-                employeeId = employeeProfile.Id;
-            }
+            await LogHelper.CreateLog(contactRepository, "Adding Job " + officeId, User.Identity.Name, "", json.ToString());
 
             var job = new JobProfile
             {
                 Title = jsonObject.title,
                 Biography = jsonObject.biography,
-                EmployeeProfileId = employeeId,
+                EmployeeProfileId = employeeProfile.Id,
                 OfficeId = officeId,
                 InternalOrder = jsonObject.internalorder,
                 LastUpdated = DateTime.Now,
@@ -89,12 +73,8 @@ namespace ContactAppCore.Api
                 return default;
             }
 
-            await contactRepository.CreateAsync(new Log { IsActive = true, Title = "Job Delete " + originalObject.Id.ToString(), Name = User.Identity.Name, OldData = JsonConvert.SerializeObject(originalObject) });
-
-            foreach (var tag in originalObject.Tags)
-            {
-                contactRepository.Delete(tag);
-            }
+            await LogHelper.CreateLog(contactRepository, "Deleting Job " + originalObject.Id.ToString(), User.Identity.Name, JsonConvert.SerializeObject(originalObject));
+            originalObject.Tags.ToList().ForEach(t => contactRepository.Delete(t));
             return await contactRepository.DeleteAsync(new JobProfile
             {
                 Id = originalObject.Id,
@@ -113,11 +93,8 @@ namespace ContactAppCore.Api
                 return default;
             }
 
-            await contactRepository.CreateAsync(new Log { IsActive = true, Title = "Job " + originalObject.Id.ToString(), Name = User.Identity.Name, OldData = JsonConvert.SerializeObject(originalObject), NewData = json.ToString() });
-            foreach (var tag in originalObject.Tags)
-            {
-                contactRepository.Delete(tag);
-            }
+            await LogHelper.CreateLog(contactRepository, "Editing Job " + originalObject.Id.ToString(), User.Identity.Name, JsonConvert.SerializeObject(originalObject), json.ToString());
+            originalObject.Tags.ToList().ForEach(t => contactRepository.Delete(t));
             var job = new JobProfile
             {
                 Id = originalObject.Id,
@@ -141,6 +118,25 @@ namespace ContactAppCore.Api
             }
 
             return await contactRepository.UpdateAsync(job);
+        }
+
+        private EmployeeProfile CreateEmployeeProfileIfNeeded(string netid)
+        {
+            var employeeProfile = contactRepository.Read(c => c.EmployeeProfiles.SingleOrDefault(o => o.Title == netid));
+
+            if (employeeProfile == null)
+            {
+                var newEmployeeProfile = new EmployeeProfile
+                {
+                    Title = netid,
+                };
+                contactRepository.Create(newEmployeeProfile);
+                return newEmployeeProfile;
+            }
+            else
+            {
+                return employeeProfile;
+            }
         }
     }
 }

@@ -40,16 +40,13 @@
 <p><button class="il-button" id="updateGeneral" onclick="return update();">Update Job Profile Information</button></p>
 
 <div id="profile-addition" style="display: none;">
-    <h2>Main Biography</h2>
-    <div><label for="biography-full">Biography:</label><div id='biography-full' class='fulltext'></div></div>
-
-    <button class="il-button" id="updateGeneral" onclick="return updateFullBiogrpahy();">Update Office Information</button>
-
+    <div id='job-profile-group'>
     <h2>Job Profiles</h2>
     <div>
         <label for="jobs">Job Profiles:</label>
         <select id="jobs" name="jobs"></select>
         <button class="il-button narrow" onclick="return updateJob();">Make selected job primary</button>
+    </div>
     </div>
 
     <h2>Picture</h2>
@@ -105,32 +102,8 @@
             theme: 'bubble'
         });
 
-        var quillInfoFull = new Quill('#biography-full', {
-            modules: {
-                toolbar: [
-                    ['bold', 'italic', 'link', { 'list': 'ordered' }, { 'list': 'bullet' }, 'clean']
-                ],
-                keyboard: {
-                    bindings: {
-                        tab: {
-                            key: 9,
-                            handler: () => { document.getElementById('category').focus(); },
-                        },
-                        'remove tab': {
-                            key: 9,
-                            shiftKey: true,
-                            collapsed: true,
-                            prefix: /\t$/,
-                            handler: () => { },
-                        }
-                    }
-                }
-            },
-            placeholder: 'Enter a full biography ...',
-            theme: 'bubble'
-        });
-
         function loadInformation() {
+            document.getElementsByTagName('main')[0].style.visibility = 'hidden';
             const urlParams = new URLSearchParams(window.location.search);
             const id = urlParams.get('id');
             const officeId = urlParams.get('officeId');
@@ -142,6 +115,7 @@
                 let updateButton = document.getElementById('updateGeneral');
                 updateButton.innerHTML = 'Add Job Profile Information';
                 updateButton.setAttribute('onclick', 'return add();');
+                document.getElementsByTagName('main')[0].style.visibility = '';
             } else {
                 fetch('/Api/Security/AllowProfileEdit/' + officeId, {
                     method: 'GET',
@@ -180,9 +154,6 @@
                             "Content-type": "application/x-www-form-urlencoded; charset=UTF-8"
                         }
                     }).then(res => res.json()).then(person => {
-                        if (person.biography != null) {
-                            quillInfoFull.setContents(quillInfoFull.clipboard.convert(person.biography), 'silent');
-                        }
                         if (person.photoUrl != null && person.photoUrl != '') {
                             document.getElementById('image-photo').setAttribute('src', person.photoUrl + '?id=' + new Date().getTime());
                             document.getElementById('image-photo').style.display = '';
@@ -207,7 +178,11 @@
                                 }
                                 jobs.append(option);
                             });
+                            if (person.jobs.length <= 1) {
+                                document.getElementById('job-profile-group').style.display = 'none';
+                            }
                         }
+                        document.getElementsByTagName('main')[0].style.visibility = '';
                     });
                 });
             }

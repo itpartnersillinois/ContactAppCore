@@ -47,7 +47,7 @@ namespace ContactAppCore.Api
 
             var originalObject = await contactRepository.ReadAsync(c => c.Offices.SingleOrDefault(o => o.Id == id));
             var isAreaAdmin = securityHelper.AllowArea(User, originalObject.AreaId);
-            await contactRepository.CreateAsync(new Log { IsActive = true, Title = originalObject.AreaId.ToString(), Name = User.Identity.Name, OldData = JsonConvert.SerializeObject(originalObject), NewData = json.ToString() });
+            await LogHelper.CreateLog(contactRepository, "Editing Area " + originalObject.AreaId.ToString(), User.Identity.Name, JsonConvert.SerializeObject(originalObject), json.ToString());
 
             return await contactRepository.UpdateAsync(new Office
             {

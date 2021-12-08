@@ -76,7 +76,7 @@ form.large input {
         flex: 1 0 0;
     }
 
-    .uploader img {
+    .uploader img, .uploader #link-cv {
         max-width: 244px;
     }
 

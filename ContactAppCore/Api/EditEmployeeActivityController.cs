@@ -35,7 +35,7 @@ namespace ContactAppCore.Api
             {
                 return default;
             }
-            await contactRepository.CreateAsync(new Log { IsActive = true, Title = "Employee Activity Add " + person.Id.ToString(), Name = User.Identity.Name, OldData = "", NewData = json.ToString() });
+            await LogHelper.CreateLog(contactRepository, "Adding Employee Activity " + person.Id.ToString(), User.Identity.Name, "", json.ToString());
 
             return await contactRepository.CreateAsync(new EmployeeActivity
             {
@@ -63,7 +63,7 @@ namespace ContactAppCore.Api
             {
                 return default;
             }
-            await contactRepository.CreateAsync(new Log { IsActive = true, Title = "Employee Activity Delete " + person.Id.ToString(), Name = User.Identity.Name, OldData = "", NewData = json.ToString() });
+            await LogHelper.CreateLog(contactRepository, "Deleting Employee Activity " + person.Id.ToString(), User.Identity.Name, json.ToString());
 
             return await contactRepository.DeleteAsync(new EmployeeActivity
             {
@@ -83,7 +83,7 @@ namespace ContactAppCore.Api
             {
                 return default;
             }
-            await contactRepository.CreateAsync(new Log { IsActive = true, Title = "Employee Activity " + person.Id.ToString(), Name = User.Identity.Name, OldData = "", NewData = json.ToString() });
+            await LogHelper.CreateLog(contactRepository, "Editing Employee Activity " + person.Id.ToString(), User.Identity.Name, "", json.ToString());
 
             return await contactRepository.UpdateAsync(new EmployeeActivity
             {

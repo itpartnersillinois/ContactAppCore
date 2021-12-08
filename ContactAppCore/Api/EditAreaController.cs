@@ -32,7 +32,7 @@ namespace ContactAppCore.Api
                 return default;
             }
             var area = new Area(title);
-            await contactRepository.CreateAsync(new Log { IsActive = true, Title = "New Area", Name = User.Identity.Name, NewData = JsonConvert.SerializeObject(area) });
+            await LogHelper.CreateLog(contactRepository, "Adding Area", User.Identity.Name, "", JsonConvert.SerializeObject(area));
             return await contactRepository.CreateAsync(area);
         }
 
@@ -44,7 +44,7 @@ namespace ContactAppCore.Api
                 return default;
             }
             var office = new Office(title, areaId);
-            await contactRepository.CreateAsync(new Log { IsActive = true, Title = areaId.ToString(), Name = User.Identity.Name, NewData = JsonConvert.SerializeObject(office) });
+            await LogHelper.CreateLog(contactRepository, "Adding Office to Area " + areaId.ToString(), User.Identity.Name, "", JsonConvert.SerializeObject(office));
             return await contactRepository.CreateAsync(office);
         }
 
@@ -69,7 +69,7 @@ namespace ContactAppCore.Api
             }
             var originalObject = await contactRepository.ReadAsync(c => c.Areas.SingleOrDefault(a => a.Id == id));
             var isFullAdmin = securityHelper.IsFullAdmin(User);
-            await contactRepository.CreateAsync(new Log { IsActive = true, Title = originalObject.Id.ToString(), Name = User.Identity.Name, OldData = JsonConvert.SerializeObject(originalObject), NewData = json.ToString() });
+            await LogHelper.CreateLog(contactRepository, "Updating Area " + originalObject.Id.ToString(), User.Identity.Name, JsonConvert.SerializeObject(originalObject), json.ToString());
 
             return await contactRepository.UpdateAsync(new Area
             {

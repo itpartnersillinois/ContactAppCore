@@ -164,6 +164,7 @@
         });
 
         function loadItems() {
+            document.getElementsByTagName('main')[0].style.visibility = 'hidden';
             const urlParams = new URLSearchParams(window.location.search);
             const id = urlParams.get('id');
 
@@ -244,6 +245,7 @@
                     document.getElementById('peoplelink').setAttribute('href', '/JobList?id=' + id);
                     document.getElementById('people').style.display = '';
                 }
+                document.getElementsByTagName('main')[0].style.visibility = '';
             });
         }
 
