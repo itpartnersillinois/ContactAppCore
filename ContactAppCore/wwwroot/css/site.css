@@ -12,9 +12,13 @@
     margin-left: 20px;
 }
 
-ul.listofitems li {
-    margin-bottom: 5px;
+ul.listofitems {
+    margin-bottom: 1.5625rem;
 }
+
+    ul.listofitems li {
+        margin-bottom: 5px;
+    }
 
 form.large label {
     min-width: 200px;
@@ -42,9 +46,14 @@ form.large input {
         width: 400px;
     }
 
-form .fulltext {
+.fulltext {
     border: thin solid black;
-    margin-bottom: 10px;
+    margin-bottom: 10px !important;
+}
+
+.error {
+    color: red;
+    font-weight: bold;
 }
 
 .notes {
@@ -56,4 +65,58 @@ form .fulltext {
         display: inline;
         margin-left: 10px;
     }
+
+.uploader {
+    display: flex;
+    align-items: center;
+    column-gap: 20px;
 }
+
+    .uploader img, .uploader a, .uploader div, .uploader button {
+        flex: 1 0 0;
+    }
+
+    .uploader img, .uploader #link-cv {
+        max-width: 244px;
+    }
+
+    .uploader button {
+        margin-bottom: 15px;
+    }
+
+.il-formatted ul.listing li {
+    list-style: none;
+    margin-left: 0;
+    padding-bottom: 10px;
+    border-bottom: thin solid var(--il-cloud-2);
+    margin-bottom: 10px;
+}
+
+    .il-formatted ul.listing li label.full {
+        min-width: 100px;
+        display: inline-block;
+        text-align: right;
+        margin-right: 10px;
+    }
+
+    .il-formatted ul.listing li label {
+        text-align: right;
+        margin-right: 10px;
+    }
+
+    .il-formatted ul.listing li input {
+        width: 400px;
+        margin-right: 10px;
+    }
+
+        .il-formatted ul.listing li input.full {
+            width: 1000px;
+        }
+
+        .il-formatted ul.listing li input.small {
+            width: 50px;
+        }
+
+    .il-formatted ul.listing li select {
+        margin-right: 10px;
+    }

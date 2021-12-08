@@ -19,7 +19,13 @@ namespace ContactAppCore.Data
 
         public DbSet<Area> Areas { get; set; }
 
+        public DbSet<EmployeeActivity> EmployeeActivities { get; set; }
+        public DbSet<EmployeeLink> EmployeeLinks { get; set; }
+        public DbSet<EmployeeProfile> EmployeeProfiles { get; set; }
         public DbSet<ExternalLink> ExternalLinks { get; set; }
+        public DbSet<JobProfile> JobProfiles { get; set; }
+
+        public DbSet<JobProfileTag> JobProfileTags { get; set; }
 
         public DbSet<Log> Logs { get; set; }
 

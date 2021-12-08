@@ -10,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Newtonsoft.Json;
 
 namespace ContactAppCore
 {
@@ -65,6 +66,8 @@ namespace ContactAppCore
                 options.Filters.Add(new AuthorizeFilter(policy));
             });
 
+            services.AddControllers().AddNewtonsoftJson(options => options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore);
+
             services.AddDbContextFactory<ContactContext>(options => options.UseSqlServer(Configuration.GetConnectionString("AppConnection")).EnableSensitiveDataLogging(true));
 
             services.AddScoped<IContactRepository, ContactRepository>(sp => new ContactRepository(sp.GetRequiredService<IDbContextFactory<ContactContext>>()));
@@ -72,6 +75,8 @@ namespace ContactAppCore
             services.AddScoped(sp => new SecurityHelper(sp.GetRequiredService<IContactRepository>()));
 
             services.AddScoped(sp => new ListHelper(sp.GetRequiredService<IContactRepository>()));
+
+            services.AddScoped(sp => new FileHelper(Configuration.GetValue<string>("Aws:AccessKey"), Configuration.GetValue<string>("Aws:Bucket"), Configuration.GetValue<string>("Aws:SecretKey"), Configuration.GetValue<string>("Aws:UrlPath")));
         }
     }
 }

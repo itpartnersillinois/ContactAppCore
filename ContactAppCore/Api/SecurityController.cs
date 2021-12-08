@@ -16,15 +16,21 @@ namespace ContactAppCore.Api
         }
 
         [HttpGet("Admin")]
-        public async Task<bool> GetAdmin()
+        public bool GetAdmin()
         {
-            return await securityHelper.IsFullAdmin(User);
+            return securityHelper.IsFullAdmin(User);
         }
 
         [HttpGet("Area/{officeId}")]
         public async Task<bool> GetArea(int officeId)
         {
             return await securityHelper.AllowAreaForOffice(User, officeId);
+        }
+
+        [HttpGet("AllowProfileEdit/{officeId}")]
+        public bool GetProfileInformation(int officeId)
+        {
+            return securityHelper.AllowProfileEdit(User, officeId);
         }
     }
 }

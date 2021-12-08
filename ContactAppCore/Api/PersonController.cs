@@ -26,7 +26,7 @@ namespace ContactAppCore.Api
         [HttpGet("Admin")]
         public async Task<IEnumerable<Person>> GetAdmin()
         {
-            if (!securityHelper.IsFullAdmin(User).Result)
+            if (!securityHelper.IsFullAdmin(User))
             {
                 return default;
             }
@@ -36,7 +36,7 @@ namespace ContactAppCore.Api
         [HttpGet("Area/{areaId}")]
         public async Task<IEnumerable<Person>> GetArea(int areaId)
         {
-            if (!securityHelper.AllowArea(User, areaId).Result)
+            if (!securityHelper.AllowArea(User, areaId))
             {
                 return default;
             }
@@ -46,7 +46,7 @@ namespace ContactAppCore.Api
         [HttpGet("Office/{officeId}")]
         public async Task<IEnumerable<Person>> GetOffice(int officeId)
         {
-            if (!securityHelper.AllowOffice(User, officeId).Result)
+            if (!securityHelper.AllowOffice(User, officeId))
             {
                 return default;
             }
