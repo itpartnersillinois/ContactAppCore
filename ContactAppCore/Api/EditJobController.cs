@@ -129,6 +129,7 @@ namespace ContactAppCore.Api
                 var newEmployeeProfile = new EmployeeProfile
                 {
                     Title = netid,
+                    IsActive = true
                 };
                 contactRepository.Create(newEmployeeProfile);
                 return newEmployeeProfile;
