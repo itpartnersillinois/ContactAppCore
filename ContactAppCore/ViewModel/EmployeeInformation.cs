@@ -8,13 +8,13 @@ namespace ContactAppCore.ViewModel
     {
         public EmployeeInformation(JobProfile profile)
         {
-            Biography = string.IsNullOrWhiteSpace(profile.Biography) ? profile.EmployeeProfile.Biography ?? "" : profile.Biography;
+            Biography = string.IsNullOrWhiteSpace(profile.Biography) ? profile.EmployeeProfile.Biography ?? string.Empty : profile.Biography;
             CVUrl = profile.EmployeeProfile.CVUrl ?? string.Empty;
             InternalOrder = profile.InternalOrder;
             NetId = profile.EmployeeProfile.Title ?? string.Empty;
             OfficeName = profile.Office.Title;
             OfficeCode = profile.Office.InternalCode ?? string.Empty;
-            Phone = profile.Phone ?? "";
+            Phone = profile.Phone ?? string.Empty;
             PhotoUrl = profile.EmployeeProfile.PhotoUrl ?? string.Empty;
             PreferredName = profile.EmployeeProfile.PreferredName ?? string.Empty;
             IsPrimaryProfile = (profile.Id == (profile.EmployeeProfile.PrimaryProfile ?? 0));
