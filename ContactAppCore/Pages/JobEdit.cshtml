@@ -14,17 +14,17 @@
     <div>
         <label for="category">Category:</label><select id="category" name="category">
             <option value="">Other</option>
-            <option value="core-faculty">Core Faculty</option>
-            <option value="faculty">Faculty</option>
-            <option value="student">Stduent</option>
-            <option value="staff">Staff</option>
-            <option value="emeriti">Emeriti</option>
+            <option value="Core Faculty">Core Faculty</option>
+            <option value="Faculty">Faculty</option>
+            <option value="Grad Students">Graduate Stduent</option>
+            <option value="Staff">Staff</option>
+            <option value="Emeritus">Emeritus</option>
         </select>
     </div>
     <div>
         <label for="display">Display:</label><select id="display" name="display">
-            <option value="">Directory Only</option>
-            <option value="faculty-finder">Faculty Finder</option>
+            <option value="Staff Directory Only">Directory Only</option>
+            <option value="Faculty Finder">Faculty Finder</option>
         </select>
     </div>
     <div>
@@ -50,6 +50,7 @@
     </div>
 
     <h2>Picture</h2>
+    <p>Note that this will affect all instances of the employee's picture</p>
     <div class="uploader">
         <img id="image-photo" />
         <input type="file" id="picture-upload" name="picture-upload">
@@ -61,6 +62,7 @@
     </div>
 
     <h2>CV</h2>
+    <p>Note that this will affect all instances of the employee's CV</p>
     <div class="uploader">
         <a id="link-cv">Link to CV</a>
         <input type="file" id="cv-upload" name="cv-upload">

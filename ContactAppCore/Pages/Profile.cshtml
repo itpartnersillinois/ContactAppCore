@@ -5,7 +5,7 @@
 <link rel="stylesheet" href="/css/quill.bubble.css" />
 <h1>Edit Profile</h1>
 
-<div id="existing">
+<div id="existing-profile">
     <div id="job-profile-group">
     <h2>Job Profiles</h2>
     <div>
@@ -36,19 +36,19 @@
             <div id="cv-error" class="error"></div>
         </div>
     </div>
+</div>
 
-
+<h2>General Information for @User.Identity.Name</h2>
+<p>Note: if you have an <a href="https://experts.illinois.edu">Illinois Experts</a> profile, you should leave this blank and edit all your information at Illinois Experts. <a href="https://go.illinois.edu/experts-login">Log in to Illinois Experts</a>. 
+    For the College of Education, information on what goes in Illinois Experts is at <a href="https://help.uillinois.edu/TDClient/44/Portal/KB/ArticleDet?ID=2242">this Knowledge Base article.</a> </p>
  
-    <h2>General Information for @User.Identity.Name</h2>
-    <p>Note: if you have an <a href="https://experts.illinois.edu">Illinois Experts</a> profile, you should leave this blank and edit all your information at Illinois Experts. <a href="https://go.illinois.edu/experts-login">Log in to Illinois Experts</a>. 
-        For the College of Education, information on what goes in Illinois Experts is at <a href="https://help.uillinois.edu/TDClient/44/Portal/KB/ArticleDet?ID=2242">this Knowledge Base article.</a> </p>
- 
-    <input id="netid" name="netid" type="hidden" value="@User.Identity.Name.Replace("@illinois.edu", "")" />
-    <input id="id" name="id" type="hidden" value="0" />
-    <div><h3>Biography</h3><div id='biography' class='fulltext'></div></div>
+<input id="netid" name="netid" type="hidden" value="@User.Identity.Name.Replace("@illinois.edu", "")" />
+<input id="id" name="id" type="hidden" value="0" />
+<div><h3>Biography</h3><div id='biography' class='fulltext'></div></div>
 
-    <button class="il-button" id="updateGeneral" onclick="return update();">Update Biography</button>
+<button class="il-button" id="updateGeneral" onclick="return update();">Update Biography</button>
 
+<div id="existing-activity">
     <h3>Activities</h3>
     <ul id="activities" class="listing">
     </ul>
@@ -94,10 +94,12 @@
             }).then(res => res.json()).then(data => {
                 if (data != null) {
                     if (data.id == 0) {
-                        document.getElementById('existing').style.display = 'none';
+                        document.getElementById('existing-profile').style.display = 'none';
+                        document.getElementById('existing-activity').style.display = 'none';
                     } else {
                         document.getElementById('id').value = data.id;
-                        document.getElementById('existing').style.display = '';
+                        document.getElementById('existing-profile').style.display = '';
+                        document.getElementById('existing-activity').style.display = '';
                     }
                     if (data.biography != null) {
                         quillInfo.setContents(quillInfo.clipboard.convert(data.biography), 'silent');
@@ -139,16 +141,15 @@
                             const divName = document.createElement('div');
                             const divDesc = document.createElement('div');
                             const divOther = document.createElement('div');
-                            divName.innerHTML = `<label for="activityname-${e.id}" class="full">Name:</label><input id="activityname-${e.id}" name="name" value="${e.title.replace(/\"/g, '&quot;')}" />
-		<label for="activityurl-${e.id}" class="full">URL:</label><input id="activityurl-${e.id}" name="url" value="${e.url}" />`;
-                            divDesc.innerHTML = `<label for="activitydescription-${e.id}" class="full">Description:</label><input id="activitydescription-${e.id}" name="description" class="full" value="${e.description.replace(/\"/g, '&quot;')}" />`;
+                            divName.innerHTML = `<label for="activityname-${e.id}" class="full">Name:</label><input id="activityname-${e.id}" name="name" value="${e.title.replace(/\"/g, '&quot;')}" class="full" />`;
+                            divDesc.innerHTML = `<label for="activityurl-${e.id}" class="full">URL:</label><input id="activityurl-${e.id}" name="url" value="${e.url}" class="full" />`;
                             divOther.innerHTML = `<label for="activityyearstarted-${e.id}" class="full">Year Started:</label><input id="activityyearstarted-${e.id}" name="yearStarted" class="small" value="${e.yearStarted}" />
 		<label for="activityyearended-${e.id}">Year Ended:</label><input id="activityyearended-${e.id}" name="yearEnded" class="small" value="${e.yearEnded}" />
 		<label for="activitytype-${e.id}">Type:</label><select id="activitytype-${e.id}" name="type">
 			<option value="publication">Publication</option>
 			<option value="presentation" ${e.type == 'presentation' ? 'selected' : ''}>Presentation</option>
 			<option value="education" ${e.type == 'education' ? 'selected' : ''}>Education</option>
-			<option value="appointment" ${e.type == 'appointment' ? 'selected' : ''}>Professional Appointment</option>
+			<option value="award" ${e.type == 'award' ? 'selected' : ''}>Award</option>
 		</select>
 		<label for="activitypriority-${e.id}">Priority:</label><select id="activitypriority-${e.id}" name="priority">
 			<option value="3">Medium</option>
@@ -165,11 +166,10 @@
                     const liNew = document.createElement('li');
                     liNew.id = 'activity-new';
                     liNew.innerHTML = `<div>
-            <label for="activityname-new" class="full">Name:</label><input id="activityname-new" name="name" />
-            <label for="activityurl-new" class="full">URL:</label><input id="activityurl-new" name="url" />
+            <label for="activityname-new" class="full">Name:</label><input id="activityname-new" name="name" class="full" />
         </div>
         <div>
-            <label for="activitydescription-new" class="full">Description:</label><input id="activitydescription-new" name="description" class="full" />
+            <label for="activityurl-new" class="full">URL:</label><input id="activityurl-new" name="url" class="full" />
         </div>
         <div>
             <label for="activityyearstarted-new" class="full">Year Started:</label><input id="activityyearstarted-new" name="yearStarted" class="small" />
@@ -178,7 +178,7 @@
                 <option value="publication">Publication</option>
                 <option value="presentation">Presentation</option>
                 <option value="education">Education</option>
-                <option value="appointment">Professional Appointment</option>
+                <option value="award">Award</option>
             </select>
             <label for="activitypriority-new">Priority:</label><select id="activitypriority-new" name="priority">
                 <option value="3">Medium</option>
@@ -204,8 +204,13 @@
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: json
+            }).then(function (response) {
+                return response.text().then(function (text) {
+                    document.getElementById('id').value = text;
+                    document.getElementById('existing-profile').style.display = '';
+                    document.getElementById('existing-activity').style.display = '';
+                });
             });
-            document.getElementById('existing').style.display = '';
             return false;
         }
 

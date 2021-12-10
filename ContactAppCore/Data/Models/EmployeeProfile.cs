@@ -22,6 +22,8 @@ namespace ContactAppCore.Data.Models
         public string Phone { get; set; }
         public string PhotoUrl { get; set; }
         public string PreferredName { get; set; }
+
+        public string PreferredNameLast { get; set; }
         public int? PrimaryProfile { get; set; }
     }
 }
