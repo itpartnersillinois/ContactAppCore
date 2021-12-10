@@ -41,7 +41,6 @@ namespace ContactAppCore.Api
             {
                 EmployeeProfileId = employeeId,
                 Title = jsonObject.name,
-                Description = jsonObject.description,
                 InternalOrder = jsonObject.priority,
                 Url = jsonObject.url,
                 Type = jsonObject.type,
@@ -90,7 +89,6 @@ namespace ContactAppCore.Api
                 Id = jsonObject.id,
                 EmployeeProfileId = employeeId,
                 Title = jsonObject.name,
-                Description = jsonObject.description,
                 InternalOrder = jsonObject.priority,
                 Url = jsonObject.url,
                 Type = jsonObject.type,

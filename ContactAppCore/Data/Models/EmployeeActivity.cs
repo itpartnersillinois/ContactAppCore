@@ -5,7 +5,6 @@ namespace ContactAppCore.Data.Models
 {
     public class EmployeeActivity : BaseDataItem
     {
-        public string Description { get; set; }
         public virtual EmployeeProfile EmployeeProfile { get; set; }
         public int EmployeeProfileId { get; set; }
 
