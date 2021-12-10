@@ -21,6 +21,16 @@ namespace ContactAppCore.Api
             this.contactRepository = contactRepository;
         }
 
+        [HttpGet("All")]
+        public async Task<IEnumerable<EmployeeInformation>> GetAllPeople()
+        {
+            return await contactRepository.ReadAsync(c => c.JobProfiles
+                .Include(j => j.EmployeeProfile).ThenInclude(e => e.EmployeeActivities)
+                .Include(j => j.Tags).Include(j => j.Office)
+                .Where(j => j.Office.IsActive && j.IsActive && j.EmployeeProfile.IsActive)
+                .Select(j => new EmployeeInformation(j)).ToList());
+        }
+
         [HttpGet("Area/{id}")]
         public async Task<IEnumerable<EmployeeInformation>> GetAllPeopleByArea(int id)
         {
