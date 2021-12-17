@@ -2,6 +2,7 @@
 using ContactAppCore.Data.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -33,6 +34,26 @@ namespace ContactAppCore.Api
         {
             var returnValue = await contactRepository.ReadAsync(c => c.EmployeeProfiles.Include(ep => ep.Jobs).ThenInclude(j => j.Office).Include(ep => ep.EmployeeLinks).Include(ep => ep.EmployeeActivities).FirstOrDefault(p => p.Id == id));
             return returnValue == null ? new EmployeeProfile() : returnValue;
+        }
+
+        [HttpGet("ByNameOrCreate/{netid}")]
+        public async Task<EmployeeProfile> GetEmployeeByNameOrCreate(string netid)
+        {
+            var nameShortened = netid.Replace("@illinois.edu", "");
+            var returnValue = await contactRepository.ReadAsync(c => c.EmployeeProfiles.Include(ep => ep.Jobs).ThenInclude(j => j.Office).Include(ep => ep.EmployeeLinks).Include(ep => ep.EmployeeActivities).FirstOrDefault(p => p.Title == nameShortened));
+            if (returnValue == null)
+            {
+                var employee = new EmployeeProfile
+                {
+                    Title = User.Identity.Name.Replace("@illinois.edu", ""),
+                    IsActive = true,
+                    EmployeeActivities = new List<EmployeeActivity>(),
+                    Jobs = new List<JobProfile>()
+                };
+                _ = await contactRepository.CreateAsync(employee);
+                return employee;
+            }
+            return returnValue;
         }
     }
 }

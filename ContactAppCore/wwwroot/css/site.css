@@ -12,6 +12,10 @@
     margin-left: 20px;
 }
 
+.il-formatted h3:first-child {
+    margin-top: 1.41379em;
+}
+
 ul.listofitems {
     margin-bottom: 1.5625rem;
 }
@@ -48,6 +52,7 @@ form.large input {
 
 .fulltext {
     border: thin solid black;
+    margin-top: 10px !important;
     margin-bottom: 10px !important;
 }
 
