@@ -41,6 +41,8 @@
     </div>
 </div>
 
+<p><button class="il-button" onclick="return refreshprofile();">Push recent changes to the college web profile</button> (otherwise, this happens automatically within 24 hours)</p>
+
 <h2>General Information for @User.Identity.Name</h2>
 <p>Note: if you have an <a href="https://experts.illinois.edu">Illinois Experts</a> profile, you should leave the below information blank and edit all your information at Illinois Experts. 
     <em>This information will be overwritten by any Illinois Experts profile you have.</em> <a href="https://go.illinois.edu/experts-login">Log in to Illinois Experts</a>. 
@@ -273,7 +275,15 @@
             fetch('/Api/EditEmployee/DeleteCV', {
                 method: 'POST',
                 body: fd
-            }).then(document.getElementById('link-cv').style.display = 'none');
+            }).then(response => document.getElementById('link-cv').style.display = 'none');
+        }
+
+        function refreshprofile() {
+            debugger;
+            document.getElementsByTagName('main')[0].style.visibility = 'hidden';
+            fetch('https://uofi-itp-people.azurewebsites.net/api/Load?name=@User.Identity.Name', {
+                method: 'GET'
+            }).then(response => document.getElementsByTagName('main')[0].style.visibility = '');
         }
 
         function addactivity() {
@@ -285,7 +295,7 @@
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: json
-            }).then(loadInformation());
+            }).then(response => loadInformation());
             return false;
         }
 
@@ -314,7 +324,7 @@
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: json
-                }).then(loadInformation());
+                }).then(response => loadInformation());
             }
             return false;
         }
