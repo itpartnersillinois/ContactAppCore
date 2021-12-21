@@ -30,8 +30,8 @@ namespace ContactAppCore.Api
         [HttpGet("Area/{id}")]
         public async Task<IEnumerable<JobProfile>> GetByArea(int id)
         {
-            var officeIds = await contactRepository.ReadAsync(c => c.Offices.Where(c => c.AreaId == id).Select(c => c.Id));
-            return await contactRepository.ReadAsync(c => c.JobProfiles.Include(j => j.Tags).Include(j => j.EmployeeProfile).Where(j => j.IsActive && officeIds.Contains(j.OfficeId)));
+            return await contactRepository.ReadAsync(c => c.JobProfiles.Include(j => j.Tags).Include(j => j.EmployeeProfile)
+                .Where(j => j.IsActive && c.Offices.Where(o => o.AreaId == id).Select(o => o.Id).Contains(j.OfficeId)));
         }
 
         [HttpGet("Office/{id}")]

@@ -5,7 +5,10 @@
 <link rel="stylesheet" href="/css/quill.bubble.css" />
 <h1>Edit Profile</h1>
 
+
 <div id="existing-profile">
+    <p id="job-profile-missing">For this information to be pulled into your profile, you must have a unit associated with your profile. Contact your office administrator to add your information to your unit.</p>
+
     <div id="job-profile-group">
     <h2>Job Profiles</h2>
     <div>
@@ -39,7 +42,8 @@
 </div>
 
 <h2>General Information for @User.Identity.Name</h2>
-<p>Note: if you have an <a href="https://experts.illinois.edu">Illinois Experts</a> profile, you should leave this blank and edit all your information at Illinois Experts. <a href="https://go.illinois.edu/experts-login">Log in to Illinois Experts</a>. 
+<p>Note: if you have an <a href="https://experts.illinois.edu">Illinois Experts</a> profile, you should leave the below information blank and edit all your information at Illinois Experts. 
+    <em>This information will be overwritten by any Illinois Experts profile you have.</em> <a href="https://go.illinois.edu/experts-login">Log in to Illinois Experts</a>. 
     For the College of Education, information on what goes in Illinois Experts is at <a href="https://help.uillinois.edu/TDClient/44/Portal/KB/ArticleDet?ID=2242">this Knowledge Base article.</a> </p>
  
 <input id="netid" name="netid" type="hidden" value="@User.Identity.Name.Replace("@illinois.edu", "")" />
@@ -86,7 +90,7 @@
         function loadInformation() {
             document.getElementsByTagName('main')[0].style.visibility = 'hidden';
             document.getElementById('id').value = '';
-            fetch('/Api/Employee/ByName/@User.Identity.Name.Replace("@illinois.edu", "")', {
+            fetch('/Api/Employee/ByNameOrCreate/@User.Identity.Name.Replace("@illinois.edu", "")', {
                 method: 'GET',
                 headers: {
                     "Content-type": "application/x-www-form-urlencoded; charset=UTF-8"
@@ -131,7 +135,10 @@
                         if (data.jobs.length <= 1) {
                             document.getElementById('job-profile-group').style.display = 'none';
                         }
-                    }
+                        if (data.jobs.length > 0) {
+                            document.getElementById('job-profile-missing').style.display = 'none';
+                        }
+                    } 
                     const ul = document.getElementById('activities');
                     ul.innerHTML = '';
                     if (data.employeeActivities != null) {
