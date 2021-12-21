@@ -19,6 +19,7 @@
             <option value="Grad Students">Graduate Stduent</option>
             <option value="Staff">Staff</option>
             <option value="Emeritus">Emeritus</option>
+            <option value="Affiliate">Affiliate</option>
         </select>
     </div>
     <div>
@@ -38,6 +39,7 @@
 </form>
 
 <p><button class="il-button" id="updateGeneral" onclick="return update();">Update Job Profile Information</button></p>
+<p><button class="il-button" onclick="return refreshprofile();">Push recent changes to the college web profile</button> (otherwise, this happens automatically within 24 hours)</p>
 
 <div id="profile-addition" style="display: none;">
     <div id='job-profile-group'>
@@ -143,8 +145,8 @@
                         quillInfo.setContents(quillInfo.clipboard.convert(data.biography), 'silent');
                     }
                     data.tags.forEach(t => {
-                        if (t.title == 'faculty-finder') {
-                            document.getElementById('display').value = 'faculty-finder';
+                        if (t.title == 'Staff Directory Only' || t.title == 'Faculty Finder') {
+                            document.getElementById('display').value = t.title;
                         } else {
                             document.getElementById('category').value = t.title;
                         }
@@ -174,8 +176,8 @@
                             person.jobs.forEach(j => {
                                 let option = document.createElement('option');
                                 option.value = j.id;
-                                option.innerHTML = j.title + ' ' + j.office.title;
-                                if (j.id === data.primaryProfile) {
+                                option.innerHTML = j.title + ' / ' + j.office.title;
+                                if (j.id === person.primaryProfile) {
                                     option.setAttribute('selected', 'selected');
                                 }
                                 jobs.append(option);
@@ -205,6 +207,19 @@
             return false;
         }
 
+        function updateJob() {
+            let object = {};
+            object['id'] = document.getElementById('personId').value;
+            object['jobid'] = document.getElementById('jobs').value;
+            var json = JSON.stringify(object);
+            fetch('/Api/EditEmployee/UpdatePrimaryJob', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: json
+            });
+            return false;
+        }
+
         function add() {
             let object = {};
             object['officeId'] = document.getElementById('officeId').value;
@@ -219,6 +234,13 @@
                 body: json
             });
             return false;
+        }
+
+        function refreshprofile() {
+            document.getElementsByTagName('main')[0].style.visibility = 'hidden';
+            fetch('https://uofi-itp-people.azurewebsites.net/api/Load?name=@User.Identity.Name', {
+                method: 'GET'
+            }).then(response => document.getElementsByTagName('main')[0].style.visibility = '');
         }
 
         function picture() {
