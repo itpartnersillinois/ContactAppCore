@@ -238,7 +238,7 @@
 
         function refreshprofile() {
             document.getElementsByTagName('main')[0].style.visibility = 'hidden';
-            fetch('https://uofi-itp-people.azurewebsites.net/api/Load?name=@User.Identity.Name', {
+            fetch('https://uofi-itp-people.azurewebsites.net/api/Load?name=' + document.getElementById('netid-display').innerHTML, {
                 method: 'GET'
             }).then(response => document.getElementsByTagName('main')[0].style.visibility = '');
         }
