@@ -1,0 +1,79 @@
+﻿@page
+@model ContactAppCore.Pages.ContactModel
+@{
+    ViewData["Title"] = "Contact Information";
+}
+
+<h1>Contact List for Administrators</h1>
+<p>This is a list of areas and offices and their administrators. If you have any questions, feel free to contact support@@education.illinois.edu. </p>
+<div style="display: flex; gap: 10px; margin-top: 1rem;">
+    <div style="flex: 1 1;">
+        <h2>Areas</h2>
+        <ul id="areas" class="listofitems">
+        </ul>
+    </div>
+    <div style="flex: 1 1;">
+        <h2>Offices</h2>
+        <ul id="offices" class="listofitems">
+        </ul>
+    </div>
+</div>
+
+@section Scripts
+{
+    <script type="text/javascript">
+        document.addEventListener('DOMContentLoaded', function (event) {
+            loadItems();
+        });
+
+        function loadItems() {
+            fetch('/Api/SecurityList/', {
+                method: 'GET',
+                headers: {
+                    "Content-type": "application/x-www-form-urlencoded; charset=UTF-8"
+                }
+            }).then(res => res.json()).then(data => {
+                let arealist = document.getElementById('areas');
+                arealist.innerHTML = '';
+
+                data.areas.forEach(element => {
+                    const li = document.createElement('li');
+                    const anchor = document.createElement('a');
+                    anchor.innerHTML = element.title;
+                    anchor.setAttribute('href', '#');
+                    anchor.setAttribute('onclick', 'return loadOfficeItems(' + element.id + ');');
+                    li.appendChild(anchor);
+                    if (element.admins != null && element.admins.length > 0) {
+                        const div = document.createElement('div');
+                        div.innerHTML = 'Admins: ' + element.admins.join(', ');
+                        li.appendChild(div);
+                    }
+                    arealist.appendChild(li);
+                });
+            });
+        }
+
+        function loadOfficeItems(i) {
+            fetch('/Api/SecurityList/Area/' + i, {
+                method: 'GET',
+                headers: {
+                    "Content-type": "application/x-www-form-urlencoded; charset=UTF-8"
+                }
+            }).then(res => res.json()).then(data => {
+                let officelist = document.getElementById('offices');
+                officelist.innerHTML = '';
+                data.offices.forEach(element => {
+                    const li = document.createElement('li');
+                    const p = document.createElement('p');
+                    p.innerHTML = element.title;
+                    if (element.admins != null && element.admins.length > 0) {
+                        p.innerHTML += '<br>Admins: ' + element.admins.join(', ');
+                    }
+                    li.appendChild(p);
+                    officelist.appendChild(li);
+                });
+            });
+            return false;
+        }
+    </script>
+}

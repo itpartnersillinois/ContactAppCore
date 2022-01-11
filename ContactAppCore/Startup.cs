@@ -76,6 +76,8 @@ namespace ContactAppCore
 
             services.AddScoped(sp => new ListHelper(sp.GetRequiredService<IContactRepository>()));
 
+            services.AddScoped(sp => new ListAdminHelper(sp.GetRequiredService<IContactRepository>()));
+
             services.AddScoped(sp => new FileHelper(Configuration.GetValue<string>("Aws:AccessKey"), Configuration.GetValue<string>("Aws:Bucket"), Configuration.GetValue<string>("Aws:SecretKey"), Configuration.GetValue<string>("Aws:UrlPath")));
         }
     }
