@@ -37,7 +37,7 @@ namespace ContactAppCore.Api
         [HttpGet("Office/{id}")]
         public async Task<IEnumerable<JobProfile>> GetByOffice(int id)
         {
-            return await contactRepository.ReadAsync(c => c.JobProfiles.Include(j => j.Tags).Include(j => j.EmployeeProfile).Where(j => j.IsActive && j.OfficeId == id));
+            return await contactRepository.ReadAsync(c => c.JobProfiles.Include(j => j.Tags).Include(j => j.EmployeeProfile).Where(j => j.IsActive && j.OfficeId == id).OrderBy(e => e.EmployeeProfile.Title));
         }
     }
 }
