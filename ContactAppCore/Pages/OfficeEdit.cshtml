@@ -99,7 +99,7 @@
         <div class="notes side">This is used to order items in relation to other offices. Contact an administrator to edit this.</div>
     </div>
 
-    <button class="il-button" onclick="return update();">Update Office Information</button>
+    <button class="il-button" onclick="return update();">Update Office Information</button> <span class="message" id="updateGeneralMessage">Office Information Updated</span>
 </form>
 
 <hr />
@@ -264,6 +264,11 @@
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: json
+            }).then(response => {
+                document.getElementById('updateGeneralMessage').classList.add('show');
+                setTimeout(function() { 
+                    document.getElementById('updateGeneralMessage').classList.remove('show');
+                }, 4000);
             });
             return false;
         }
