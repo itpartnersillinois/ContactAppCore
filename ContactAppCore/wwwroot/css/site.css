@@ -125,3 +125,20 @@ form.large input {
     .il-formatted ul.listing li select {
         margin-right: 10px;
     }
+
+#profile-addition {
+    background: var(--il-gray-1);
+    padding: 0 1rem 2rem 1rem;
+}
+
+.message {
+    transition: opacity 400ms;
+    opacity: 0;
+    color: red;
+    font-weight: bold;
+    padding-left: 15px;
+}
+
+.show {
+    opacity: 1;
+}
