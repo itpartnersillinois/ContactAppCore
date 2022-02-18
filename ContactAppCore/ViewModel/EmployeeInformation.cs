@@ -14,6 +14,7 @@ namespace ContactAppCore.ViewModel
             InternalOrder = profile.InternalOrder;
             NetId = profile.EmployeeProfile.Title ?? string.Empty;
             OfficeName = profile.Office.Title;
+            OfficeType = profile.Office.OfficeType.ToString();
             OfficeCode = profile.Office.InternalCode ?? string.Empty;
             Phone = profile.Phone ?? string.Empty;
             PhotoUrl = profile.EmployeeProfile.PhotoUrl ?? string.Empty;
@@ -34,6 +35,7 @@ namespace ContactAppCore.ViewModel
         public string NetId { get; set; }
         public string OfficeCode { get; set; }
         public string OfficeName { get; set; }
+        public string OfficeType { get; set; }
         public string Phone { get; set; }
         public string PhotoUrl { get; set; }
         public string PreferredFirstName { get; set; }
