@@ -5,9 +5,35 @@
 }
 
 <div class="text-center">
-    <h1>Welcome to the Contact Support Application database</h1>
-    <p>This is meant to serve as a database to allow users to update their hours of operation and contact information for TDX. This information can be imported into your website as well. </p>
-    <p><a href="/office">View and Edit your Area and Office Information</a></p>
-    <p><a href="/contact">View all areas and offices and their administrators</a></p>
-    <p><a href="/profile">Edit Profile Information</a> (for units that are using profile information)</p>
+    <h1>Welcome to the Illinois Support Contact Application</h1>
+    <p>The Illinois Support Contact App is a database for staff to enter information to their support services and teams. Maintaining data in this application provides an interface to publish the content to any website or web page. Any information here will be presented on the <a href="https://help.illinois.edu/helpdesks">UIUC Tech Help Center Help Desks page</a>.</p> 
+
+<p>To request a change to your unit’s information, submit a Help Desk Request form. TDX Global Admins will update your information within one business day. Phase two of the Illinois Support Contact App work will expand edit permissions to TDX App Admins.</p>
+
+    <p><a href="/office" class="il-button">View and Edit your Units and Offices/Teams Information</a></p>
+    <p><a href="/contact" class="il-button">View all Units and Offices/Teams and their administrators</a></p>
+    <p><a href="/profile" class="il-button" id="profile" style="display: none;">Edit Your Profile Information</a></p>
 </div>
+
+@section Scripts
+{
+    <script>
+    function loadInformation() {
+        var name = '@User.Identity.Name.Replace("@illinois.edu", "")';
+        if (name != '') {
+            fetch('/Api/Employee/ByName/' + name, {
+                method: 'GET',
+                headers: { "Content-type": "application/x-www-form-urlencoded; charset=UTF-8" }
+                }).then(res => res.json()).then(data => {
+                    if (data.title != null) {
+                        document.getElementById('profile').style.display = '';
+                    }
+                });
+            }
+        }
+    document.addEventListener('DOMContentLoaded', function (event) {
+        debugger;
+        loadInformation();
+    });
+    </script>
+}

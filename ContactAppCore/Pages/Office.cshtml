@@ -4,34 +4,34 @@
     ViewData["Title"] = "List";
 }
 
-<h1>List of Areas / Offices</h1>
-<p>This is a list of areas and offices you can update.</p>
+<h1>List of Units and Offices/Teams</h1>
+<p>This is a list of units and offices/teams you can update.</p>
 <div style="display: flex; gap: 10px; margin-top: 1rem;">
     <div style="flex: 1 1;">
-        <h2>Available Areas</h2>
+        <h2>Available Units</h2>
         <ul id="areas" class="listofitems">
         </ul>
         <div id="fulladmin" style="display: none;">
             <hr />
             <form id="newareaform">
-                <label for="name">Add a new area: </label>
+                <label for="name">Add a new unit: </label>
                 <input type="text" id="name" name="name" />
-                <button id="addarea" class="il-button narrow" onclick="return addArea();">Add Area</button>
+                <button id="addarea" class="il-button narrow" onclick="return addArea();">Add Unit</button>
             </form>
             <a href="/Admin">Maintain full administrator list</a>
         </div>
     </div>
     <div style="flex: 1 1;">
-        <h2>Available Offices</h2>
+        <h2>Available Offices/Teams</h2>
         <ul id="offices" class="listofitems">
         </ul>
         <div id="areaadmin" style="display: none;">
             <hr />
             <form id="newofficeform">
-                <label for="nameoffice">Add a new office: </label>
+                <label for="nameoffice">Add a new office/team: </label>
                 <input type="text" id="nameoffice" name="nameOffice" />
                 <input type="hidden" id="areaid" name="areaid" />
-                <button id="addoffice" class="il-button narrow" onclick="return addOffice();">Add Office</button>
+                <button id="addoffice" class="il-button narrow" onclick="return addOffice();">Add Office/Team</button>
             </form>
         </div>
     </div>
