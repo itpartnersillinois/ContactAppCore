@@ -15,7 +15,7 @@
         <div class="notes">For external offices, this is displayed as "who would be interested in this office". For internal offices, this can be used as a generic second line of information.</div>
     </div>
     <div>
-        <label for="officetype">Office Type:</label><select id="officetype" name="officetype">
+        <label for="officetype">Office/Team Type:</label><select id="officetype" name="officetype">
             <option value="0">Unknown</option>
             <option value="1">IT</option>
             <option value="2">HR</option>
@@ -43,7 +43,7 @@
     </div>
     <div><label for="phone">Phone:</label><input id="phone" name="phone" /></div>
 
-    <h2>Physical Information</h2>
+    <h2>Building Information</h2>
     <div><label for="room">Room #:</label><input id="room" name="room" /></div>
     <div><label for="building">Building:</label><input id="building" name="building" class="long" /></div>
     <div>
@@ -55,21 +55,20 @@
     <div><label for="zipcode">Zip Code:</label><input id="zipcode" name="zipcode" /></div>
 
     <h2>Hours</h2>
-    <div><label for="hourssun1">Sunday:</label><input id="hourssun1" name="hourssun1" class="hours" /> <label for="hourssun2" class="to">to</label> <input id="hourssun2" name="hourssun2" class="hours" /></div>
-    <div><label for="hoursmon1">Monday:</label><input id="hoursmon1" name="hoursmon1" class="hours" /> <label for="hoursmon2" class="to">to</label> <input id="hoursmon2" name="hoursmon2" class="hours" /></div>
-    <div><label for="hourstue1">Tuesday:</label><input id="hourstue1" name="hourstue1" class="hours" /> <label for="hourstue2" class="to">to</label> <input id="hourstue2" name="hourstue2" class="hours" /></div>
-    <div><label for="hourswed1">Wednesday:</label><input id="hourswed1" name="hourswed1" class="hours" /> <label for="hourswed2" class="to">to</label> <input id="hourswed2" name="hourswed2" class="hours" /></div>
-    <div><label for="hoursthu1">Thursday:</label><input id="hoursthu1" name="hoursthu1" class="hours" /> <label for="hoursthu2" class="to">to</label> <input id="hoursthu2" name="hoursthu2" class="hours" /></div>
-    <div><label for="hoursfri1">Friday:</label><input id="hoursfri1" name="hoursfri1" class="hours" /> <label for="hoursfri2" class="to">to</label> <input id="hoursfri2" name="hoursfri2" class="hours" /></div>
-    <div>
-        <label for="hourssat1">Saturday:</label><input id="hourssat1" name="hourssat1" class="hours" /> <label for="hourssat2" class="to">to</label> <input id="hourssat2" name="hourssat2" class="hours" />
-        <div class="notes side">If you leave either the opening or closing time blank, it will not display the day of the week.</div>
-    </div>
+        <div class="notes side">If you leave either the opening or closing time blank, it will not display the day of the week. Use the format "8:00 AM"</div>
+    <div><label for="hourssun1">Sunday:</label><input id="hourssun1" name="hourssun1" class="hours" placeholder="8:00 AM" /> <label for="hourssun2" class="to">to</label> <input id="hourssun2" name="hourssun2" class="hours" placeholder="5:00 PM" /></div>
+    <div><label for="hoursmon1">Monday:</label><input id="hoursmon1" name="hoursmon1" class="hours" placeholder="8:00 AM" /> <label for="hoursmon2" class="to">to</label> <input id="hoursmon2" name="hoursmon2" class="hours" placeholder="5:00 PM" /></div>
+    <div><label for="hourstue1">Tuesday:</label><input id="hourstue1" name="hourstue1" class="hours" placeholder="8:00 AM" /> <label for="hourstue2" class="to">to</label> <input id="hourstue2" name="hourstue2" class="hours" placeholder="5:00 PM" /></div>
+    <div><label for="hourswed1">Wednesday:</label><input id="hourswed1" name="hourswed1" class="hours" placeholder="8:00 AM" /> <label for="hourswed2" class="to">to</label> <input id="hourswed2" name="hourswed2" class="hours" placeholder="5:00 PM" /></div>
+    <div><label for="hoursthu1">Thursday:</label><input id="hoursthu1" name="hoursthu1" class="hours" placeholder="8:00 AM" /> <label for="hoursthu2" class="to">to</label> <input id="hoursthu2" name="hoursthu2" class="hours" placeholder="5:00 PM" /></div>
+    <div><label for="hoursfri1">Friday:</label><input id="hoursfri1" name="hoursfri1" class="hours" placeholder="8:00 AM" /> <label for="hoursfri2" class="to">to</label> <input id="hoursfri2" name="hoursfri2" class="hours" placeholder="5:00 PM" /></div>
+    <div><label for="hourssat1">Saturday:</label><input id="hourssat1" name="hourssat1" class="hours" placeholder="8:00 AM" /> <label for="hourssat2" class="to">to</label> <input id="hourssat2" name="hourssat2" class="hours" placeholder="5:00 PM" /></div>
     <div><label for="hoursincludeholidaymessage">Include "Closed During University Holidays" message?:</label><input type="checkbox" id="hoursincludeholidaymessage" name="hoursincludeholidaymessage" /></div>
     <div><label for="hournotes">Notes:</label><input id="hournotes" name="hournotes" class="long" /></div>
     <h2>More Information</h2>
     <div><label for="covidsupport">COVID-19 Vaccine Card upload support?:</label><input type="checkbox" id="covidsupport" name="covidsupport" /></div>
-    <div><label for="notes">General Notes:</label><div id='notes' class='fulltext'></div></div>
+        <div class="notes side">Check this box if your support team/help desk is able and willing to help faculty and staff upload their COVID-19 Vaccine records to the MyMcKinley Health Portal.</div>
+    <div><label for="notes" style="text-align: left;">General Notes:</label><div id='notes' class='fulltext'></div></div>
     <div>
         <label for="searchterms">Search Term Information:</label><input id="searchterms" name="searchterms" class="long" />
         <div class="notes">This is information that is not displayed, but will show up if someone does a search for a phrase.</div>
