@@ -1,17 +1,14 @@
 ﻿using ContactAppCore.Data.Models;
 
-namespace ContactAppCore.Helpers
-{
-    public static class FilterHelper
-    {
-        public static AreaTypeEnum? TranslateArea(string s)
-        {
-            if (string.IsNullOrWhiteSpace(s))
-            {
+namespace ContactAppCore.Helpers {
+
+    public static class FilterHelper {
+
+        public static AreaTypeEnum? TranslateArea(string s) {
+            if (string.IsNullOrWhiteSpace(s)) {
                 return null;
             }
-            switch (s.ToLowerInvariant())
-            {
+            switch (s.ToLowerInvariant()) {
                 case "campus":
                     return AreaTypeEnum.Campus;
 
@@ -32,14 +29,11 @@ namespace ContactAppCore.Helpers
             }
         }
 
-        public static OfficeTypeEnum? TranslateOffice(string s)
-        {
-            if (string.IsNullOrWhiteSpace(s))
-            {
+        public static OfficeTypeEnum? TranslateOffice(string s) {
+            if (string.IsNullOrWhiteSpace(s)) {
                 return null;
             }
-            switch (s.ToLowerInvariant())
-            {
+            switch (s.ToLowerInvariant()) {
                 case "hr":
                 case "humanresources":
                     return OfficeTypeEnum.HR;
@@ -56,6 +50,16 @@ namespace ContactAppCore.Helpers
                 case "it":
                 case "tech":
                     return OfficeTypeEnum.IT;
+
+                case "research":
+                    return OfficeTypeEnum.Research;
+
+                case "studentsupport":
+                case "support":
+                    return OfficeTypeEnum.StudentSupport;
+
+                case "advancement":
+                    return OfficeTypeEnum.Advancement;
 
                 case "general":
                     return OfficeTypeEnum.General;

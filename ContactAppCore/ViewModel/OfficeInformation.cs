@@ -1,10 +1,9 @@
-﻿using ContactAppCore.Data.Models;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using ContactAppCore.Data.Models;
 
-namespace ContactAppCore.ViewModel
-{
-    public class OfficeInformation
-    {
+namespace ContactAppCore.ViewModel {
+
+    public class OfficeInformation {
         private List<HoursInformation> hoursList;
 
         private Dictionary<OfficeTypeEnum, string> officeDictionary = new Dictionary<OfficeTypeEnum, string> {
@@ -14,11 +13,13 @@ namespace ContactAppCore.ViewModel
             { OfficeTypeEnum.General, "General" },
             { OfficeTypeEnum.HR, "Human Resources" },
             { OfficeTypeEnum.IT, "Information Technology" },
+            { OfficeTypeEnum.Research, "Research" },
+            { OfficeTypeEnum.StudentSupport, "Student Support" },
+            { OfficeTypeEnum.Advancement, "Advancement" },
             { OfficeTypeEnum.Other, "Other" }
         };
 
-        public OfficeInformation(Office office)
-        {
+        public OfficeInformation(Office office) {
             Address = office.Address;
             AreaId = office.AreaId;
             Area = office.Area?.Title;
@@ -40,13 +41,11 @@ namespace ContactAppCore.ViewModel
             Title = office.Title;
             ZipCode = office.ZipCode;
             HoursMessage = office.HoursMessage;
-            if (office.HoursIncludeHolidayMessage)
-            {
+            if (office.HoursIncludeHolidayMessage) {
                 HoursMessage = ("Closed on University Holidays. " + HoursMessage).Trim();
             }
             hoursList = new List<HoursInformation>();
-            if (!string.IsNullOrWhiteSpace(office.HoursMondayStart))
-            {
+            if (!string.IsNullOrWhiteSpace(office.HoursMondayStart)) {
                 //Check Sun-Sat
                 if (office.HoursMondayStart == office.HoursTuesdayStart &&
                     office.HoursMondayStart == office.HoursWednesdayStart &&
@@ -59,8 +58,7 @@ namespace ContactAppCore.ViewModel
                     office.HoursMondayEnd == office.HoursThursdayEnd &&
                     office.HoursMondayEnd == office.HoursFridayEnd &&
                     office.HoursMondayEnd == office.HoursSaturdayEnd &&
-                    office.HoursMondayEnd == office.HoursSundayEnd)
-                {
+                    office.HoursMondayEnd == office.HoursSundayEnd) {
                     AddHours("Sun-Sat", office.HoursMondayStart, office.HoursMondayEnd);
                 }
                 //Check Mon-Fri, Sat-Sun
@@ -71,23 +69,18 @@ namespace ContactAppCore.ViewModel
                     office.HoursMondayEnd == office.HoursTuesdayEnd &&
                     office.HoursMondayEnd == office.HoursWednesdayEnd &&
                     office.HoursMondayEnd == office.HoursThursdayEnd &&
-                    office.HoursMondayEnd == office.HoursFridayEnd)
-                {
+                    office.HoursMondayEnd == office.HoursFridayEnd) {
                     AddHours("Mon-Fri", office.HoursMondayStart, office.HoursMondayEnd);
                     if (!string.IsNullOrWhiteSpace(office.HoursSaturdayStart) &&
-                        office.HoursSaturdayStart == office.HoursSundayStart && office.HoursSaturdayEnd == office.HoursSundayEnd)
-                    {
+                        office.HoursSaturdayStart == office.HoursSundayStart && office.HoursSaturdayEnd == office.HoursSundayEnd) {
                         AddHours("Sun-Sat", office.HoursSaturdayStart, office.HoursSaturdayEnd);
-                    }
-                    else
-                    {
+                    } else {
                         AddHours("Sat", office.HoursSaturdayStart, office.HoursSaturdayEnd);
                         AddHours("Sun", office.HoursSundayStart, office.HoursSundayEnd);
                     }
                 }
             }
-            if (hoursList.Count == 0)
-            {
+            if (hoursList.Count == 0) {
                 AddHours("Mon", office.HoursMondayStart, office.HoursMondayEnd);
                 AddHours("Tue", office.HoursTuesdayStart, office.HoursTuesdayEnd);
                 AddHours("Wed", office.HoursWednesdayStart, office.HoursWednesdayEnd);
@@ -145,14 +138,10 @@ namespace ContactAppCore.ViewModel
 
         public string ZipCode { get; set; }
 
-        private void AddHours(string header, string time1, string time2)
-        {
-            if (!string.IsNullOrWhiteSpace(time1) && !string.IsNullOrWhiteSpace(time2))
-            {
+        private void AddHours(string header, string time1, string time2) {
+            if (!string.IsNullOrWhiteSpace(time1) && !string.IsNullOrWhiteSpace(time2)) {
                 hoursList.Add(new HoursInformation { Label = header, Time = $"{time1}-{time2}" });
-            }
-            else if (!string.IsNullOrWhiteSpace(time1))
-            {
+            } else if (!string.IsNullOrWhiteSpace(time1)) {
                 hoursList.Add(new HoursInformation { Label = header, Time = time1 });
             }
         }

@@ -2,21 +2,18 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace ContactAppCore.Data.Models
-{
-    public enum OfficeTypeEnum
-    {
-        NotListed, IT, HR, Business, Facilities, Academic, General, Other = 9
+namespace ContactAppCore.Data.Models {
+
+    public enum OfficeTypeEnum {
+        NotListed, IT, HR, Business, Facilities, Academic, General, Research, StudentSupport, Other, Advancement
     }
 
-    public class Office : BaseDataItem
-    {
-        public Office()
-        {
+    public class Office : BaseDataItem {
+
+        public Office() {
         }
 
-        public Office(string title, int areaId)
-        {
+        public Office(string title, int areaId) {
             IsActive = false;
             Title = title;
             AreaId = areaId;
