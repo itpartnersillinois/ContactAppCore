@@ -33,17 +33,16 @@ namespace ContactAppCore.Api {
             return await contactRepository.ReadAsync(c => c.JobProfiles
                 .Include(j => j.EmployeeProfile).ThenInclude(e => e.EmployeeActivities)
                 .Include(j => j.Tags).Include(j => j.Office)
-                .Where(j => j.Office.AreaId == id && j.Office.IsActive && j.IsActive && j.EmployeeProfile.IsActive)
+                .Where(j => j.Office.AreaId == id && j.Office.IsActive && j.EmployeeProfile.IsActive && j.IsActive)
                 .Select(j => new EmployeeInformation(j)).ToList());
         }
 
         [HttpGet("AreaUsernames/{id}")]
         public async Task<IEnumerable<string>> GetAllUsernamesByArea(int id) {
             return await contactRepository.ReadAsync(c => c.JobProfiles
-                .Include(j => j.EmployeeProfile).ThenInclude(e => e.EmployeeActivities)
-                .Include(j => j.Tags).Include(j => j.Office)
-                .Where(j => j.Office.AreaId == id && j.Office.IsActive && j.IsActive && j.EmployeeProfile.IsActive)
-                .Select(j => j.EmployeeNetId).ToList());
+                .Include(j => j.EmployeeProfile).Include(j => j.Office)
+                .Where(j => j.Office.AreaId == id && j.Office.IsActive && j.EmployeeProfile.IsActive && j.IsActive)
+                .Select(j => j.EmployeeNetId).ToList().Distinct().OrderBy(s => s));
         }
 
         [HttpGet("Name/{username}")]
