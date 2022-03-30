@@ -90,6 +90,7 @@
                     const anchor = document.createElement('a');
                     anchor.innerHTML = 'View Offices';
                     anchor.setAttribute('href', '#');
+                    anchor.setAttribute('aria-label', 'Load ' + element.title + ' offices and move to first office');
                     anchor.setAttribute('class', 'il-button narrow');
                     anchor.setAttribute('onclick', 'return loadOfficeItems(' + element.id + ');');
                     const anchorItem = document.createElement('a');
@@ -132,6 +133,7 @@
                     document.getElementById('areaadmin').style.display = '';
                 }
                 let officelist = document.getElementById('offices');
+                let firstItem = null;
                 officelist.innerHTML = '';
                 data.offices.forEach(element => {
                     const li = document.createElement('li');
@@ -140,7 +142,13 @@
                     anchorItem.setAttribute('href', '/OfficeEdit?id=' + element.id);
                     li.appendChild(anchorItem);
                     officelist.appendChild(li);
+                    if (firstItem == null) {
+                        firstItem = anchorItem;
+                    }
                 });
+                if (firstItem != null) {
+                    firstItem.focus();
+                }
             });
             return false;
         }

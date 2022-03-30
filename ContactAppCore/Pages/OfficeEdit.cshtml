@@ -59,19 +59,19 @@
 
     <h2>Hours</h2>
         <div class="notes side">If you leave either the opening or closing time blank, it will not display the day of the week. Use the format "8:00 AM"</div>
-    <div><label for="hourssun1">Sunday:</label><input id="hourssun1" name="hourssun1" class="hours" placeholder="8:00 AM" /> <label for="hourssun2" class="to">to</label> <input id="hourssun2" name="hourssun2" class="hours" placeholder="5:00 PM" /></div>
-    <div><label for="hoursmon1">Monday:</label><input id="hoursmon1" name="hoursmon1" class="hours" placeholder="8:00 AM" /> <label for="hoursmon2" class="to">to</label> <input id="hoursmon2" name="hoursmon2" class="hours" placeholder="5:00 PM" /></div>
-    <div><label for="hourstue1">Tuesday:</label><input id="hourstue1" name="hourstue1" class="hours" placeholder="8:00 AM" /> <label for="hourstue2" class="to">to</label> <input id="hourstue2" name="hourstue2" class="hours" placeholder="5:00 PM" /></div>
-    <div><label for="hourswed1">Wednesday:</label><input id="hourswed1" name="hourswed1" class="hours" placeholder="8:00 AM" /> <label for="hourswed2" class="to">to</label> <input id="hourswed2" name="hourswed2" class="hours" placeholder="5:00 PM" /></div>
-    <div><label for="hoursthu1">Thursday:</label><input id="hoursthu1" name="hoursthu1" class="hours" placeholder="8:00 AM" /> <label for="hoursthu2" class="to">to</label> <input id="hoursthu2" name="hoursthu2" class="hours" placeholder="5:00 PM" /></div>
-    <div><label for="hoursfri1">Friday:</label><input id="hoursfri1" name="hoursfri1" class="hours" placeholder="8:00 AM" /> <label for="hoursfri2" class="to">to</label> <input id="hoursfri2" name="hoursfri2" class="hours" placeholder="5:00 PM" /></div>
-    <div><label for="hourssat1">Saturday:</label><input id="hourssat1" name="hourssat1" class="hours" placeholder="8:00 AM" /> <label for="hourssat2" class="to">to</label> <input id="hourssat2" name="hourssat2" class="hours" placeholder="5:00 PM" /></div>
+    <div><label for="hourssun1">Sunday:</label><input id="hourssun1" name="hourssun1" class="hours" placeholder="8:00 AM" /> <label for="hourssun2" class="to">to</label> <input id="hourssun2" name="hourssun2" class="hours" aria-label="to Sunday" placeholder="5:00 PM" /></div>
+    <div><label for="hoursmon1">Monday:</label><input id="hoursmon1" name="hoursmon1" class="hours" placeholder="8:00 AM" /> <label for="hoursmon2" class="to">to</label> <input id="hoursmon2" name="hoursmon2" class="hours" aria-label="to Monday" placeholder="5:00 PM" /></div>
+    <div><label for="hourstue1">Tuesday:</label><input id="hourstue1" name="hourstue1" class="hours" placeholder="8:00 AM" /> <label for="hourstue2" class="to">to</label> <input id="hourstue2" name="hourstue2" class="hours" aria-label="to Tuesday" placeholder="5:00 PM" /></div>
+    <div><label for="hourswed1">Wednesday:</label><input id="hourswed1" name="hourswed1" class="hours" placeholder="8:00 AM" /> <label for="hourswed2" class="to">to</label> <input id="hourswed2" name="hourswed2" class="hours" aria-label="to Wednesday" placeholder="5:00 PM" /></div>
+    <div><label for="hoursthu1">Thursday:</label><input id="hoursthu1" name="hoursthu1" class="hours" placeholder="8:00 AM" /> <label for="hoursthu2" class="to">to</label> <input id="hoursthu2" name="hoursthu2" class="hours" aria-label="to Thursday" placeholder="5:00 PM" /></div>
+    <div><label for="hoursfri1">Friday:</label><input id="hoursfri1" name="hoursfri1" class="hours" placeholder="8:00 AM" /> <label for="hoursfri2" class="to">to</label> <input id="hoursfri2" name="hoursfri2" class="hours" aria-label="to Friday" placeholder="5:00 PM" /></div>
+    <div><label for="hourssat1">Saturday:</label><input id="hourssat1" name="hourssat1" class="hours" placeholder="8:00 AM" /> <label for="hourssat2" class="to">to</label> <input id="hourssat2" name="hourssat2" class="hours" aria-label="to Saturday" placeholder="5:00 PM" /></div>
     <div><label for="hoursincludeholidaymessage">Include "Closed During University Holidays" message?:</label><input type="checkbox" id="hoursincludeholidaymessage" name="hoursincludeholidaymessage" /></div>
     <div><label for="hournotes">Notes:</label><input id="hournotes" name="hournotes" class="long" /></div>
     <h2>More Information</h2>
     <div><label for="covidsupport">COVID-19 Vaccine Card upload support?:</label><input type="checkbox" id="covidsupport" name="covidsupport" /></div>
         <div class="notes side">Check this box if your support team/help desk is able and willing to help faculty and staff upload their COVID-19 Vaccine records to the MyMcKinley Health Portal.</div>
-    <div><label for="notes" style="text-align: left;">General Notes:</label><div id='notes' class='fulltext'></div></div>
+    <div>General Notes:<div id='notes' class='fulltext'></div></div>
     <div>
         <label for="searchterms">Search Term Information:</label><input id="searchterms" name="searchterms" class="long" />
         <div class="notes">This is information that is not displayed, but will show up if someone does a search for a phrase.</div>
@@ -101,14 +101,13 @@
         <div class="notes side">This is used to order items in relation to other offices. Contact an administrator to edit this.</div>
     </div>
 
-    <button class="il-button" onclick="return update();">Update Office Information</button> <span class="message" id="updateGeneralMessage">Office Information Updated</span>
+    <button class="il-button" onclick="return update();" id="updateButton" aria-live="polite">Update Office Information</button> <span class="message" id="updateGeneralMessage">Office Information Updated</span>
 </form>
 
 <hr />
-<h2>Instructions to pull information</h2>
-<p>This is the link used to get the office information.</p>
-<p><a href="#" id="tutorialurlid" target="_blank"></a></p>
-<p><a href="#" id="tutorialurlcode" target="_blank"></a></p>
+<h2>Links to pull information</h2>
+<p><a href="#" id="tutorialurlid" target="_blank">Link to get information by ID</a></p>
+<p><a href="#" id="tutorialurlcode" target="_blank">Link to get information by Code</a></p>
 
 <div id="people" style="display: none;">
     <hr />
@@ -144,7 +143,7 @@
                     bindings: {
                         tab: {
                             key: 9,
-                            handler: () => { document.getElementById('searchterm').focus(); },
+                            handler: () => { document.getElementById('searchterms').focus(); },
                         },
                         'remove tab': {
                             key: 9,
@@ -161,6 +160,12 @@
         });
 
         document.addEventListener('DOMContentLoaded', function (event) {
+            document.getElementsByClassName('ql-bold')[0].setAttribute('aria-label', 'apply bold');
+            document.getElementsByClassName('ql-italic')[0].setAttribute('aria-label', 'apply italics');
+            document.getElementsByClassName('ql-link')[0].setAttribute('aria-label', 'add or remove link');
+            document.getElementsByClassName('ql-list')[0].setAttribute('aria-label', 'apply ordered link');
+            document.getElementsByClassName('ql-list')[1].setAttribute('aria-label', 'apply bullet link');
+            document.getElementsByClassName('ql-clean')[0].setAttribute('aria-label', 'clean markup');
             loadItems();
             loadPeople();
         });
@@ -193,10 +198,8 @@
                 let rootUrl = 'https://' + window.location.host + '/';
                 let tutorialUrlId = rootUrl + 'Api/Contact/Office/' + data.id;
                 let tutorialUrlCode = rootUrl + 'Api/Contact/OfficeCode/' + data.internalCode;
-                document.getElementById('tutorialurlid').innerHTML = tutorialUrlId;
                 document.getElementById('tutorialurlid').setAttribute('href', tutorialUrlId);
                 if (data.internalCode != null && data.internalCode != '') {
-                    document.getElementById('tutorialurlcode').innerHTML = tutorialUrlCode;
                     document.getElementById('tutorialurlcode').setAttribute('href', tutorialUrlCode);
                 }
                 document.getElementById('title').value = data.title;
@@ -268,8 +271,10 @@
                 body: json
             }).then(response => {
                 document.getElementById('updateGeneralMessage').classList.add('show');
+                document.getElementById('updateButton').innerHTML = 'Office Information Updated';
                 setTimeout(function() { 
                     document.getElementById('updateGeneralMessage').classList.remove('show');
+                    document.getElementById('updateButton').innerHTML = 'Update Office Information';
                 }, 4000);
             });
             return false;
@@ -339,6 +344,11 @@
                     li.appendChild(anchor);
                     list.appendChild(li);
                 });
+                if (data.length == 0) {
+                    const li = document.createElement('li');
+                    li.innerHTML = 'N/A';
+                    list.appendChild(li);
+                }
             });
         }
     </script>

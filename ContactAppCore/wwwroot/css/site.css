@@ -57,7 +57,7 @@ form.large input {
 }
 
 .error {
-    color: red;
+    color: darkred;
     font-weight: bold;
 }
 
@@ -134,7 +134,7 @@ form.large input {
 .message {
     transition: opacity 400ms;
     opacity: 0;
-    color: red;
+    color: darkred;
     font-weight: bold;
     padding-left: 15px;
 }

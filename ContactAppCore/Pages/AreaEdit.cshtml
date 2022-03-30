@@ -36,7 +36,7 @@
     </div>
 
     <h2>More Information</h2>
-    <div><label for="notes">General Notes:</label><div id='notes' class='fulltext'></div></div>
+    <div>General Notes:<div id='notes' class='fulltext'></div></div>
     <div>
         <label for="searchterms">Search Term Information:</label><input id="searchterms" name="searchterms" class="long" />
         <div class="notes">This is information that is not displayed, but will show up if someone does a search for a phrase.</div>
@@ -74,14 +74,13 @@
         <div class="notes side">This is used to order items in relation to other areas. Contact an administrator to edit this.</div>
     </div>
 
-    <button class="il-button" onclick="return update();">Update Area Information</button>
+    <button class="il-button" onclick="return update();" aria-live="polite" id="updateButton">Update Area Information</button><span class="message" id="updateGeneralMessage">Area Information Updated</span>
 </form>
 
 <hr />
-<h2>Instructions to pull information</h2>
-<p>This is the link used to get the area information with all offices.</p>
-<p><a href="#" id="tutorialurlid" target="_blank"></a></p>
-<p><a href="#" id="tutorialurlcode" target="_blank"></a></p>
+<h2>Links to pull information</h2>
+<p><a href="#" id="tutorialurlid" target="_blank">Link to get information by ID</a></p>
+<p><a href="#" id="tutorialurlcode" target="_blank">Link to get information by code</a></p>
 
 <hr />
 
@@ -111,7 +110,7 @@
                     bindings: {
                         tab: {
                             key: 9,
-                            handler: () => { document.getElementById('searchterm').focus(); },
+                            handler: () => { document.getElementById('searchterms').focus(); },
                         },
                         'remove tab': {
                             key: 9,
@@ -127,7 +126,14 @@
             theme: 'snow'
         });
 
+
         document.addEventListener('DOMContentLoaded', function (event) {
+            document.getElementsByClassName('ql-bold')[0].setAttribute('aria-label', 'apply bold');
+            document.getElementsByClassName('ql-italic')[0].setAttribute('aria-label', 'apply italics');
+            document.getElementsByClassName('ql-link')[0].setAttribute('aria-label', 'add or remove link');
+            document.getElementsByClassName('ql-list')[0].setAttribute('aria-label', 'apply ordered link');
+            document.getElementsByClassName('ql-list')[1].setAttribute('aria-label', 'apply bullet link');
+            document.getElementsByClassName('ql-clean')[0].setAttribute('aria-label', 'clean markup');
             loadItems();
             loadPeople();
         });
@@ -159,10 +165,8 @@
                 let rootUrl = 'https://' + window.location.host + '/';
                 let tutorialUrlId = rootUrl + 'Api/Contact/Area/' + data.id;
                 let tutorialUrlCode = rootUrl + 'Api/Contact/AreaCode/' + data.internalCode;
-                document.getElementById('tutorialurlid').innerHTML = tutorialUrlId;
                 document.getElementById('tutorialurlid').setAttribute('href', tutorialUrlId);
                 if (data.internalCode != null && data.internalCode != '') {
-                    document.getElementById('tutorialurlcode').innerHTML = tutorialUrlCode;
                     document.getElementById('tutorialurlcode').setAttribute('href', tutorialUrlCode);
                 }
                 document.getElementById('title').value = data.title;
@@ -206,6 +210,13 @@
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: json
+            }).then(response => {
+                document.getElementById('updateGeneralMessage').classList.add('show');
+                document.getElementById('updateButton').innerHTML = 'Area Information Updated';
+                setTimeout(function() { 
+                    document.getElementById('updateGeneralMessage').classList.remove('show');
+                    document.getElementById('updateButton').innerHTML = 'Update Area Information';
+                }, 4000);
             });
             return false;
         }
@@ -274,6 +285,11 @@
                     li.appendChild(anchor);
                     list.appendChild(li);
                 });
+                if (data.length == 0) {
+                    const li = document.createElement('li');
+                    li.innerHTML = 'N/A';
+                    list.appendChild(li);
+                }
             });
         }
     </script>
