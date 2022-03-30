@@ -41,8 +41,6 @@
     </div>
 </div>
 
-<p><button class="il-button" onclick="return refreshprofile();">Push recent changes to the college web profile</button> (otherwise, this happens automatically within 24 hours)</p>
-
 <h2>General Information for @User.Identity.Name</h2>
 <p>Note: if you have an <a href="https://experts.illinois.edu">Illinois Experts</a> profile, you should leave the below information blank and edit all your information at Illinois Experts. 
     <em>This information will be overwritten by any Illinois Experts profile you have.</em> <a href="https://go.illinois.edu/experts-login">Log in to Illinois Experts</a>. 
@@ -232,15 +230,17 @@
                 method: 'POST',
                 body: fd
             }).then(function (response) {
-                return response.text().then(function (text) {
-                    if (text.startsWith("Error")) {
-                        document.getElementById('picture-error').innerHTML = text;
-                    } else {
-                        document.getElementById('image-photo').setAttribute('src', text + '?id=' + new Date().getTime());
-                        document.getElementById('image-photo').style.display = '';
-                        document.getElementById('picture-error').innerHTML = '';
-                    }
-                });
+                debugger;
+                var r = response.text();
+                if (r.startsWith("Error")) {
+                    document.getElementById('picture-error').innerHTML = text;
+                } else {
+                    debugger;
+                    document.getElementById('image-photo').setAttribute('src', text + '?id=' + new Date().getTime());
+                    document.getElementById('image-photo').style.display = '';
+                    document.getElementById('picture-error').innerHTML = '';
+                }
+                return true;                    
             });
         }
 
@@ -276,14 +276,6 @@
                 method: 'POST',
                 body: fd
             }).then(response => document.getElementById('link-cv').style.display = 'none');
-        }
-
-        function refreshprofile() {
-            debugger;
-            document.getElementsByTagName('main')[0].style.visibility = 'hidden';
-            fetch('https://uofi-itp-people.azurewebsites.net/api/Load?name=@User.Identity.Name', {
-                method: 'GET'
-            }).then(response => document.getElementsByTagName('main')[0].style.visibility = '');
         }
 
         function addactivity() {
