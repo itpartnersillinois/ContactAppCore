@@ -35,11 +35,10 @@
             <option value="5">Low</option>
         </select>
     </div>
-    <div><label for="biography">Job-Specific Biography:</label><div id='biography' class='fulltext'></div></div>
+    <div>Job-Specific Biography:<div id='biography' class='fulltext'></div></div>
 </form>
 
 <p><button class="il-button" id="updateGeneral" onclick="return update();">Update Job Profile Information</button> <span class="message" id="updateGeneralMessage">Job Profile Updated</span></p>
-<p><button class="il-button" onclick="return refreshprofile();">Push recent changes to the college web profile</button> (this will blank the screen for a few minutes; if you don't run this, this happens automatically within 24 hours)</p>
 
 <div id="profile-addition" style="display: none;">
     <div id='job-profile-group'>
@@ -248,13 +247,6 @@
             return false;
         }
 
-        function refreshprofile() {
-            document.getElementsByTagName('main')[0].style.visibility = 'hidden';
-            fetch('https://uofi-itp-people.azurewebsites.net/api/Load?name=' + document.getElementById('netid-display').innerHTML, {
-                method: 'GET'
-            }).then(response => document.getElementsByTagName('main')[0].style.visibility = '');
-        }
-
         function picture() {
             var fd = new FormData();
             var file_data = document.getElementById('picture-upload').files[0];
@@ -267,8 +259,10 @@
                 return response.text().then(function (text) {
                     if (text.startsWith("Error")) {
                         document.getElementById('picture-error').innerHTML = text;
+                        document.getElementById('image-photo').style.display = 'none';
                     } else {
                         document.getElementById('image-photo').setAttribute('src', text + '?id=' + new Date().getTime());
+                        document.getElementById('image-photo').style.display = '';
                         document.getElementById('picture-error').innerHTML = '';
                     }
                 });
@@ -281,7 +275,16 @@
             fetch('/Api/EditEmployee/DeletePicture', {
                 method: 'POST',
                 body: fd
-            }).then(loadInformation());
+            }).then(function (response) {
+                return response.text().then(function (text) {
+                    if (text.startsWith("Error")) {
+                        document.getElementById('picture-error').innerHTML = text;
+                    } else {
+                        document.getElementById('image-photo').style.display = 'none';
+                        document.getElementById('picture-error').innerHTML = '';
+                    }
+                });
+            });
         }
 
         function cv() {
@@ -292,7 +295,18 @@
             fetch('/Api/EditEmployee/CV', {
                 method: 'POST',
                 body: fd
-            }).then(loadInformation());
+            }).then(function (response) {
+                return response.text().then(function (text) {
+                    if (text.startsWith("Error")) {
+                        document.getElementById('cv-error').innerHTML = text;
+                        document.getElementById('link-cv').style.display = 'none';
+                    } else {
+                        document.getElementById('link-cv').setAttribute('src', text + '?id=' + new Date().getTime());
+                        document.getElementById('link-cv').style.display = '';
+                        document.getElementById('cv-error').innerHTML = '';
+                    }
+                });
+            });
         }
 
         function deletecv() {
@@ -301,7 +315,16 @@
             fetch('/Api/EditEmployee/DeleteCV', {
                 method: 'POST',
                 body: fd
-            }).then(loadInformation());
+            }).then(function (response) {
+                return response.text().then(function (text) {
+                    if (text.startsWith("Error")) {
+                        document.getElementById('cv-error').innerHTML = text;
+                    } else {
+                        document.getElementById('link-cv').style.display = 'none';
+                        document.getElementById('cv-error').innerHTML = '';
+                    }
+                });
+            });
         }
 
         function cleanQuill(s) {
@@ -312,6 +335,12 @@
         }
 
         document.addEventListener('DOMContentLoaded', function (event) {
+            document.getElementsByClassName('ql-bold')[0].setAttribute('aria-label', 'apply bold');
+            document.getElementsByClassName('ql-italic')[0].setAttribute('aria-label', 'apply italics');
+            document.getElementsByClassName('ql-link')[0].setAttribute('aria-label', 'add or remove link');
+            document.getElementsByClassName('ql-list')[0].setAttribute('aria-label', 'apply ordered link');
+            document.getElementsByClassName('ql-list')[1].setAttribute('aria-label', 'apply bullet link');
+            document.getElementsByClassName('ql-clean')[0].setAttribute('aria-label', 'clean markup');
             loadInformation();
         });
     </script>
