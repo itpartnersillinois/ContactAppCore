@@ -42,15 +42,36 @@
 </div>
 
 <h2>General Information for @User.Identity.Name</h2>
-<p>Note: if you have an <a href="https://experts.illinois.edu">Illinois Experts</a> profile, you should leave the below information blank and edit all your information at Illinois Experts. 
+<p>Note: if you have an <a href="https://experts.illinois.edu">Illinois Experts</a> profile, you should leave the biography and activity information blank and edit all your information at Illinois Experts. 
     <em>This information will be overwritten by any Illinois Experts profile you have.</em> <a href="https://go.illinois.edu/experts-login">Log in to Illinois Experts</a>. 
     For the College of Education, information on what goes in Illinois Experts is at <a href="https://help.uillinois.edu/TDClient/44/Portal/KB/ArticleDet?ID=2242">this Knowledge Base article.</a> </p>
  
 <input id="netid" name="netid" type="hidden" value="@User.Identity.Name.Replace("@illinois.edu", "")" />
 <input id="id" name="id" type="hidden" value="0" />
+
+<h3>Other details</h3>
+<p>Note that for a preferred first name, you may edit this in the <a href="https://go.uillinois.edu/myprofile">HR Profile</a> and it will update your directory information as well, but HR Profile does not support diacritical marks at this time. Pronoun disclosure is an individual choice and not a mandate. </p>
+<div class="profile-preferences">
+<div>
+    <label for="firstname">Preferred First Name:</label>
+    <input id="firstname" name="firstname" />
+</div>
+
+<div>
+    <label for="lastname">Preferred Last Name:</label>
+    <input id="lastname" name="lastname" />
+</div>
+
+<div>
+    <label for="pronouns">Preferred Pronouns:</label>
+    <input id="pronouns" name="pronouns" />
+    <select id="pronounoption" name="pronounoption" onchange="document.getElementById('pronouns').value = this.value;"><option value="">Templates</option><option value="he/him">he/him</option><option value="she/her">she/her</option><option value="they/them">they/them</option><option value="">other</option></select>
+</div>
+</div>
+
 <div><h3>Biography</h3><div id='biography' class='fulltext'></div></div>
 
-<button class="il-button" id="updateGeneral" onclick="return update();">Update Biography</button>
+<button class="il-button" id="updateGeneral" onclick="return update();">Update Biography and Preferences</button><span class="message" id="updateGeneralMessage">Information Updated</span>
 
 <div id="existing-activity">
     <h3>Activities</h3>
@@ -120,6 +141,16 @@
                     } else {
                         document.getElementById('link-cv').style.display = 'none';
                     }
+                    if (data.preferredName != null) {
+                        document.getElementById('firstname').value = data.preferredName;
+                    }
+                    if (data.preferredNameLast != null) {
+                        document.getElementById('lastname').value = data.preferredNameLast;
+                    }
+                    if (data.preferredPronouns != null) {
+                        document.getElementById('pronouns').value = data.preferredPronouns;
+                    }
+
                     const jobs = document.getElementById('jobs');
                     jobs.innerHTML = '';
                     if (data.jobs != null) {
@@ -206,6 +237,9 @@
             let object = {};
             object['id'] = document.getElementById('id').value;
             object['biography'] = cleanQuill(quillInfo.root.innerHTML);
+            object['firstName'] = document.getElementById('firstname').value;
+            object['lastName'] = document.getElementById('lastname').value;
+            object['pronouns'] = document.getElementById('pronouns').value;
             var json = JSON.stringify(object);
             fetch('/Api/EditEmployee/Update', {
                 method: 'POST',
@@ -216,6 +250,12 @@
                     document.getElementById('id').value = text;
                     document.getElementById('existing-profile').style.display = '';
                     document.getElementById('existing-activity').style.display = '';
+                    document.getElementById('updateGeneralMessage').classList.add('show');
+                    document.getElementById('updateGeneral').innerHTML = 'Biography and Preferences Updated';
+                    setTimeout(function() { 
+                        document.getElementById('updateGeneralMessage').classList.remove('show');
+                        document.getElementById('updateGeneral').innerHTML = 'Update Biography and Preferences';
+                    }, 4000);
                 });
             });
             return false;

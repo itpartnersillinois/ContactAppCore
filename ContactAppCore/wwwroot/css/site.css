@@ -142,3 +142,13 @@ form.large input {
 .show {
     opacity: 1;
 }
+
+.profile-preferences label {
+    width: 175px;
+    display: inline-block;
+    padding-left: 30px;
+}
+
+.profile-preferences input, .profile-preferences select {
+    margin-left: 10px;
+}
