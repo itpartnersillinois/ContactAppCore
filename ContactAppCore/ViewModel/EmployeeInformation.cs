@@ -1,13 +1,12 @@
-﻿using ContactAppCore.Data.Models;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
+using ContactAppCore.Data.Models;
 
-namespace ContactAppCore.ViewModel
-{
-    public class EmployeeInformation
-    {
-        public EmployeeInformation(JobProfile profile)
-        {
+namespace ContactAppCore.ViewModel {
+
+    public class EmployeeInformation {
+
+        public EmployeeInformation(JobProfile profile) {
             Biography = profile.EmployeeProfile.Biography ?? string.Empty;
             JobBiography = string.IsNullOrWhiteSpace(profile.Biography) ? profile.EmployeeProfile.Biography ?? string.Empty : profile.Biography;
             CVUrl = profile.EmployeeProfile.CVUrl ?? string.Empty;
@@ -20,6 +19,7 @@ namespace ContactAppCore.ViewModel
             PhotoUrl = profile.EmployeeProfile.PhotoUrl ?? string.Empty;
             PreferredFirstName = profile.EmployeeProfile.PreferredName ?? string.Empty;
             PreferredLastName = profile.EmployeeProfile.PreferredNameLast ?? string.Empty;
+            PreferredPronouns = profile.EmployeeProfile.PreferredPronouns ?? string.Empty;
             IsPrimaryProfile = (profile.Id == (profile.EmployeeProfile.PrimaryProfile ?? 0));
             EmployeeActivityInformation = profile.EmployeeProfile.EmployeeActivities.Select(ea => new EmployeeActivityInformation(ea));
             Tags = string.Join(", ", profile.Tags.Select(t => t.Title));
@@ -40,6 +40,7 @@ namespace ContactAppCore.ViewModel
         public string PhotoUrl { get; set; }
         public string PreferredFirstName { get; set; }
         public string PreferredLastName { get; set; }
+        public string PreferredPronouns { get; set; }
         public string Tags { get; set; }
         public string Title { get; set; }
     }
