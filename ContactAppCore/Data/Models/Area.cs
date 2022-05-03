@@ -2,21 +2,18 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace ContactAppCore.Data.Models
-{
-    public enum AreaTypeEnum
-    {
+namespace ContactAppCore.Data.Models {
+
+    public enum AreaTypeEnum {
         NotListed, System, Campus, College, Research, Other = 9
     }
 
-    public class Area : BaseDataItem
-    {
-        public Area()
-        {
+    public class Area : BaseDataItem {
+
+        public Area() {
         }
 
-        public Area(string title)
-        {
+        public Area(string title) {
             IsActive = false;
             Title = title;
             InternalOrder = 3;
@@ -41,6 +38,8 @@ namespace ContactAppCore.Data.Models
         public string InternalUrl { get; set; }
         public string Notes { get; set; }
         public virtual ICollection<Office> Offices { get; set; }
+        public int PictureHeight { get; set; }
+        public int PictureWidth { get; set; }
         public string SearchTerms { get; set; }
     }
 }

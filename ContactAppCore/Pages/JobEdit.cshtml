@@ -23,12 +23,6 @@
         </select>
     </div>
     <div>
-        <label for="display">Display:</label><select id="display" name="display">
-            <option value="Staff Directory Only">Directory Only</option>
-            <option value="Faculty Finder">Faculty Finder</option>
-        </select>
-    </div>
-    <div>
         <label for="internalorder">Internal Order:</label><select id="internalorder" name="internalorder">
             <option value="3">Medium</option>
             <option value="1">High</option>
@@ -54,10 +48,10 @@
     <p>Note that this will affect all instances of the employee's picture</p>
     <div class="uploader">
         <img id="image-photo" />
-        <input type="file" id="picture-upload" name="picture-upload">
+        <label for="picture-upload" class="il-button narrow">Upload your Picture</label>
+        <input type="file" id="picture-upload" name="picture-upload" accept=".png, .gif, .jpg, .jpeg" style="opacity: 0; width: 1px;">
         <div>
-            <button class="il-button narrow" onclick="return picture();">Upload Photo</button>
-            <button class="il-button narrow" onclick="return deletepicture();">Delete Photo</button>
+            <button class="il-button narrow" onclick="return deletepicture();">Delete your Photo</button>
             <div id="picture-error" class="error"></div>
         </div>
     </div>
@@ -66,10 +60,10 @@
     <p>Note that this will affect all instances of the employee's CV</p>
     <div class="uploader">
         <a id="link-cv">Link to CV</a>
-        <input type="file" id="cv-upload" name="cv-upload">
+        <label for="cv-upload" class="il-button narrow">Upload your CV</label>
+        <input type="file" id="cv-upload" name="cv-upload" accept=".pdf, .doc, .docx, .rtf" style="opacity: 0; width: 1px;">
         <div>
-            <button class="il-button narrow" onclick="return cv();">Upload CV</button>
-            <button class="il-button narrow" onclick="return deletecv();">Delete CV</button>
+            <button class="il-button narrow" onclick="return deletecv();">Delete your CV</button>
             <div id="cv-error" class="error"></div>
         </div>
     </div>
@@ -89,7 +83,7 @@
                     bindings: {
                         tab: {
                             key: 9,
-                            handler: () => { document.getElementById('category').focus(); },
+                            handler: () => { document.getElementById('updateGeneral').focus(); },
                         },
                         'remove tab': {
                             key: 9,
@@ -146,9 +140,7 @@
                         quillInfo.setContents(quillInfo.clipboard.convert(data.biography), 'silent');
                     }
                     data.tags.forEach(t => {
-                        if (t.title == 'Staff Directory Only' || t.title == 'Faculty Finder') {
-                            document.getElementById('display').value = t.title;
-                        } else {
+                        if (t.title != 'Staff Directory Only' && t.title != 'Faculty Finder') {
                             document.getElementById('category').value = t.title;
                         }
                     });
@@ -301,7 +293,7 @@
                         document.getElementById('cv-error').innerHTML = text;
                         document.getElementById('link-cv').style.display = 'none';
                     } else {
-                        document.getElementById('link-cv').setAttribute('src', text + '?id=' + new Date().getTime());
+                        document.getElementById('link-cv').setAttribute('href', text + '?id=' + new Date().getTime());
                         document.getElementById('link-cv').style.display = '';
                         document.getElementById('cv-error').innerHTML = '';
                     }
@@ -342,6 +334,8 @@
             document.getElementsByClassName('ql-list')[1].setAttribute('aria-label', 'apply bullet link');
             document.getElementsByClassName('ql-clean')[0].setAttribute('aria-label', 'clean markup');
             loadInformation();
+            document.getElementById('picture-upload').addEventListener('change', picture);
+            document.getElementById('cv-upload').addEventListener('change', cv);
         });
     </script>
 }

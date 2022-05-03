@@ -19,9 +19,9 @@
     <h2>Picture</h2>
     <div class="uploader">
         <img id="image-photo" />
-        <input type="file" id="picture-upload" name="picture-upload">
+        <label for="picture-upload" class="il-button narrow">Upload your Picture</label>
+        <input type="file" id="picture-upload" name="picture-upload" accept=".png, .gif, .jpg, .jpeg" style="opacity: 0; width: 1px;">
         <div>
-            <button class="il-button narrow" onclick="return picture();">Upload Photo</button>
             <button class="il-button narrow" onclick="return deletepicture();">Delete Photo</button>
             <div id="picture-error" class="error"></div>
         </div>
@@ -30,9 +30,9 @@
     <h2>CV</h2>
     <div class="uploader">
         <a id="link-cv">Link to CV</a>
-        <input type="file" id="cv-upload" name="cv-upload">
+        <label for="cv-upload" class="il-button narrow">Upload your CV</label>
+        <input type="file" id="cv-upload" name="cv-upload" accept=".pdf, .doc, .docx, .rtf" style="opacity: 0; width: 1px;">
         <div>
-            <button class="il-button narrow" onclick="return cv();">Upload CV</button>
             <button class="il-button narrow" onclick="return deletecv();">Delete CV</button>
             <div id="cv-error" class="error"></div>
         </div>
@@ -254,17 +254,16 @@
                 method: 'POST',
                 body: fd
             }).then(function (response) {
-                debugger;
-                var r = response.text();
-                if (r.startsWith("Error")) {
-                    document.getElementById('picture-error').innerHTML = text;
-                } else {
-                    debugger;
-                    document.getElementById('image-photo').setAttribute('src', text + '?id=' + new Date().getTime());
-                    document.getElementById('image-photo').style.display = '';
-                    document.getElementById('picture-error').innerHTML = '';
-                }
-                return true;                    
+                return response.text().then(function (text) {
+                    if (text.startsWith("Error")) {
+                        document.getElementById('picture-error').innerHTML = text;
+                        document.getElementById('image-photo').style.display = 'none';
+                    } else {
+                        document.getElementById('image-photo').setAttribute('src', text + '?id=' + new Date().getTime());
+                        document.getElementById('image-photo').style.display = '';
+                        document.getElementById('picture-error').innerHTML = '';
+                    }
+                });
             });
         }
 
@@ -287,8 +286,14 @@
                 body: fd
             }).then(function (response) {
                 return response.text().then(function (text) {
-                    document.getElementById('link-cv').setAttribute('href', text); 
-                    document.getElementById('link-cv').style.display = '';
+                    if (text.startsWith("Error")) {
+                        document.getElementById('cv-error').innerHTML = text;
+                        document.getElementById('link-cv').style.display = 'none';
+                    } else {
+                        document.getElementById('link-cv').setAttribute('href', text + '?id=' + new Date().getTime());
+                        document.getElementById('link-cv').style.display = '';
+                        document.getElementById('cv-error').innerHTML = '';
+                    }
                 });
             });
         }
@@ -366,10 +371,18 @@
         }
 
         document.addEventListener('DOMContentLoaded', function (event) {
+            document.getElementsByClassName('ql-bold')[0].setAttribute('aria-label', 'apply bold');
+            document.getElementsByClassName('ql-italic')[0].setAttribute('aria-label', 'apply italics');
+            document.getElementsByClassName('ql-link')[0].setAttribute('aria-label', 'add or remove link');
+            document.getElementsByClassName('ql-list')[0].setAttribute('aria-label', 'apply ordered link');
+            document.getElementsByClassName('ql-list')[1].setAttribute('aria-label', 'apply bullet link');
+            document.getElementsByClassName('ql-clean')[0].setAttribute('aria-label', 'clean markup');
             const urlParams = new URLSearchParams(window.location.search);
             const netid = urlParams.get('netid');
             document.getElementById('netid').value = netid;
             loadInformation();
+            document.getElementById('picture-upload').addEventListener('change', picture);
+            document.getElementById('cv-upload').addEventListener('change', cv);
         });
     </script>
 }
