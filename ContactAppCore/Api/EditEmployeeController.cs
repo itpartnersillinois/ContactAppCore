@@ -6,6 +6,7 @@ using ContactAppCore.Data.Models;
 using ContactAppCore.Helpers;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
@@ -145,26 +146,28 @@ namespace ContactAppCore.Api {
                 return default;
             }
             await LogHelper.CreateLog(contactRepository, "Updating Employee Photo " + originalObject.Id.ToString(), User.Identity.Name);
-
-            var path = fileHelper.AddPhoto(file.OpenReadStream(), originalObject.Title, file.FileName);
-            if (path.Result == "") {
-                return "Error - File is not sized correctly";
+            var area = await contactRepository.ReadAsync(c => c.EmployeeProfiles
+                .Include(c => c.Jobs).ThenInclude(j => j.Office).ThenInclude(o => o.Area)
+                .FirstOrDefault(c => c.Id == id)
+                .Jobs.FirstOrDefault().Office.Area);
+            string errorMessage;
+            var path = fileHelper.AddPhoto(file.OpenReadStream(), originalObject.Title, file.FileName, area.PictureHeight, area.PictureWidth, out errorMessage);
+            if (!string.IsNullOrWhiteSpace(errorMessage) || string.IsNullOrWhiteSpace(path)) {
+                return errorMessage + (string.IsNullOrWhiteSpace(path) ? "" : " (" + path + ")");
             }
-
             await contactRepository.UpdateAsync(new EmployeeProfile {
                 Id = originalObject.Id,
                 Title = originalObject.Title,
                 Biography = originalObject.Biography,
                 CVUrl = originalObject.CVUrl,
-                PhotoUrl = path.Result,
+                PhotoUrl = path,
                 PreferredName = originalObject.PreferredName,
                 PreferredNameLast = originalObject.PreferredNameLast,
                 PreferredPronouns = originalObject.PreferredPronouns,
                 LastUpdated = DateTime.Now,
                 IsActive = true
             });
-
-            return path.Result;
+            return path;
         }
 
         [HttpPost("UpdatePrimaryJob")]

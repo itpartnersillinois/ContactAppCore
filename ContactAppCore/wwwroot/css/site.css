@@ -9,7 +9,6 @@
 
 .il-formatted .il-button.narrow {
     padding: 2px 20px;
-    margin-left: 20px;
 }
 
 .il-formatted h3:first-child {
@@ -151,4 +150,8 @@ form.large input {
 
 .profile-preferences input, .profile-preferences select {
     margin-left: 10px;
+}
+
+#image-photo, #link-cv {
+    margin-right: 20px;
 }

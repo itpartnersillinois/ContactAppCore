@@ -1,18 +1,17 @@
-﻿using Amazon;
-using Amazon.Runtime;
-using Amazon.S3;
-using Amazon.S3.Model;
-using Amazon.S3.Transfer;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Threading.Tasks;
+using Amazon;
+using Amazon.Runtime;
+using Amazon.S3;
+using Amazon.S3.Model;
+using Amazon.S3.Transfer;
 
-namespace ContactAppCore.Helpers
-{
-    public class FileHelper
-    {
+namespace ContactAppCore.Helpers {
+
+    public class FileHelper {
         private string accessKey;
 
         private string bucketName;
@@ -21,75 +20,66 @@ namespace ContactAppCore.Helpers
 
         private string urlPath;
 
-        public FileHelper(string accessKey, string bucketName, string secretKey, string urlPath)
-        {
+        public FileHelper(string accessKey, string bucketName, string secretKey, string urlPath) {
             this.accessKey = accessKey;
             this.bucketName = bucketName;
             this.secretKey = secretKey;
             this.urlPath = urlPath;
         }
 
-        public async Task<string> AddCv(Stream stream, string name, string file)
-        {
+        public async Task<string> AddCv(Stream stream, string name, string file) {
             return await AddFile(stream, "profile_cv", name, file);
         }
 
-        public async Task<string> AddPhoto(Stream stream, string name, string file)
-        {
-            var img = Image.FromStream(stream);
-            if (img.Width == 244 && img.Height == 292)
-            {
-                return await AddFile(stream, "profile_photo", name, file);
+        public string AddPhoto(Stream stream, string name, string file, int height, int width, out string errorMessage) {
+            if (height > 0 && width > 0) {
+                var img = Image.FromStream(stream);
+                if (img.Width != width || img.Height != height) {
+                    errorMessage = $"Error: File does not match dimensions {height}x{width} (actual file is {img.Height}x{img.Width})";
+                    return "";
+                }
             }
-            return "";
+            if (string.IsNullOrWhiteSpace(Path.GetExtension(file))) {
+                errorMessage = "Error: File does not have a proper extension";
+                return "";
+            }
+            errorMessage = "";
+            return AddFile(stream, "profile_photo", name, file).Result;
         }
 
-        public async Task<string> DeleteCv(string name)
-        {
+        public async Task<string> DeleteCv(string name) {
             name = name.Replace("@illinois.edu", "");
             return await DeleteFiles(name, "profile_cv", new string[] { ".pdf", ".doc", ".docx", ".rtf" });
         }
 
-        public async Task<string> DeletePhoto(string name)
-        {
+        public async Task<string> DeletePhoto(string name) {
             return await DeleteFiles(name, "profile_photo", new string[] { ".png", ".gif", ".jpg", ".jpeg" });
         }
 
-        private async Task<string> AddFile(Stream stream, string path, string name, string file)
-        {
+        private async Task<string> AddFile(Stream stream, string path, string name, string file) {
             var key = $"{path}/{name.Replace("@illinois.edu", "") + Path.GetExtension(file)}";
-            try
-            {
-                using (var client = new AmazonS3Client(new BasicAWSCredentials(this.accessKey, this.secretKey), RegionEndpoint.USEast2))
-                {
+            try {
+                using (var client = new AmazonS3Client(new BasicAWSCredentials(this.accessKey, this.secretKey), RegionEndpoint.USEast2)) {
                     var transfer = new TransferUtility(client);
                     var uploadRequest = new TransferUtilityUploadRequest { InputStream = stream, BucketName = this.bucketName, CannedACL = S3CannedACL.PublicRead, Key = key };
                     await transfer.UploadAsync(uploadRequest);
                 }
                 return urlPath + "/" + key;
-            }
-            catch (Exception e)
-            {
+            } catch (Exception e) {
                 return e.Message;
             }
         }
 
-        private async Task<string> DeleteFiles(string name, string path, IEnumerable<string> extensions)
-        {
+        private async Task<string> DeleteFiles(string name, string path, IEnumerable<string> extensions) {
             var key = $"{path}/{name}";
-            try
-            {
-                using (var client = new AmazonS3Client(new BasicAWSCredentials(this.accessKey, this.secretKey), RegionEndpoint.USEast2))
-                {
-                    foreach (var e in extensions)
-                    {
+            try {
+                using (var client = new AmazonS3Client(new BasicAWSCredentials(this.accessKey, this.secretKey), RegionEndpoint.USEast2)) {
+                    foreach (var e in extensions) {
                         await client.DeleteObjectAsync(new DeleteObjectRequest { BucketName = bucketName, Key = key + e });
                     }
                 }
                 return string.Empty;
-            }
-            catch (Exception e)
-            {
+            } catch (Exception e) {
                 return e.Message;
             }
         }
