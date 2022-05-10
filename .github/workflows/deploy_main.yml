@@ -29,7 +29,7 @@ jobs:
       run: |
         cd ${{ env.PROJECT_NAME }}
         dotnet build --configuration Release --no-restore
-        dotnet publish -c Release -o ../dotnet-webapp -r linux-x64 --self-contained true /p:UseAppHost=true
+        dotnet publish -c Release -o ../dotnet-webapp -r win-x64 --self-contained true /p:UseAppHost=true
       
     - uses: azure/webapps-deploy@v2
       name: Deploy
