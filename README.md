@@ -2,11 +2,11 @@
 
  ## Summary: 
 
-This is a application used to manage contacts. Hopefully, we will be able to integrate this with TDX and the web components. 
+This is a application used to manage office information and people inside offices. 
 
  ## Production location / dependencies: 
 
-Will be in Azure
+Azure App Service
 
  ## Development location / dependencies: 
 
@@ -14,7 +14,9 @@ None -- use your local machine
 
  ## How to deploy to production/development: 
 
-CI/CD
+[![deploy_main](https://github.com/itpartnersillinois/ContactAppCore/actions/workflows/deploy_main.yml/badge.svg?branch=main)](https://github.com/itpartnersillinois/ContactAppCore/actions/workflows/deploy_main.yml)
+
+CI/CD, using Github Actions. 
 
  ## How to set up locally: 
 
