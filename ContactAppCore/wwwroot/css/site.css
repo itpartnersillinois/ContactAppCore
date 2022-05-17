@@ -155,3 +155,7 @@ form.large input {
 #image-photo, #link-cv {
     margin-right: 20px;
 }
+
+#areas a.il-button, #names a.il-button, #profiles a.il-button {
+    margin-left: 20px;
+}
