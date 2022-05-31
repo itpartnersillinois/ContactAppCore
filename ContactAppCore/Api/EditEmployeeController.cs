@@ -139,6 +139,43 @@ namespace ContactAppCore.Api {
             return path.Result;
         }
 
+        [HttpPost("UpdateFromProfile")]
+        public async Task<int> UpdateFromProfile([FromBody] dynamic json) {
+            var jsonObject = (dynamic) JObject.Parse(json.ToString());
+            int id = int.Parse(jsonObject.id.ToString());
+            int jobId = int.Parse(jsonObject.jobId.ToString());
+            if (id == 0 || jobId == 0) {
+                return 0;
+            } else {
+                var originalObject = await contactRepository.ReadAsync(c => c.EmployeeProfiles.SingleOrDefault(o => o.Id == id));
+
+                if (!securityHelper.IsCurrentUser(User, originalObject.Title)) {
+                    return default;
+                }
+                await LogHelper.CreateLog(contactRepository, "Editing Employee from Job Profile " + originalObject.Id.ToString(), User.Identity.Name, JsonConvert.SerializeObject(originalObject).ToString(), json.ToString());
+                var biography = jsonObject.biography.ToString();
+                if (!string.IsNullOrWhiteSpace(biography)) {
+                    var originalJob = await contactRepository.ReadAsync(c => c.JobProfiles.SingleOrDefault(o => o.Id == jobId));
+                    originalJob.Biography = null;
+                    _ = await contactRepository.UpdateAsync(originalJob);
+                }
+
+                return await contactRepository.UpdateAsync(new EmployeeProfile {
+                    Id = originalObject.Id,
+                    Title = originalObject.Title,
+                    Biography = string.IsNullOrWhiteSpace(biography) ? originalObject.Biography : biography,
+                    CVUrl = originalObject.CVUrl,
+                    PrimaryProfile = originalObject.PrimaryProfile,
+                    PhotoUrl = originalObject.PhotoUrl,
+                    PreferredName = jsonObject.firstName,
+                    PreferredNameLast = jsonObject.lastName,
+                    PreferredPronouns = jsonObject.pronouns,
+                    LastUpdated = DateTime.Now,
+                    IsActive = true
+                });
+            }
+        }
+
         [HttpPost("Picture")]
         public async Task<string> UpdatePicture([FromForm] IFormFile file, [FromForm] int id) {
             var originalObject = await contactRepository.ReadAsync(c => c.EmployeeProfiles.SingleOrDefault(o => o.Id == id));
