@@ -67,6 +67,32 @@
             <div id="cv-error" class="error"></div>
         </div>
     </div>
+
+    <div id="employeeInformation">
+        <h3>Other Employee Details</h3>
+        <p>Note that this will affect all instances of the employee's information</p>
+        <div>
+            <label for="fullbiography">Make Job-Specific Biography the Full Biography:</label>
+            <input type="checkbox" id="fullbiography" name="fullbiography">
+            <span>Checking this box allows the employee to edit their biography</span>
+        </div>
+        <div>
+            <label for="firstname">Preferred First Name:</label>
+            <input id="firstname" name="firstname">
+        </div>
+
+        <div>
+            <label for="lastname">Preferred Last Name:</label>
+            <input id="lastname" name="lastname">
+        </div>
+
+        <div>
+            <label for="pronouns">Preferred Pronouns:</label>
+            <input id="pronouns" name="pronouns">
+            <select id="pronounoption" name="pronounoption" onchange="document.getElementById('pronouns').value = this.value;"><option value="">Templates</option><option value="he/him">he/him</option><option value="she/her">she/her</option><option value="they/them">they/them</option><option value="">other</option></select>
+        </div>
+    </div>
+    <p><button class="il-button" id="updateEmployee" onclick="return updateEmployee();">Update Employee Information</button> <span class="message" id="updateEmployeeMessage">Employee Information Updated</span></p>
 </div>
 <p><a href="" id="back">Back to Job Profile List</a></p>
 
@@ -136,7 +162,8 @@
                     document.getElementById('id').value = data.id;
                     document.getElementById('title').value = data.title;
                     document.getElementById('internalorder').value = data.internalOrder;
-                    if (data.biography != null) {
+                    let hasJobSpecificBiography = data.biography != null && data.biography != '';
+                    if (hasJobSpecificBiography) {
                         quillInfo.setContents(quillInfo.clipboard.convert(data.biography), 'silent');
                     }
                     data.tags.forEach(t => {
@@ -179,6 +206,19 @@
                                 document.getElementById('job-profile-group').style.display = 'none';
                             }
                         }
+                        if (!hasJobSpecificBiography && person.biography != null && person.biography != '') {
+                            quillInfo.setContents(quillInfo.clipboard.convert(person.biography), 'silent');
+                        }
+                        if (person.preferredName != null) {
+                            document.getElementById('firstname').value = person.preferredName;
+                        }
+                        if (person.preferredNameLast != null) {
+                            document.getElementById('lastname').value = person.preferredNameLast;
+                        }
+                        if (person.preferredPronouns != null) {
+                            document.getElementById('pronouns').value = person.preferredPronouns;
+                        }
+
                         document.getElementsByTagName('main')[0].style.visibility = '';
                     });
                 });
@@ -200,6 +240,32 @@
                 document.getElementById('updateGeneralMessage').classList.add('show');
                 setTimeout(function() { 
                     document.getElementById('updateGeneralMessage').classList.remove('show');
+                }, 4000);
+            });
+            return false;
+        }
+
+        function updateEmployee() {
+            let object = {};
+            object['jobId'] = document.getElementById('id').value;
+            object['id'] = document.getElementById('personId').value;
+            object['firstName'] = document.getElementById('firstname').value;
+            object['lastName'] = document.getElementById('lastname').value;
+            object['pronouns'] = document.getElementById('pronouns').value;
+            if (document.getElementById('fullbiography').checked) {
+                object['biography'] = cleanQuill(quillInfo.root.innerHTML);
+            } else {
+                object['biography'] = '';
+            }
+            var json = JSON.stringify(object);
+            fetch('/Api/EditEmployee/UpdateFromProfile', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: json
+            }).then(response => {
+                document.getElementById('updateEmployeeMessage').classList.add('show');
+                setTimeout(function() { 
+                    document.getElementById('updateEmployeeMessage').classList.remove('show');
                 }, 4000);
             });
             return false;
