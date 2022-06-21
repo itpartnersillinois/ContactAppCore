@@ -20,7 +20,7 @@ namespace ContactAppCore.ViewModel {
         };
 
         public OfficeInformation(Office office) {
-            Address = office.Address;
+            Address = string.IsNullOrWhiteSpace(office.City) || string.IsNullOrWhiteSpace(office.ZipCode) ? office.Address : $"{office.Address}, {office.City}, IL {office.ZipCode}";
             AreaId = office.AreaId;
             Area = office.Area?.Title;
             Audience = office.Audience;
@@ -37,6 +37,7 @@ namespace ContactAppCore.ViewModel {
             Phone = office.Phone;
             Priority = office.InternalOrder;
             Room = office.Room;
+            StreetAddress = office.Address;
             TicketUrl = office.TicketUrl;
             Title = office.Title;
             ZipCode = office.ZipCode;
@@ -131,6 +132,8 @@ namespace ContactAppCore.ViewModel {
         public int Priority { get; set; }
 
         public string Room { get; set; }
+
+        public string StreetAddress { get; set; }
 
         public string TicketUrl { get; set; }
 
