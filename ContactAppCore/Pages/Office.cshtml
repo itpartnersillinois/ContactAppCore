@@ -5,7 +5,7 @@
 }
 
 <h1>List of Units and Offices/Teams</h1>
-<p>This is a list of units and offices/teams you can update.</p>
+<p>This is a list of units and offices/teams you can update. See the <a href="https://help.uillinois.edu/TDClient/42/UIUC/Home/?ID=5c795c29-e7a7-403b-977f-687384d49fe7">TDX Help Page</a> for an example of your entry</p>
 <div style="display: flex; gap: 10px; margin-top: 1rem;">
     <div style="flex: 1 1;">
         <h2>Available Units</h2>
@@ -84,23 +84,29 @@
                 let officelist = document.getElementById('offices');
                 arealist.innerHTML = '';
                 officelist.innerHTML = '';
+                let noArea = data.areas.length == 0 && data.offices.length > 0;
+                let singleArea = data.areas.length == 1 && data.offices.length == 0;
 
                 data.areas.forEach(element => {
                     const li = document.createElement('li');
-                    const anchor = document.createElement('a');
-                    anchor.innerHTML = 'View Offices';
-                    anchor.setAttribute('href', '#');
-                    anchor.setAttribute('aria-label', 'Load ' + element.title + ' offices and move to first office');
-                    anchor.setAttribute('class', 'il-button narrow');
-                    anchor.setAttribute('onclick', 'return loadOfficeItems(' + element.id + ');');
                     const anchorItem = document.createElement('a');
-                    anchorItem.innerHTML = element.title;
+                    anchorItem.innerHTML = 'Edit ' + element.title;
+                    anchorItem.setAttribute('class', 'il-button narrow');
                     anchorItem.setAttribute('href', '/AreaEdit?id=' + element.id);
                     li.appendChild(anchorItem);
-                    li.appendChild(anchor);
+
+                    if (!singleArea) {
+                        const anchor = document.createElement('a');
+                        anchor.innerHTML = 'View Offices';
+                        anchor.setAttribute('href', '#');
+                        anchor.setAttribute('aria-label', 'Load ' + element.title + ' offices and move to first office');
+                        anchor.setAttribute('class', 'il-button narrow');
+                        anchor.setAttribute('onclick', 'return loadOfficeItems(' + element.id + ');');
+                        li.appendChild(anchor);
+                    }
                     arealist.appendChild(li);
                 });
-                if (data.areas.length <= 1) {
+                if (noArea || singleArea) {
                     data.offices.forEach(element => {
                         const li = document.createElement('li');
                         const anchorItem = document.createElement('a');
@@ -109,9 +115,12 @@
                         li.appendChild(anchorItem);
                         officelist.appendChild(li);
                     });
-                    if (data.areas.length == 1) {
+                    if (singleArea) {
                         document.getElementById('areaid').value = data.areas[0].id;
                         document.getElementById('areaadmin').style.display = '';
+                        if (data.offices.length == 0) {
+                            loadOfficeItems(data.areas[0].id);
+                        }
                     }
                 }
             });
