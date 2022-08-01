@@ -40,7 +40,8 @@ namespace ContactAppCore.Helpers {
             if (claim == null || claim.Identity == null || string.IsNullOrWhiteSpace(claim.Identity.Name)) {
                 return false;
             }
-            return contactRepository.Read(c => c.People.Any(p => p.Title == claim.Identity.Name && p.IsActive && (p.IsFullAdmin || (p.CanEditAllPeopleInUnit && p.OfficeId == id))));
+            return contactRepository.Read(c => c.People.Any(p => p.Title == claim.Identity.Name && p.IsActive &&
+                (p.IsFullAdmin || (p.CanEditAllPeopleInUnit && !p.OfficeId.HasValue) || (p.CanEditAllPeopleInUnit && p.OfficeId == id))));
         }
 
         public bool IsCurrentUser(ClaimsPrincipal claim, string username) {
