@@ -52,7 +52,7 @@ namespace ContactAppCore.Helpers {
                 return true;
             }
             var officeIds = contactRepository.Read(c => c.EmployeeProfiles.Include(e => e.Jobs).Where(p => p.Title == username && p.IsActive).SelectMany(p => p.Jobs.Select(j => j.OfficeId))).ToList();
-            return contactRepository.Read(c => c.People.Any(p => p.Title == claim.Identity.Name && p.IsActive && (p.IsFullAdmin || (p.CanEditAllPeopleInUnit && officeIds.Contains(p.OfficeId ?? 0)))));
+            return contactRepository.Read(c => c.People.Any(p => p.Title == claim.Identity.Name && p.IsActive && (p.IsFullAdmin || (p.CanEditAllPeopleInUnit && !p.OfficeId.HasValue) || (p.CanEditAllPeopleInUnit && officeIds.Contains(p.OfficeId ?? 0)))));
         }
 
         public bool IsFullAdmin(ClaimsPrincipal claim) {
