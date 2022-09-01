@@ -12,26 +12,21 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Newtonsoft.Json;
 
-namespace ContactAppCore
-{
-    public class Startup
-    {
-        public Startup(IConfiguration configuration)
-        {
+namespace ContactAppCore {
+
+    public class Startup {
+
+        public Startup(IConfiguration configuration) {
             Configuration = configuration;
         }
 
         public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
-        {
-            if (env.IsDevelopment())
-            {
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env) {
+            if (env.IsDevelopment()) {
                 app.UseDeveloperExceptionPage();
-            }
-            else
-            {
+            } else {
                 app.UseExceptionHandler("/Error");
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
@@ -45,21 +40,18 @@ namespace ContactAppCore
             app.UseAuthentication();
             app.UseAuthorization();
 
-            app.UseEndpoints(endpoints =>
-            {
+            app.UseEndpoints(endpoints => {
                 endpoints.MapRazorPages();
                 endpoints.MapControllers();
             });
         }
 
         // This method gets called by the runtime. Use this method to add services to the container.
-        public void ConfigureServices(IServiceCollection services)
-        {
+        public void ConfigureServices(IServiceCollection services) {
             services.AddAuthentication(AzureADDefaults.AuthenticationScheme)
                 .AddAzureAD(options => Configuration.Bind("AzureAd", options));
 
-            services.AddRazorPages().AddMvcOptions(options =>
-            {
+            services.AddRazorPages().AddMvcOptions(options => {
                 var policy = new AuthorizationPolicyBuilder()
                     .RequireAuthenticatedUser()
                     .Build();
@@ -77,6 +69,8 @@ namespace ContactAppCore
             services.AddScoped(sp => new ListHelper(sp.GetRequiredService<IContactRepository>()));
 
             services.AddScoped(sp => new ListAdminHelper(sp.GetRequiredService<IContactRepository>()));
+
+            services.AddScoped(sp => new JobHelper(sp.GetRequiredService<IContactRepository>()));
 
             services.AddScoped(sp => new FileHelper(Configuration.GetValue<string>("Aws:AccessKey"), Configuration.GetValue<string>("Aws:Bucket"), Configuration.GetValue<string>("Aws:SecretKey"), Configuration.GetValue<string>("Aws:UrlPath")));
         }

@@ -38,6 +38,7 @@ namespace ContactAppCore.Data.Models {
         public string InternalUrl { get; set; }
         public string Notes { get; set; }
         public virtual ICollection<Office> Offices { get; set; }
+        public string PeopleRefreshUrl { get; set; }
         public int PictureHeight { get; set; }
         public int PictureWidth { get; set; }
         public string SearchTerms { get; set; }

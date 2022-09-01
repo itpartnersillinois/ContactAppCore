@@ -16,11 +16,13 @@ namespace ContactAppCore.Api {
     [ApiController]
     public class EditJobController : ControllerBase {
         private IContactRepository contactRepository;
+        private JobHelper jobHelper;
         private SecurityHelper securityHelper;
 
-        public EditJobController(IContactRepository contactRepository, SecurityHelper securityHelper) {
+        public EditJobController(IContactRepository contactRepository, SecurityHelper securityHelper, JobHelper jobHelper) {
             this.contactRepository = contactRepository;
             this.securityHelper = securityHelper;
+            this.jobHelper = jobHelper;
         }
 
         [HttpPost("Add")]
@@ -49,7 +51,9 @@ namespace ContactAppCore.Api {
             if (jsonObject.category != "") {
                 job.Tags.Add(new JobProfileTag { IsActive = true, LastUpdated = DateTime.Now, Title = jsonObject.category });
             }
-            return await contactRepository.CreateAsync(job);
+            var returnValue = contactRepository.Create(job);
+            _ = await jobHelper.ProcessJob(employeeProfile.Id, officeId);
+            return returnValue;
         }
 
         [HttpPost("Delete/{id}")]
@@ -59,12 +63,14 @@ namespace ContactAppCore.Api {
             if (!securityHelper.AllowOffice(User, officeId)) {
                 return default;
             }
-
+            var employeeProfileId = originalObject.EmployeeProfileId;
             await LogHelper.CreateLog(contactRepository, "Deleting Job " + originalObject.Id.ToString(), User.Identity.Name, JsonConvert.SerializeObject(originalObject));
             originalObject.Tags.ToList().ForEach(t => contactRepository.Delete(t));
-            return await contactRepository.DeleteAsync(new JobProfile {
+            var returnValue = contactRepository.Delete(new JobProfile {
                 Id = originalObject.Id,
             });
+            _ = await jobHelper.ProcessJob(employeeProfileId, officeId);
+            return returnValue;
         }
 
         [HttpPost("Update")]
@@ -94,7 +100,9 @@ namespace ContactAppCore.Api {
             if (jsonObject.category != "") {
                 job.Tags.Add(new JobProfileTag { IsActive = true, LastUpdated = DateTime.Now, Title = jsonObject.category });
             }
-            return await contactRepository.UpdateAsync(job);
+            var returnValue = contactRepository.Update(job);
+            _ = await jobHelper.ProcessJob(originalObject.EmployeeProfileId, officeId);
+            return returnValue;
         }
 
         private EmployeeProfile CreateEmployeeProfileIfNeeded(string netid) {

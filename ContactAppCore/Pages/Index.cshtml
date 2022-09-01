@@ -15,6 +15,10 @@
     <p><a href="/profile" class="il-button" id="profile" style="display: none;">Edit Your Profile Information</a></p>
 </div>
 
+@if (User.Identity.IsAuthenticated)
+{
+    <p>Signed in as @User.Identity.Name</p>
+}
 @section Scripts
 {
     <script>

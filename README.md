@@ -20,7 +20,9 @@ CI/CD, using Github Actions.
 
  ## How to set up locally: 
 
-Use NuGet to pull information. Run the database using Package Manager and change the appsettings.json
+Use NuGet to pull information. Run the database using Package Manager and change the appsettings.json.
+
+The database is created using EF (https://docs.microsoft.com/en-us/ef/core/cli/powershell).
 
  ## How to test (including unit tests): 
 
