@@ -83,6 +83,7 @@ namespace ContactAppCore.Api {
                 InternalOnly = isFullAdmin ? JsonHelper.TranslateBoolean(jsonObject.internalonly) : originalObject.InternalOnly,
                 AllowBeta = isFullAdmin ? JsonHelper.TranslateBoolean(jsonObject.allowbeta) : originalObject.AllowBeta,
                 AllowPeople = isFullAdmin ? JsonHelper.TranslateBoolean(jsonObject.allowpeople) : originalObject.AllowPeople,
+                PeopleRefreshUrl = isFullAdmin ? jsonObject.peoplerefreshurl : originalObject.PeopleRefreshUrl,
             });
         }
     }
