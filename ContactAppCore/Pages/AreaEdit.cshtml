@@ -49,11 +49,6 @@
         <label for="internalnotes">Internal Notes:</label><input id="internalnotes" name="internalnotes" class="long" />
         <div class="notes">This is not displayed anywhere and is used for internal records.</div>
     </div>
-    <div><label for="isactive">Published?:</label><input type="checkbox" id="isactive" name="isactive" /></div>
-    <div>
-        <label for="internalonly">Internal Only?:</label><input type="checkbox" id="internalonly" name="internalonly" />
-        <div class="notes side">Display this information to TDX. Contact an administrator to edit this.</div>
-    </div>
     <div>
         <label for="allowbeta">Allow Beta Access?:</label><input type="checkbox" id="allowbeta" name="allowbeta" />
         <div class="notes side">Allows access to development functions. Contact an administrator to edit this.</div>
@@ -61,6 +56,10 @@
     <div>
         <label for="allowpeople">Allow to add People?:</label><input type="checkbox" id="allowpeople" name="allowpeople" />
         <div class="notes side">Allows access to link people to office information. Contact an administrator to edit this.</div>
+    </div>
+    <div>
+        <label for="peoplerefreshurl">People Refresh URL:</label><input id="peoplerefreshurl" name="peoplerefreshurl" class="long" />
+        <div class="notes">The URL to record when someone adds or changes a person. Contact an administrator to edit this.</div>
     </div>
     <div>
         <label for="internalorder">Internal Order:</label>
@@ -73,7 +72,14 @@
         </select>
         <div class="notes side">This is used to order items in relation to other areas. Contact an administrator to edit this.</div>
     </div>
-
+    <div>
+        <label for="internalonly">Internal Only?:</label><input type="checkbox" id="internalonly" name="internalonly" />
+        <div class="notes side">Display this information to TDX. Contact an administrator to edit this.</div>
+    </div>
+    <div>
+        <label for="isactive" class="important">Published?:</label><input type="checkbox" id="isactive" name="isactive" />
+        <div class="notes side">If this is not marked true, it will not be displayed anywhere.</div>
+     </div>
     <button class="il-button" onclick="return update();" aria-live="polite" id="updateButton">Update Area Information</button><span class="message" id="updateGeneralMessage">Area Information Updated</span>
 </form>
 
@@ -186,11 +192,13 @@
                 document.getElementById('internalonly').checked = data.internalOnly;
                 document.getElementById('allowbeta').checked = data.allowBeta;
                 document.getElementById('allowpeople').checked = data.allowPeople;
+                document.getElementById('peoplerefreshurl').value = data.peopleRefreshUrl;
                 if (!isAdmin) {
                     document.getElementById('internalorder').disabled = true;
                     document.getElementById('internalonly').disabled = true;
                     document.getElementById('allowbeta').disabled = true;
                     document.getElementById('allowpeople').disabled = true;
+                    document.getElementById('peoplerefreshurl').disabled = true;
                 }
             });
         }

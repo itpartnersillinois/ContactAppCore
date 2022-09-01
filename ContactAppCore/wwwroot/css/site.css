@@ -37,6 +37,10 @@ form.large label {
         margin: 0 10px;
     }
 
+    form.large label.important {
+        font-weight: 700;
+    }
+
 form.large input {
     width: 100px;
 }
