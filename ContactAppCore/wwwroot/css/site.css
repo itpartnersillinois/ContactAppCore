@@ -23,6 +23,15 @@ ul.listofitems {
         margin-bottom: 5px;
     }
 
+ul#areas li {
+    list-style: none;
+    margin-left: 0;
+}
+
+#areas a.il-button {
+    min-width: 50%;
+}
+
 form.large label {
     min-width: 200px;
     display: inline-block;
@@ -160,6 +169,6 @@ form.large input {
     margin-right: 20px;
 }
 
-#areas a.il-button, #names a.il-button, #profiles a.il-button {
+#names a.il-button, #profiles a.il-button {
     margin-left: 20px;
 }
