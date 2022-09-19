@@ -88,23 +88,34 @@
                 let singleArea = data.areas.length == 1 && data.offices.length == 0;
 
                 data.areas.forEach(element => {
-                    const li = document.createElement('li');
-                    const anchorItem = document.createElement('a');
-                    anchorItem.innerHTML = 'Edit ' + element.title;
-                    anchorItem.setAttribute('class', 'il-button narrow');
-                    anchorItem.setAttribute('href', '/AreaEdit?id=' + element.id);
-                    li.appendChild(anchorItem);
-
                     if (!singleArea) {
+                        const li = document.createElement('li');
                         const anchor = document.createElement('a');
-                        anchor.innerHTML = 'View Offices';
+                        anchor.innerHTML = element.title;
+                        anchor.id = 'initial' + element.id;
                         anchor.setAttribute('href', '#');
                         anchor.setAttribute('aria-label', 'Load ' + element.title + ' offices and move to first office');
-                        anchor.setAttribute('class', 'il-button narrow');
+                        anchor.setAttribute('class', 'il-button narrow button-initial');
                         anchor.setAttribute('onclick', 'return loadOfficeItems(' + element.id + ');');
                         li.appendChild(anchor);
+
+                        const anchorItem = document.createElement('a');
+                        anchorItem.innerHTML = 'Edit ' + element.title;
+                        anchorItem.id = 'edit' + element.id;
+                        anchorItem.setAttribute('class', 'il-button il-orange button-edit narrow');
+                        anchorItem.setAttribute('href', '/AreaEdit?id=' + element.id);
+                        anchorItem.style.display = 'none';
+                        li.appendChild(anchorItem);
+                        arealist.appendChild(li);
+                    } else {
+                        const li = document.createElement('li');
+                        const anchorItem = document.createElement('a');
+                        anchorItem.innerHTML = 'Edit ' + element.title;
+                        anchorItem.setAttribute('class', 'il-button il-orange narrow');
+                        anchorItem.setAttribute('href', '/AreaEdit?id=' + element.id);
+                        li.appendChild(anchorItem);
+                        arealist.appendChild(li);
                     }
-                    arealist.appendChild(li);
                 });
                 if (noArea || singleArea) {
                     data.offices.forEach(element => {
@@ -127,7 +138,16 @@
         }
 
         function loadOfficeItems(i) {
+            document.querySelectorAll('.button-edit').forEach(function (el) {
+                el.style.display = 'none';
+            });
+            document.querySelectorAll('.button-initial').forEach(function (el) {
+                el.style.display = '';
+            });
+
             document.getElementById('name').value = '';
+            document.getElementById('edit' + i).style.display = '';
+            document.getElementById('initial' + i).style.display = 'none';
             fetch('/Api/Item/Area/' + i, {
                 method: 'GET',
                 headers: {
