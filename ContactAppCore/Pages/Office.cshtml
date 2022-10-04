@@ -79,7 +79,6 @@
                 if (data.isFullAdmin) {
                     document.getElementById('fulladmin').style.display = '';
                 }
-
                 let arealist = document.getElementById('areas');
                 let officelist = document.getElementById('offices');
                 arealist.innerHTML = '';
@@ -115,6 +114,7 @@
                         anchorItem.setAttribute('href', '/AreaEdit?id=' + element.id);
                         li.appendChild(anchorItem);
                         arealist.appendChild(li);
+                        loadOfficeItems(element.id);
                     }
                 });
                 if (noArea || singleArea) {
@@ -146,8 +146,10 @@
             });
 
             document.getElementById('name').value = '';
-            document.getElementById('edit' + i).style.display = '';
-            document.getElementById('initial' + i).style.display = 'none';
+            if (document.getElementById('edit' + i) != null && document.getElementById('initial' + i) != null) {
+                document.getElementById('edit' + i).style.display = '';
+                document.getElementById('initial' + i).style.display = 'none';
+            }
             fetch('/Api/Item/Area/' + i, {
                 method: 'GET',
                 headers: {
