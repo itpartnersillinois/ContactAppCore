@@ -3,7 +3,8 @@ name: deploy_main
 on:
   push:
     branches: [ main ]
-
+  workflow_dispatch:
+  
 env:
   AZURE_WEBAPP_NAME: illinois-contactsupportapp
   AZURE_WEBAPP_PACKAGE_PATH: '.' 
