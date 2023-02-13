@@ -21,12 +21,13 @@ namespace ContactAppCore.Helpers {
             {  ".webp", "image/webp"}
         };
 
-        private readonly string notFound = "https://ed-resources-images.s3.us-east-2.amazonaws.com/profile_photo/_unknown.jpg";
+        private static readonly string notFound = "https://ed-resources-images.s3.us-east-2.amazonaws.com/profile_photo/_unknown.jpg";
         private HttpClient wc = new HttpClient();
 
-        [HttpGet]
+        public static string DetermineImage(string photoUrl) => string.IsNullOrWhiteSpace(photoUrl) ? notFound : photoUrl;
+
         public async Task<IActionResult> GetPhoto(string photoUrl) {
-            var url = string.IsNullOrWhiteSpace(photoUrl) ? notFound : photoUrl;
+            var url = DetermineImage(photoUrl);
             var extension = Path.GetExtension(url);
             var stream = await wc.GetStreamAsync(url);
             return new FileStreamResult(stream, MimeTypes[extension]);
