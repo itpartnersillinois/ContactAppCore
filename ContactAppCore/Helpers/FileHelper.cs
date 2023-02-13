@@ -39,7 +39,8 @@ namespace ContactAppCore.Helpers {
                     return "";
                 }
             }
-            if (string.IsNullOrWhiteSpace(Path.GetExtension(file))) {
+            var extension = Path.GetExtension(file);
+            if (string.IsNullOrWhiteSpace(extension) || !PhotoHelper.MimeTypes.ContainsKey(extension)) {
                 errorMessage = "Error: File does not have a proper extension";
                 return "";
             }
@@ -49,11 +50,11 @@ namespace ContactAppCore.Helpers {
 
         public async Task<string> DeleteCv(string name) {
             name = name.Replace("@illinois.edu", "");
-            return await DeleteFiles(name, "profile_cv", new string[] { ".pdf", ".doc", ".docx", ".rtf" });
+            return await DeleteFiles(name, "profile_cv", PhotoHelper.DocumentExtensions);
         }
 
         public async Task<string> DeletePhoto(string name) {
-            return await DeleteFiles(name, "profile_photo", new string[] { ".png", ".gif", ".jpg", ".jpeg" });
+            return await DeleteFiles(name, "profile_photo", PhotoHelper.MimeTypes.Keys);
         }
 
         private async Task<string> AddFile(Stream stream, string path, string name, string file) {

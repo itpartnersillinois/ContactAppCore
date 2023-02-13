@@ -42,7 +42,7 @@ namespace ContactAppCore.Api {
                 Title = originalObject.Title,
                 Biography = originalObject.Biography,
                 CVUrl = "",
-                PhotoUrl = originalObject.PhotoUrl,
+                PhotoUrl = PhotoHelper.DetermineImage(originalObject.PhotoUrl),
                 PreferredName = originalObject.PreferredName,
                 PreferredNameLast = originalObject.PreferredNameLast,
                 PreferredPronouns = originalObject.PreferredPronouns,
@@ -68,7 +68,7 @@ namespace ContactAppCore.Api {
                 Title = originalObject.Title,
                 Biography = originalObject.Biography,
                 CVUrl = originalObject.CVUrl,
-                PhotoUrl = "",
+                PhotoUrl = PhotoHelper.DetermineImage(""),
                 PreferredName = originalObject.PreferredName,
                 PreferredNameLast = originalObject.PreferredNameLast,
                 PreferredPronouns = originalObject.PreferredPronouns,
@@ -87,6 +87,7 @@ namespace ContactAppCore.Api {
                 return await contactRepository.CreateAsync(new EmployeeProfile {
                     Title = User.Identity.Name.Replace("@illinois.edu", ""),
                     Biography = jsonObject.biography,
+                    PhotoUrl = PhotoHelper.DetermineImage(""),
                     IsActive = true
                 });
             } else {
@@ -103,7 +104,7 @@ namespace ContactAppCore.Api {
                     Biography = jsonObject.biography,
                     CVUrl = originalObject.CVUrl,
                     PrimaryProfile = originalObject.PrimaryProfile,
-                    PhotoUrl = originalObject.PhotoUrl,
+                    PhotoUrl = PhotoHelper.DetermineImage(originalObject.PhotoUrl),
                     PreferredName = jsonObject.firstName,
                     PreferredNameLast = jsonObject.lastName,
                     PreferredPronouns = jsonObject.pronouns,
@@ -128,7 +129,7 @@ namespace ContactAppCore.Api {
                 Title = originalObject.Title,
                 Biography = originalObject.Biography,
                 CVUrl = path.Result,
-                PhotoUrl = originalObject.PhotoUrl,
+                PhotoUrl = PhotoHelper.DetermineImage(originalObject.PhotoUrl),
                 PreferredName = originalObject.PreferredName,
                 PreferredNameLast = originalObject.PreferredNameLast,
                 PreferredPronouns = originalObject.PreferredPronouns,
@@ -166,7 +167,7 @@ namespace ContactAppCore.Api {
                     Biography = string.IsNullOrWhiteSpace(biography) ? originalObject.Biography : biography,
                     CVUrl = originalObject.CVUrl,
                     PrimaryProfile = originalObject.PrimaryProfile,
-                    PhotoUrl = originalObject.PhotoUrl,
+                    PhotoUrl = PhotoHelper.DetermineImage(originalObject.PhotoUrl),
                     PreferredName = jsonObject.firstName,
                     PreferredNameLast = jsonObject.lastName,
                     PreferredPronouns = jsonObject.pronouns,
@@ -189,7 +190,7 @@ namespace ContactAppCore.Api {
                 .Jobs.FirstOrDefault().Office.Area);
             string errorMessage;
             var path = fileHelper.AddPhoto(file.OpenReadStream(), originalObject.Title, file.FileName, area.PictureHeight, area.PictureWidth, out errorMessage);
-            if (!string.IsNullOrWhiteSpace(errorMessage) || string.IsNullOrWhiteSpace(path)) {
+            if (!string.IsNullOrWhiteSpace(errorMessage)) {
                 return errorMessage + (string.IsNullOrWhiteSpace(path) ? "" : " (" + path + ")");
             }
             await contactRepository.UpdateAsync(new EmployeeProfile {
@@ -224,7 +225,7 @@ namespace ContactAppCore.Api {
                 Biography = originalObject.Biography,
                 CVUrl = originalObject.CVUrl,
                 PrimaryProfile = jsonObject.jobid,
-                PhotoUrl = originalObject.PhotoUrl,
+                PhotoUrl = PhotoHelper.DetermineImage(originalObject.PhotoUrl),
                 PreferredName = originalObject.PreferredName,
                 PreferredNameLast = originalObject.PreferredNameLast,
                 PreferredPronouns = originalObject.PreferredPronouns,
