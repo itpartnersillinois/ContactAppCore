@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.IO;
 using System.Threading.Tasks;
 using Amazon;
@@ -8,6 +7,7 @@ using Amazon.Runtime;
 using Amazon.S3;
 using Amazon.S3.Model;
 using Amazon.S3.Transfer;
+using SixLabors.ImageSharp;
 
 namespace ContactAppCore.Helpers {
 
@@ -33,7 +33,9 @@ namespace ContactAppCore.Helpers {
 
         public string AddPhoto(Stream stream, string name, string file, int height, int width, out string errorMessage) {
             if (height > 0 && width > 0) {
-                var img = Image.FromStream(stream);
+                using var memoryStream = new MemoryStream();
+                stream.CopyTo(memoryStream);
+                var img = Image.Load(memoryStream.ToArray());
                 if (img.Width != width || img.Height != height) {
                     errorMessage = $"Error: File does not match dimensions {height}x{width} (actual file is {img.Height}x{img.Width})";
                     return "";
