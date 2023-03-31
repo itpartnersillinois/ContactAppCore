@@ -21,6 +21,7 @@ namespace ContactAppCore.Helpers {
                     var netId = await contactRepository.ReadAsync(c => c.EmployeeProfiles.FirstOrDefault(ep => ep.Id == employeeId)?.Title);
                     var client = new HttpClient();
                     _ = await client.GetStringAsync(url.Replace("{netid}", netId));
+                    return "Update called";
                 }
                 return string.Empty;
             } catch (Exception e) {
