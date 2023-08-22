@@ -13,13 +13,14 @@
     <div><label for="title">Job Title:</label><input id="title" name="title" class="long" /></div>
     <div>
         <label for="category">Category:</label><select id="category" name="category">
-            <option value="">Other</option>
-            <option value="Core Faculty">Core Faculty</option>
             <option value="Faculty">Faculty</option>
-            <option value="Grad Students">Graduate Student</option>
             <option value="Staff">Staff</option>
+            <option value="Grad Students">Graduate Student</option>
             <option value="Emeritus">Emeritus</option>
-            <option value="Affiliate">Affiliate</option>
+            <option value="Postdoctorate">Postdoctorate</option>
+            <option value="Affiliate">Affiliate Staff</option>
+            <option value="Affiliate Faculty">Affiliate Faculty</option>
+            <option value="">N/A</option>
         </select>
     </div>
     <div>
@@ -33,6 +34,8 @@
 </form>
 
 <p><button class="il-button" id="updateGeneral" onclick="return update();">Update Job Profile Information</button> <span class="message" id="updateGeneralMessage">Job Profile Updated</span></p>
+
+<p><button class="il-button" id="loadInformation" onclick="return load();">Load Information to Directory</button> <span class="message" id="loadInformationMessage">Directory Loaded</span></p>
 
 <div id="profile-addition" style="display: none;">
     <div id='job-profile-group'>
@@ -67,7 +70,9 @@
             <div id="cv-error" class="error"></div>
         </div>
     </div>
+</div>
 
+<div id="profile-addition-2" style="display: none;">
     <div id="employeeInformation">
         <h3>Other Employee Details</h3>
         <p>Note that this will affect all instances of the employee's information</p>
@@ -147,7 +152,7 @@
                     headers: {
                         "Content-type": "application/x-www-form-urlencoded; charset=UTF-8"
                     }
-                }).then(res => res.json()).then(data => { if (data) { document.getElementById('profile-addition').style.display = ''; } else { document.getElementById('profile-addition').style.display = 'none'; } });
+                }).then(res => res.json()).then(data => { if (data) { document.getElementById('profile-addition').style.display = ''; document.getElementById('profile-addition-2').style.display = ''; } else { document.getElementById('profile-addition').style.display = 'none'; document.getElementById('profile-addition-2').style.display = 'none'; } });
 
                 fetch('/Api/Job/' + id, {
                     method: 'GET',
@@ -166,12 +171,6 @@
                     if (hasJobSpecificBiography) {
                         quillInfo.setContents(quillInfo.clipboard.convert(data.biography), 'silent');
                     }
-                    data.tags.forEach(t => {
-                        if (t.title != 'Staff Directory Only' && t.title != 'Faculty Finder') {
-                            document.getElementById('category').value = t.title;
-                        }
-                    });
-
                     fetch('/Api/Employee/ById/' + data.employeeProfileId, {
                         method: 'GET',
                         headers: {
@@ -225,6 +224,20 @@
             }
         }
 
+        function load() {
+            let id = document.getElementById('id').value;
+            fetch('/Api/EditJob/ProcessPerson/' + id, {
+                method: 'POST',
+                headers: { "Content-type": "application/x-www-form-urlencoded; charset=UTF-8" }
+            }).then(response => {
+                document.getElementById('loadInformationMessage').classList.add('show');
+                setTimeout(function() {
+                    document.getElementById('loadInformationMessage').classList.remove('show');
+                }, 4000);
+            });
+            return false;
+        }
+
         function update() {
             let object = {};
             object['id'] = document.getElementById('id').value;
@@ -238,7 +251,7 @@
                 body: json
             }).then(response => {
                 document.getElementById('updateGeneralMessage').classList.add('show');
-                setTimeout(function() { 
+                setTimeout(function () {
                     document.getElementById('updateGeneralMessage').classList.remove('show');
                 }, 4000);
             });

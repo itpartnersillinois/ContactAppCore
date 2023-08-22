@@ -73,9 +73,17 @@ namespace ContactAppCore.Api {
             return returnValue;
         }
 
+        [HttpPost("ProcessPerson/{id}")]
+        public async Task<int> Process(int id) {
+            var originalObject = await contactRepository.ReadAsync(c => c.JobProfiles.SingleOrDefault(o => o.Id == id));
+            int officeId = originalObject.OfficeId;
+            _ = await jobHelper.ProcessJob(originalObject.EmployeeProfileId, officeId);
+            return 0;
+        }
+
         [HttpPost("Update")]
         public async Task<int> Update([FromBody] dynamic json) {
-            var jsonObject = (dynamic) JObject.Parse(json.ToString());
+            var jsonObject = JObject.Parse(json.ToString());
             int id = int.Parse(jsonObject.id.ToString());
             var originalObject = await contactRepository.ReadAsync(c => c.JobProfiles.Include(o => o.Tags).SingleOrDefault(o => o.Id == id));
             int officeId = originalObject.OfficeId;

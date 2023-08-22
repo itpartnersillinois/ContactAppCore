@@ -60,7 +60,7 @@ namespace ContactAppCore.ViewModel {
                     office.HoursMondayEnd == office.HoursFridayEnd &&
                     office.HoursMondayEnd == office.HoursSaturdayEnd &&
                     office.HoursMondayEnd == office.HoursSundayEnd) {
-                    AddHours("Sun-Sat", office.HoursMondayStart, office.HoursMondayEnd);
+                    AddHours("All days", office.HoursMondayStart, office.HoursMondayEnd);
                 }
                 //Check Mon-Fri, Sat-Sun
                 else if (office.HoursMondayStart == office.HoursTuesdayStart &&
@@ -74,7 +74,7 @@ namespace ContactAppCore.ViewModel {
                     AddHours("Mon-Fri", office.HoursMondayStart, office.HoursMondayEnd);
                     if (!string.IsNullOrWhiteSpace(office.HoursSaturdayStart) &&
                         office.HoursSaturdayStart == office.HoursSundayStart && office.HoursSaturdayEnd == office.HoursSundayEnd) {
-                        AddHours("Sun-Sat", office.HoursSaturdayStart, office.HoursSaturdayEnd);
+                        AddHours("Sat-Sun", office.HoursSaturdayStart, office.HoursSaturdayEnd);
                     } else {
                         AddHours("Sat", office.HoursSaturdayStart, office.HoursSaturdayEnd);
                         AddHours("Sun", office.HoursSundayStart, office.HoursSundayEnd);

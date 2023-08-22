@@ -19,10 +19,6 @@ ul.listofitems {
     margin-bottom: 1.5625rem;
 }
 
-    ul.listofitems li {
-        margin-bottom: 5px;
-    }
-
 ul#areas li {
     list-style: none;
     margin-left: 0;
@@ -138,9 +134,11 @@ form.large input {
         margin-right: 10px;
     }
 
-#profile-addition {
+#profile-addition, #profile-addition-2 {
     background: var(--il-gray-1);
-    padding: 0 1rem 2rem 1rem;
+    padding: 0.1rem 1rem 2rem 1rem;
+    display: block;
+    margin-top: 2rem;
 }
 
 .message {
@@ -171,4 +169,15 @@ form.large input {
 
 #names a.il-button, #profiles a.il-button {
     margin-left: 20px;
+}
+
+#profiles li {
+    margin-bottom: 5px;
+    list-style: none;
+    border-bottom: thin dashed var(--il-blue);
+}
+
+#profiles span {
+    width: 400px;
+    display: inline-block;
 }

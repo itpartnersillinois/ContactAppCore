@@ -44,7 +44,11 @@
                     anchor.setAttribute('href', '#');
                     anchor.setAttribute('onclick', 'return removePerson(' + element.id + ');');
                     anchor.setAttribute('class', 'il-button narrow');
-                    li.innerHTML = element.employeeNetId + ' (' + element.title + ')';
+
+                    const span = document.createElement('span');
+                    span.innerHTML = element.employeeNetId + ' (' + element.title + ')';
+
+                    li.appendChild(span);
                     li.appendChild(anchorEdit);
                     li.appendChild(anchor);
                     list.appendChild(li);
