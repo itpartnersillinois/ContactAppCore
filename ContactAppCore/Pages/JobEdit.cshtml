@@ -77,7 +77,7 @@
         <h3>Other Employee Details</h3>
         <p>Note that this will affect all instances of the employee's information</p>
         <div>
-            <label for="fullbiography">Make Job-Specific Biography the Full Biography:</label>
+            <label for="fullbiography">Transfer to Full Biography:</label>
             <input type="checkbox" id="fullbiography" name="fullbiography">
             <span>Checking this box allows the employee to edit their biography</span>
         </div>
@@ -96,6 +96,11 @@
             <input id="pronouns" name="pronouns">
             <select id="pronounoption" name="pronounoption" onchange="document.getElementById('pronouns').value = this.value;"><option value="">Templates</option><option value="he/him">he/him</option><option value="she/her">she/her</option><option value="they/them">they/them</option><option value="">other</option></select>
         </div>
+        <div>
+            <label for="isphonehidden">Hide phone from job profile?:</label>
+            <input type="checkbox" id="isphonehidden" name="isphonehidden">
+        </div>
+
     </div>
     <p><button class="il-button" id="updateEmployee" onclick="return updateEmployee();">Update Employee Information</button> <span class="message" id="updateEmployeeMessage">Employee Information Updated</span></p>
 </div>
@@ -171,6 +176,9 @@
                     if (hasJobSpecificBiography) {
                         quillInfo.setContents(quillInfo.clipboard.convert(data.biography), 'silent');
                     }
+                    if (data.tags.length > 0) {
+                        document.getElementById('category').value = data.tags[0].title;
+                    }
                     fetch('/Api/Employee/ById/' + data.employeeProfileId, {
                         method: 'GET',
                         headers: {
@@ -217,7 +225,9 @@
                         if (person.preferredPronouns != null) {
                             document.getElementById('pronouns').value = person.preferredPronouns;
                         }
-
+                        if (person.isPhoneHidden != null) {
+                            document.getElementById('isphonehidden').checked = person.isPhoneHidden;
+                        }
                         document.getElementsByTagName('main')[0].style.visibility = '';
                     });
                 });
@@ -265,6 +275,7 @@
             object['firstName'] = document.getElementById('firstname').value;
             object['lastName'] = document.getElementById('lastname').value;
             object['pronouns'] = document.getElementById('pronouns').value;
+            object['isPhoneHidden'] = document.getElementById('isphonehidden').checked;
             if (document.getElementById('fullbiography').checked) {
                 object['biography'] = cleanQuill(quillInfo.root.innerHTML);
             } else {

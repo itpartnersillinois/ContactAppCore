@@ -97,6 +97,7 @@ namespace ContactAppCore.Api {
                 Id = originalObject.Id,
                 Title = jsonObject.title,
                 Biography = jsonObject.biography,
+                Category = jsonObject.category,
                 EmployeeProfileId = originalObject.EmployeeProfileId,
                 OfficeId = originalObject.OfficeId,
                 InternalOrder = jsonObject.internalorder,

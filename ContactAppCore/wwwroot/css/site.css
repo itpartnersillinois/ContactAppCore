@@ -28,6 +28,10 @@ ul#areas li {
     min-width: 50%;
 }
 
+form.large div, #employeeInformation div, .profile-preferences div {
+    margin-bottom: 10px;
+}
+
 form.large label {
     min-width: 200px;
     display: inline-block;
@@ -46,17 +50,33 @@ form.large label {
         font-weight: 700;
     }
 
-form.large input {
+form.large input, #employeeInformation input, .profile-preferences input {
     width: 100px;
+    margin: 0;
+    border-radius: 5px;
+    padding: 10px;
+    font: 16px/18px var(--il-source-sans);
+    background-color: #fff;
+    border: thin var(--il-blue) solid;
 }
 
-    form.large input[type=checkbox] {
+    form.large input[type=checkbox], #employeeInformation input[type=checkbox], .profile-preferences input[type=checkbox] {
         width: initial;
     }
 
-    form.large input.long {
+    form.large input.long, #employeeInformation input.long, .profile-preferences input.long {
         width: 400px;
     }
+
+form.large select, #employeeInformation select, .profile-preferences select {
+    margin: 0;
+    border-radius: 5px;
+    padding: 10px;
+    font: 16px/18px var(--il-source-sans);
+    background-color: #fff;
+    border: thin var(--il-blue) solid;
+    min-width: 200px;
+}
 
 .fulltext {
     border: thin solid black;
@@ -153,13 +173,14 @@ form.large input {
     opacity: 1;
 }
 
-.profile-preferences label {
-    width: 175px;
+.profile-preferences label, #employeeInformation label {
+    width: 250px;
     display: inline-block;
-    padding-left: 30px;
+    padding: 0 10px 0 30px;
+    text-align: right;
 }
 
-.profile-preferences input, .profile-preferences select {
+.profile-preferences input, .profile-preferences select, #employeeInformation label, #employeeInformation select {
     margin-left: 10px;
 }
 
@@ -180,4 +201,13 @@ form.large input {
 #profiles span {
     width: 400px;
     display: inline-block;
+}
+
+.il-formatted input:focus, .il-formatted textarea:focus, .il-formatted select:focus, .il-formatted input:focus-visible, .il-formatted textarea:focus-visible, .il-formatted select:focus-visible {
+    background: var(--il-cloud);
+    outline: 3px solid var(--il-altgeld);
+}
+
+.il-formatted input:hover, .il-formatted textarea:hover, .il-formatted select:hover {
+    background: var(--il-cloud);
 }
