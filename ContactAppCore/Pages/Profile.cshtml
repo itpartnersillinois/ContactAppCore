@@ -68,6 +68,10 @@
     <input id="pronouns" name="pronouns" />
     <select id="pronounoption" name="pronounoption" onchange="document.getElementById('pronouns').value = this.value;"><option value="">Templates</option><option value="he/him">he/him</option><option value="she/her">she/her</option><option value="they/them">they/them</option><option value="">other</option></select>
 </div>
+    <div>
+        <label for="isphonehidden">Hide phone from job profile?:</label>
+        <input type="checkbox" id="isphonehidden" name="isphonehidden">
+    </div>
 </div>
 
 <div><h3>Biography</h3><div id='biography' class='fulltext'></div></div>
@@ -150,6 +154,9 @@
                     }
                     if (data.preferredPronouns != null) {
                         document.getElementById('pronouns').value = data.preferredPronouns;
+                    }
+                    if (data.isPhoneHidden != null) {
+                        document.getElementById('isphonehidden').checked = data.isPhoneHidden;
                     }
 
                     const jobs = document.getElementById('jobs');
@@ -241,6 +248,7 @@
             object['firstName'] = document.getElementById('firstname').value;
             object['lastName'] = document.getElementById('lastname').value;
             object['pronouns'] = document.getElementById('pronouns').value;
+            object['isPhoneHidden'] = document.getElementById('isphonehidden').checked;
             var json = JSON.stringify(object);
             fetch('/Api/EditEmployee/Update', {
                 method: 'POST',
