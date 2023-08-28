@@ -164,6 +164,7 @@ namespace ContactAppCore.Api {
                 return await contactRepository.UpdateAsync(new EmployeeProfile {
                     Id = originalObject.Id,
                     Title = originalObject.Title,
+                    IsPhoneHidden = jsonObject.isPhoneHidden,
                     Biography = string.IsNullOrWhiteSpace(biography) ? originalObject.Biography : biography,
                     CVUrl = originalObject.CVUrl,
                     PrimaryProfile = originalObject.PrimaryProfile,
