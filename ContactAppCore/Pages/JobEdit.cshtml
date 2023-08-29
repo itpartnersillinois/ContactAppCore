@@ -176,9 +176,7 @@
                     if (hasJobSpecificBiography) {
                         quillInfo.setContents(quillInfo.clipboard.convert(data.biography), 'silent');
                     }
-                    if (data.tags.length > 0) {
-                        document.getElementById('category').value = data.tags[0].title;
-                    }
+                    document.getElementById('category').value = data.category;
                     fetch('/Api/Employee/ById/' + data.employeeProfileId, {
                         method: 'GET',
                         headers: {
