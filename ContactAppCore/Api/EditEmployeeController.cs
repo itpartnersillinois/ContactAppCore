@@ -104,7 +104,7 @@ namespace ContactAppCore.Api {
                     Id = originalObject.Id,
                     Title = originalObject.Title,
                     Biography = jsonObject.biography,
-                    IsPhoneHidden = jsonObject.phoneHidden,
+                    IsPhoneHidden = jsonObject.isPhoneHidden,
                     CVUrl = originalObject.CVUrl,
                     PrimaryProfile = originalObject.PrimaryProfile,
                     PhotoUrl = PhotoHelper.DetermineImage(originalObject.PhotoUrl),

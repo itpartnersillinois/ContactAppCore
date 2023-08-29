@@ -9,6 +9,7 @@ namespace ContactAppCore.ViewModel {
         public EmployeeInformation(JobProfile profile) {
             Biography = profile.EmployeeProfile.Biography ?? string.Empty;
             JobBiography = string.IsNullOrWhiteSpace(profile.Biography) ? profile.EmployeeProfile.Biography ?? string.Empty : profile.Biography;
+            Category = profile.Category ?? string.Empty;
             CVUrl = profile.EmployeeProfile.CVUrl ?? string.Empty;
             InternalOrder = profile.InternalOrder;
             NetId = profile.EmployeeProfile.Title ?? string.Empty;
@@ -21,15 +22,18 @@ namespace ContactAppCore.ViewModel {
             PreferredLastName = profile.EmployeeProfile.PreferredNameLast ?? string.Empty;
             PreferredPronouns = profile.EmployeeProfile.PreferredPronouns ?? string.Empty;
             IsPrimaryProfile = (profile.Id == (profile.EmployeeProfile.PrimaryProfile ?? 0));
+            IsPhoneHidden = profile.EmployeeProfile.IsPhoneHidden ?? false;
             EmployeeActivityInformation = profile.EmployeeProfile.EmployeeActivities.Select(ea => new EmployeeActivityInformation(ea));
             Tags = string.Join(", ", profile.Tags.Select(t => t.Title));
             Title = profile.Title ?? string.Empty;
         }
 
         public string Biography { get; set; }
+        public string Category { get; set; }
         public string CVUrl { get; set; }
         public IEnumerable<EmployeeActivityInformation> EmployeeActivityInformation { get; set; }
         public int InternalOrder { get; set; }
+        public bool IsPhoneHidden { get; set; }
         public bool IsPrimaryProfile { get; set; }
         public string JobBiography { get; set; }
         public string NetId { get; set; }
