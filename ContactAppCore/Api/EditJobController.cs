@@ -41,16 +41,13 @@ namespace ContactAppCore.Api {
                 Title = jsonObject.title,
                 Biography = jsonObject.biography,
                 EmployeeProfileId = employeeProfile.Id,
+                Category = jsonObject.category,
                 OfficeId = officeId,
                 InternalOrder = jsonObject.internalorder,
                 LastUpdated = DateTime.Now,
                 Tags = new List<JobProfileTag>(),
                 IsActive = true
             };
-
-            if (jsonObject.category != "") {
-                job.Tags.Add(new JobProfileTag { IsActive = true, LastUpdated = DateTime.Now, Title = jsonObject.category });
-            }
             var returnValue = contactRepository.Create(job);
             _ = await jobHelper.ProcessJob(employeeProfile.Id, officeId);
             return returnValue;
@@ -105,10 +102,6 @@ namespace ContactAppCore.Api {
                 Tags = new List<JobProfileTag>(),
                 IsActive = true
             };
-
-            if (jsonObject.category != "") {
-                job.Tags.Add(new JobProfileTag { IsActive = true, LastUpdated = DateTime.Now, Title = jsonObject.category });
-            }
             var returnValue = contactRepository.Update(job);
             _ = await jobHelper.ProcessJob(originalObject.EmployeeProfileId, officeId);
             return returnValue;
