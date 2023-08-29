@@ -46,6 +46,7 @@ namespace ContactAppCore.Api {
                 PreferredName = originalObject.PreferredName,
                 PreferredNameLast = originalObject.PreferredNameLast,
                 PreferredPronouns = originalObject.PreferredPronouns,
+                IsPhoneHidden = originalObject.IsPhoneHidden,
                 LastUpdated = DateTime.Now,
                 IsActive = true
             });
@@ -72,6 +73,7 @@ namespace ContactAppCore.Api {
                 PreferredName = originalObject.PreferredName,
                 PreferredNameLast = originalObject.PreferredNameLast,
                 PreferredPronouns = originalObject.PreferredPronouns,
+                IsPhoneHidden = originalObject.IsPhoneHidden,
                 LastUpdated = DateTime.Now,
                 IsActive = true
             });
@@ -102,6 +104,7 @@ namespace ContactAppCore.Api {
                     Id = originalObject.Id,
                     Title = originalObject.Title,
                     Biography = jsonObject.biography,
+                    IsPhoneHidden = jsonObject.phoneHidden,
                     CVUrl = originalObject.CVUrl,
                     PrimaryProfile = originalObject.PrimaryProfile,
                     PhotoUrl = PhotoHelper.DetermineImage(originalObject.PhotoUrl),
@@ -133,6 +136,7 @@ namespace ContactAppCore.Api {
                 PreferredName = originalObject.PreferredName,
                 PreferredNameLast = originalObject.PreferredNameLast,
                 PreferredPronouns = originalObject.PreferredPronouns,
+                IsPhoneHidden = originalObject.IsPhoneHidden,
                 LastUpdated = DateTime.Now,
                 IsActive = true
             });
@@ -203,6 +207,7 @@ namespace ContactAppCore.Api {
                 PreferredName = originalObject.PreferredName,
                 PreferredNameLast = originalObject.PreferredNameLast,
                 PreferredPronouns = originalObject.PreferredPronouns,
+                IsPhoneHidden = originalObject.IsPhoneHidden,
                 LastUpdated = DateTime.Now,
                 IsActive = true
             });
@@ -230,6 +235,7 @@ namespace ContactAppCore.Api {
                 PreferredName = originalObject.PreferredName,
                 PreferredNameLast = originalObject.PreferredNameLast,
                 PreferredPronouns = originalObject.PreferredPronouns,
+                IsPhoneHidden = originalObject.IsPhoneHidden,
                 LastUpdated = DateTime.Now,
                 IsActive = true
             });
