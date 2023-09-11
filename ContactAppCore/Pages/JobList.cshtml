@@ -9,7 +9,9 @@
 <ul id="profiles" class="listofitems">
 </ul>
 <hr />
-<p><a id="addperson" class="il-button narrow">Add Job Profile</a></p>
+    <label for="netid">Add a new Net ID: </label>
+    <input type="text" id="netid" name="netid" />
+    <button id="addprofile" class="il-button narrow" onclick="return addProfile();">Add Job Profile</button>
 <hr />
 <a href="/office">Back to Offices/Teams</a>
 
@@ -19,9 +21,6 @@
         function loadItems() {
             const urlParams = new URLSearchParams(window.location.search);
             const id = urlParams.get('id');
-            let add = document.getElementById('addperson');
-            add.setAttribute('href', '/JobEdit?id=0&officeId=' + id)
-
             fetch('/Api/Job/Office/' + id, {
                 method: 'GET',
                 headers: {
@@ -47,7 +46,7 @@
                     anchor.setAttribute('class', 'il-button narrow');
 
                     const span = document.createElement('span');
-                    span.innerHTML = element.employeeNetId + ' (' + element.title + ')';
+                    span.innerHTML = element.employeeListName + ' (' + element.employeeNetId + ': ' + element.title + ')';
 
                     li.appendChild(span);
                     li.appendChild(anchorEdit);
@@ -63,6 +62,19 @@
                     method: 'POST',
                 }).then(res => loadItems());
             }
+            return false;
+        }
+
+        function addProfile() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const id = urlParams.get('id');
+            let formData = new FormData();
+            formData.append('netid', document.getElementById('netid').value);
+            formData.append('officeid', id);
+            fetch('/Api/EditJob/Add', {
+                method: 'POST',
+                body: formData
+            }).then(res => loadItems());
             return false;
         }
 

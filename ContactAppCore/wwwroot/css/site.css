@@ -211,3 +211,7 @@ form.large select, #employeeInformation select, .profile-preferences select {
 .il-formatted input:hover, .il-formatted textarea:hover, .il-formatted select:hover {
     background: var(--il-cloud);
 }
+
+.hide {
+    display: none;
+}
