@@ -1,3 +1,4 @@
+using ContactAppCore.CampusService;
 using ContactAppCore.Data;
 using ContactAppCore.Helpers;
 using Microsoft.AspNetCore.Authentication;
@@ -73,6 +74,8 @@ namespace ContactAppCore {
             services.AddScoped(sp => new JobHelper(sp.GetRequiredService<IContactRepository>()));
 
             services.AddScoped(sp => new PhotoHelper());
+
+            services.AddScoped(sp => new DataWarehouseManager(Configuration.GetValue<string>("DataWarehouseUrl"), Configuration.GetValue<string>("DataWarehouseKey")));
 
             services.AddScoped(sp => new FileHelper(Configuration.GetValue<string>("Aws:AccessKey"), Configuration.GetValue<string>("Aws:Bucket"), Configuration.GetValue<string>("Aws:SecretKey"), Configuration.GetValue<string>("Aws:UrlPath")));
         }

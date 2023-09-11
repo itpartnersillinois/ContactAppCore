@@ -12,7 +12,8 @@
 
     <p><a href="/office" class="il-button">View and Edit your Units and Offices/Teams Information</a></p>
     <p><a href="/contact" class="il-button">View all Units and Offices/Teams and their administrators</a></p>
-    <p><a href="/profile" class="il-button" id="profile" style="display: none;">Edit Your Profile Information</a></p>
+    <p><a href="/profile" class="il-button hide" id="profile">Edit Your Profile Information</a></p>
+    <p><a href="/employeelookup" class="il-button hide" id="lookup">Look Up Profile Information</a></p>
 </div>
 
 @if (User.Identity.IsAuthenticated)
@@ -30,7 +31,8 @@
                 headers: { "Content-type": "application/x-www-form-urlencoded; charset=UTF-8" }
                 }).then(res => res.json()).then(data => {
                     if (data.title != null) {
-                        document.getElementById('profile').style.display = '';
+                        document.getElementById('profile').classList.remove('hide');
+                        document.getElementById('lookup').classList.remove('hide');
                     }
                 });
             }
