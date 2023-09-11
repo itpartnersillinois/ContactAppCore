@@ -16,6 +16,12 @@ namespace ContactAppCore.Data.Models {
 
         public bool? IsPhoneHidden { get; set; }
         public virtual ICollection<JobProfile> Jobs { get; set; }
+
+        [NotMapped]
+        public string ListedName => string.IsNullOrEmpty(ListedNameLast) || string.IsNullOrEmpty(ListedNameFirst) ? "" : ListedNameLast + ", " + ListedNameFirst;
+
+        public string ListedNameFirst { get; set; }
+        public string ListedNameLast { get; set; }
         public string OfficeInformation { get; set; }
         public string Phone { get; set; }
         public string PhotoUrl { get; set; }

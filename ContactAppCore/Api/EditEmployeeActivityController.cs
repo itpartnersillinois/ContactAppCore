@@ -1,44 +1,39 @@
-﻿using ContactAppCore.Data;
+﻿using System;
+using System.Linq;
+using System.Threading.Tasks;
+using ContactAppCore.Data;
 using ContactAppCore.Data.Models;
 using ContactAppCore.Helpers;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
-using System;
-using System.Linq;
-using System.Threading.Tasks;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
-namespace ContactAppCore.Api
-{
+namespace ContactAppCore.Api {
+
     [Route("api/[controller]")]
     [ApiController]
-    public class EditEmployeeActivityController : ControllerBase
-    {
-        private IContactRepository contactRepository;
-        private SecurityHelper securityHelper;
+    public class EditEmployeeActivityController : ControllerBase {
+        private readonly IContactRepository _contactRepository;
+        private readonly SecurityHelper _securityHelper;
 
-        public EditEmployeeActivityController(IContactRepository contactRepository, SecurityHelper securityHelper)
-        {
-            this.contactRepository = contactRepository;
-            this.securityHelper = securityHelper;
+        public EditEmployeeActivityController(IContactRepository contactRepository, SecurityHelper securityHelper) {
+            _contactRepository = contactRepository;
+            _securityHelper = securityHelper;
         }
 
         [HttpPost("Add")]
-        public async Task<int> AddActivity([FromBody] dynamic json)
-        {
-            var jsonObject = (dynamic)JObject.Parse(json.ToString());
+        public async Task<int> AddActivity([FromBody] dynamic json) {
+            var jsonObject = (dynamic) JObject.Parse(json.ToString());
             int employeeId = int.Parse(jsonObject.employeeId.ToString());
-            var person = await contactRepository.ReadAsync(c => c.EmployeeProfiles.SingleOrDefault(o => o.Id == employeeId));
+            var person = await _contactRepository.ReadAsync(c => c.EmployeeProfiles.SingleOrDefault(o => o.Id == employeeId));
 
-            if (!securityHelper.IsCurrentUser(User, person.Title))
-            {
+            if (!_securityHelper.IsCurrentUser(User, person.Title)) {
                 return default;
             }
-            await LogHelper.CreateLog(contactRepository, "Adding Employee Activity " + person.Id.ToString(), User.Identity.Name, "", json.ToString());
+            await LogHelper.CreateLog(_contactRepository, "Adding Employee Activity " + person.Id.ToString(), User.Identity.Name, "", json.ToString(), employeeId.ToString());
 
-            return await contactRepository.CreateAsync(new EmployeeActivity
-            {
+            return await _contactRepository.CreateAsync(new EmployeeActivity {
                 EmployeeProfileId = employeeId,
                 Title = jsonObject.name,
                 InternalOrder = jsonObject.priority,
@@ -52,40 +47,34 @@ namespace ContactAppCore.Api
         }
 
         [HttpPost("Delete")]
-        public async Task<int> DeleteActivity([FromBody] dynamic json)
-        {
-            var jsonObject = (dynamic)JObject.Parse(json.ToString());
+        public async Task<int> DeleteActivity([FromBody] dynamic json) {
+            var jsonObject = (dynamic) JObject.Parse(json.ToString());
             int employeeId = int.Parse(jsonObject.employeeId.ToString());
-            var person = await contactRepository.ReadAsync(c => c.EmployeeProfiles.SingleOrDefault(o => o.Id == employeeId));
+            var person = await _contactRepository.ReadAsync(c => c.EmployeeProfiles.SingleOrDefault(o => o.Id == employeeId));
 
-            if (!securityHelper.IsCurrentUser(User, person.Title))
-            {
+            if (!_securityHelper.IsCurrentUser(User, person.Title)) {
                 return default;
             }
-            await LogHelper.CreateLog(contactRepository, "Deleting Employee Activity " + person.Id.ToString(), User.Identity.Name, json.ToString());
+            await LogHelper.CreateLog(_contactRepository, "Deleting Employee Activity " + person.Id.ToString(), User.Identity.Name, json.ToString(), employeeId.ToString());
 
-            return await contactRepository.DeleteAsync(new EmployeeActivity
-            {
+            return await _contactRepository.DeleteAsync(new EmployeeActivity {
                 Id = jsonObject.id,
                 EmployeeProfileId = employeeId
             });
         }
 
         [HttpPost("Edit")]
-        public async Task<int> EditActivity([FromBody] dynamic json)
-        {
-            var jsonObject = (dynamic)JObject.Parse(json.ToString());
+        public async Task<int> EditActivity([FromBody] dynamic json) {
+            var jsonObject = (dynamic) JObject.Parse(json.ToString());
             int employeeId = int.Parse(jsonObject.employeeId.ToString());
-            var person = await contactRepository.ReadAsync(c => c.EmployeeProfiles.SingleOrDefault(o => o.Id == employeeId));
+            var person = await _contactRepository.ReadAsync(c => c.EmployeeProfiles.SingleOrDefault(o => o.Id == employeeId));
 
-            if (!securityHelper.IsCurrentUser(User, person.Title))
-            {
+            if (!_securityHelper.IsCurrentUser(User, person.Title)) {
                 return default;
             }
-            await LogHelper.CreateLog(contactRepository, "Editing Employee Activity " + person.Id.ToString(), User.Identity.Name, "", json.ToString());
+            await LogHelper.CreateLog(_contactRepository, "Editing Employee Activity " + person.Id.ToString(), User.Identity.Name, "", json.ToString(), employeeId.ToString());
 
-            return await contactRepository.UpdateAsync(new EmployeeActivity
-            {
+            return await _contactRepository.UpdateAsync(new EmployeeActivity {
                 Id = jsonObject.id,
                 EmployeeProfileId = employeeId,
                 Title = jsonObject.name,

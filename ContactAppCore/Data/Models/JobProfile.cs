@@ -7,6 +7,7 @@ namespace ContactAppCore.Data.Models {
     public class JobProfile : BaseDataItem {
         public string Biography { get; set; }
         public string Category { get; set; }
+        public string EmployeeListName => EmployeeProfile == null ? "" : EmployeeProfile.ListedName;
         public string EmployeeNetId => EmployeeProfile == null ? "" : EmployeeProfile.Title;
         public virtual EmployeeProfile EmployeeProfile { get; set; }
         public int EmployeeProfileId { get; set; }

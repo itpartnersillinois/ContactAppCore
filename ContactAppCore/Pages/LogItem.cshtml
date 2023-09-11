@@ -1,0 +1,36 @@
+﻿@page
+@model ContactAppCore.Pages.LogItemModel
+@{
+    ViewData["Title"] = "Log";
+}
+<h1 id="pageTitle">Log Item</h1>
+
+<p>This is used by developers to track issues or changes that have been made</p>
+
+<h2>Old item</h2>
+<pre id="olditem"></pre>
+
+<h2>New item</h2>
+<pre id="newitem"></pre>
+
+@section Scripts
+{
+    <script>
+        document.addEventListener('DOMContentLoaded', function (event) {
+            const urlParams = new URLSearchParams(window.location.search);
+            const id = urlParams.get('id');
+            fetch('/Api/Job/AuditItem/' + id, {
+                method: 'GET',
+                headers: {
+                    "Content-type": "application/x-www-form-urlencoded; charset=UTF-8"
+                }
+            }).then(res => res.json()).then(data => {
+                let olditem = document.getElementById('olditem');
+                olditem.innerHTML = data.oldData;
+
+                let newitem = document.getElementById('newitem');
+                newitem.innerHTML = data.newData;
+            });
+        });
+    </script>
+}

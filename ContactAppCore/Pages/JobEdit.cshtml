@@ -32,6 +32,10 @@
         </select>
     </div>
     <div>Job-Specific Biography:<div id='biography' class='fulltext'></div></div>
+    <div>
+        <label for="fullbiography">Transfer to Full Biography:</label>
+        <input type="checkbox" id="fullbiography" name="fullbiography" checked="checked">
+    </div>
 </form>
 
 <p><button class="il-button" id="updateGeneral" onclick="return update();">Update Job Profile Information</button> <span class="message" id="updateGeneralMessage">Job Profile Updated</span></p>
@@ -77,11 +81,6 @@
     <div id="employeeInformation">
         <h3>Other Employee Details</h3>
         <p>Note that this will affect all instances of the employee's information</p>
-        <div>
-            <label for="fullbiography">Transfer to Full Biography:</label>
-            <input type="checkbox" id="fullbiography" name="fullbiography">
-            <span>Checking this box allows the employee to edit their biography</span>
-        </div>
         <div>
             <label for="firstname">Preferred First Name:</label>
             <input id="firstname" name="firstname">
@@ -168,7 +167,7 @@
                 }).then(res => res.json()).then(data => {
                     document.getElementById('netid').disabled = true;
                     document.getElementById('netid').style.display = 'none';
-                    document.getElementById('netid-display').innerHTML = data.employeeNetId;
+                    document.getElementById('netid-display').innerHTML = data.employeeListName + ' (' + data.employeeNetId + ')';
                     document.getElementById('personId').value = data.employeeProfileId
                     document.getElementById('id').value = data.id;
                     document.getElementById('title').value = data.title;

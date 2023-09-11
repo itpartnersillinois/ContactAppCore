@@ -1,0 +1,77 @@
+﻿@page
+@model ContactAppCore.Pages.EmployeeLookupModel
+@{
+    ViewData["Title"] = "Employee Lookup";
+}
+<h1 id="pageTitle">Employee Lookup</h1>
+
+<p>This is used to look up where an employee is listed. This is public information, but you may not have access to any pages that link to this depending on your security.</p>
+
+<form id="lookup" class="large" >
+<div><label for="netid">Net ID:</label><input id="netid" name="netid" class="long" /></div>
+<div><button class="il-button" onclick="return lookup();">Look up Net ID</button></div>
+</form>
+
+<div id="results" class="hide">
+<h2 id="heading"></h2>
+<ul id="information">
+</ul>
+
+<h2>Audit Trail for Changes</h2>
+<ul id="audit">
+</ul>
+</div>
+
+@section Scripts
+{
+    <script>
+        function lookup() {
+            let netid = document.getElementById('netid').value;
+            fetch('/Api/Job/Name/' + netid, {
+                method: 'GET',
+                headers: {
+                    "Content-type": "application/x-www-form-urlencoded; charset=UTF-8"
+                }
+            }).then(res => res.json()).then(data => {
+                let information = document.getElementById('information');
+                information.innerHTML = '';
+                let heading = document.getElementById('heading');
+                if (data[0].employeeProfile.listedName == '') {
+                    heading.innerText = 'Information on ' + data[0].employeeProfile.title;
+                } else {
+                    heading.innerText = 'Information on ' + data[0].employeeProfile.listedName;
+                }
+                data.forEach(element => {
+                    if (element.office != null) {
+                        let listItem = document.createElement('li');
+                        let anchor = document.createElement('a');
+                        anchor.innerHTML = `${element.office.title} (${element.title})` ;
+                        anchor.setAttribute('href', `/JobEdit?id=${element.id}&officeId=${element.office.id}`);
+                        listItem.appendChild(anchor);
+                        information.appendChild(listItem);
+                    }
+                });
+                document.getElementById('results').classList.remove('hide');
+            });
+            fetch('/Api/Job/Audit/' + netid, {
+                method: 'GET',
+                headers: {
+                    "Content-type": "application/x-www-form-urlencoded; charset=UTF-8"
+                }
+            }).then(res => res.json()).then(data => {
+                let audit = document.getElementById('audit');
+                audit.innerHTML = '';
+                data.forEach(element => {
+                    let listItem = document.createElement('li');
+                    let anchor = document.createElement('a');
+                    anchor.innerHTML = `Change on ${element.dateCreated} by ${element.name} (${element.title})`;
+                    anchor.setAttribute('href', `/LogItem?id=${element.id}`);
+                    listItem.appendChild(anchor);
+                    audit.appendChild(listItem);
+                });
+                document.getElementById('results').classList.remove('hide');
+            });
+            return false;
+        }
+    </script>
+}
