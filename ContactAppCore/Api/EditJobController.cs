@@ -132,8 +132,8 @@ namespace ContactAppCore.Api {
                 return new Tuple<EmployeeProfile, string>(employeeProfile, listedName.Title);
             } else if (string.IsNullOrWhiteSpace(employeeProfile.ListedNameFirst) || string.IsNullOrWhiteSpace(employeeProfile.ListedNameLast)) {
                 var listedName = _dataWarehouseManager.GetDataWarehouseItem(netid);
-                employeeProfile.ListedNameFirst = listedName.FirstName;
-                employeeProfile.ListedNameLast = listedName.LastName;
+                employeeProfile.ListedNameFirst = listedName.FirstName ?? "";
+                employeeProfile.ListedNameLast = listedName.LastName ?? "";
                 _ = _contactRepository.Update(employeeProfile);
                 return new Tuple<EmployeeProfile, string>(employeeProfile, listedName.Title);
             } else {
