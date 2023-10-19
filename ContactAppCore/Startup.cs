@@ -77,7 +77,7 @@ namespace ContactAppCore {
 
             services.AddScoped(sp => new DataWarehouseManager(Configuration.GetValue<string>("DataWarehouseUrl"), Configuration.GetValue<string>("DataWarehouseKey")));
 
-            services.AddScoped(sp => new FileHelper(Configuration.GetValue<string>("Aws:AccessKey"), Configuration.GetValue<string>("Aws:Bucket"), Configuration.GetValue<string>("Aws:SecretKey"), Configuration.GetValue<string>("Aws:UrlPath")));
+            services.AddScoped(sp => new FileHelper(Configuration.GetValue<string>("Aws:AccessKey"), Configuration.GetValue<string>("Aws:Bucket"), Configuration.GetValue<string>("Aws:SecretKey"), Configuration.GetValue<string>("Aws:UrlPath"), Configuration.GetValue<string>("Aws:FileSuffix")));
         }
     }
 }

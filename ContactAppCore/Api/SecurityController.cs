@@ -1,35 +1,35 @@
-﻿using ContactAppCore.Helpers;
+﻿using System.Threading.Tasks;
+using ContactAppCore.Helpers;
 using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
 
-namespace ContactAppCore.Api
-{
+namespace ContactAppCore.Api {
+
     [Route("api/[controller]")]
     [ApiController]
-    public class SecurityController : ControllerBase
-    {
+    public class SecurityController : ControllerBase {
         private SecurityHelper securityHelper;
 
-        public SecurityController(SecurityHelper securityHelper)
-        {
+        public SecurityController(SecurityHelper securityHelper) {
             this.securityHelper = securityHelper;
         }
 
         [HttpGet("Admin")]
-        public bool GetAdmin()
-        {
+        public bool GetAdmin() {
             return securityHelper.IsFullAdmin(User);
         }
 
         [HttpGet("Area/{officeId}")]
-        public async Task<bool> GetArea(int officeId)
-        {
+        public async Task<bool> GetArea(int officeId) {
             return await securityHelper.AllowAreaForOffice(User, officeId);
         }
 
+        [HttpGet("Office/{officeId}")]
+        public bool GetOffice(int officeId) {
+            return securityHelper.AllowOffice(User, officeId);
+        }
+
         [HttpGet("AllowProfileEdit/{officeId}")]
-        public bool GetProfileInformation(int officeId)
-        {
+        public bool GetProfileInformation(int officeId) {
             return securityHelper.AllowProfileEdit(User, officeId);
         }
     }
