@@ -166,6 +166,7 @@
                     }
                 }).then(res => res.json()).then(data => {
                     document.getElementById('netid').disabled = true;
+                    document.getElementById('netid').value = data.employeeNetId;
                     document.getElementById('netid').style.display = 'none';
                     document.getElementById('netid-display').innerHTML = data.employeeListName + ' (' + data.employeeNetId + ')';
                     document.getElementById('personId').value = data.employeeProfileId
@@ -249,6 +250,7 @@
         function update() {
             let object = {};
             object['id'] = document.getElementById('id').value;
+            object['netid'] = document.getElementById('netid').value;
             object['biography'] = cleanQuill(quillInfo.root.innerHTML);
             object['title'] = document.getElementById('title').value;
             document.querySelectorAll('#profile select').forEach(p => object[p.name] = p.value);
@@ -269,6 +271,7 @@
         function updateEmployee() {
             let object = {};
             object['jobId'] = document.getElementById('id').value;
+            object['netid'] = document.getElementById('netid').value;
             object['id'] = document.getElementById('personId').value;
             object['firstName'] = document.getElementById('firstname').value;
             object['lastName'] = document.getElementById('lastname').value;

@@ -16,7 +16,10 @@ namespace ContactAppCore.CampusService {
             _key = key;
         }
 
-        public DataWarehouseItem GetFirstAndLastName(string netid) {
+        public DataWarehouseItem GetDataWarehouseItem(string netid) {
+            if (string.IsNullOrEmpty(netid)) {
+                return new DataWarehouseItem();
+            }
             var url = _baseUrl + "/directory-person/person-lookup-query/" + netid;
             using var client = new HttpClient();
             client.DefaultRequestHeaders.Add("Cache-Control", "no-cache");
@@ -30,9 +33,16 @@ namespace ContactAppCore.CampusService {
             var data = JsonConvert.DeserializeObject<dynamic>(json);
             var information = data.list[0];
             return new DataWarehouseItem() {
-                FirstName = information?.name?.firstName?.ToString() ?? "",
-                LastName = information?.name?.lastName?.ToString() ?? "",
-                Title = information?.title ?? ""
+                FirstName = information?.name?.firstName?.ToString() ?? string.Empty,
+                LastName = information?.name?.lastName?.ToString() ?? string.Empty,
+                Title = information?.title ?? string.Empty,
+                AddressLine1 = information?.address?.streetLine1?.ToString() ?? string.Empty,
+                AddressLine2 = information?.address?.streetLine2?.ToString() ?? string.Empty,
+                City = information?.address?.city?.ToString() ?? string.Empty,
+                State = information?.address?.state?.code?.ToString() ?? string.Empty,
+                ZipCode = information?.address?.zipCode?.ToString() ?? string.Empty,
+                Phone = information?.phone?.phoneNumber?.ToString() ?? string.Empty,
+                PhoneAreaCode = information?.phone?.areaCode?.ToString() ?? string.Empty
             };
         }
     }

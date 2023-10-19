@@ -4,14 +4,16 @@ using ContactAppCore.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace ContactAppCore.Migrations
 {
     [DbContext(typeof(ContactContext))]
-    partial class ContactContextModelSnapshot : ModelSnapshot
+    [Migration("20231018162027_ImageAndSignature")]
+    partial class ImageAndSignature
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

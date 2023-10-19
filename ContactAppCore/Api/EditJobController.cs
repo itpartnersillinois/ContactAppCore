@@ -6,6 +6,7 @@ using ContactAppCore.CampusService;
 using ContactAppCore.Data;
 using ContactAppCore.Data.Models;
 using ContactAppCore.Helpers;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
@@ -53,6 +54,7 @@ namespace ContactAppCore.Api {
 
         // This is here as a convenience method to repair existing employee information
         [HttpGet("AddFullName")]
+        [AllowAnonymous]
         public int AddFullName(string netid) {
             _ = CreateEmployeeProfileIfNeeded(netid);
             return 0;
@@ -87,6 +89,7 @@ namespace ContactAppCore.Api {
         public async Task<int> Update([FromBody] dynamic json) {
             var jsonObject = JObject.Parse(json.ToString());
             int id = int.Parse(jsonObject.id.ToString());
+            var netid = jsonObject.netid.ToString();
             var originalObject = await _contactRepository.ReadAsync(c => c.JobProfiles.Include(o => o.Tags).SingleOrDefault(o => o.Id == id));
             int officeId = originalObject.OfficeId;
             if (!_securityHelper.AllowOffice(User, officeId)) {
@@ -94,6 +97,7 @@ namespace ContactAppCore.Api {
             }
 
             await LogHelper.CreateLog(_contactRepository, "Editing Job " + originalObject.Id.ToString(), User.Identity.Name, JsonConvert.SerializeObject(originalObject), json.ToString(), originalObject.EmployeeProfileId.ToString());
+            _ = CreateEmployeeProfileIfNeeded(netid);
             originalObject.Tags.ToList().ForEach(t => _contactRepository.Delete(t));
             var job = new JobProfile {
                 Id = originalObject.Id,
@@ -116,7 +120,7 @@ namespace ContactAppCore.Api {
             var employeeProfile = _contactRepository.Read(c => c.EmployeeProfiles.SingleOrDefault(o => o.Title == netid));
 
             if (employeeProfile == null) {
-                var listedName = _dataWarehouseManager.GetFirstAndLastName(netid);
+                var listedName = _dataWarehouseManager.GetDataWarehouseItem(netid);
 
                 var newEmployeeProfile = new EmployeeProfile {
                     Title = netid,
@@ -126,12 +130,14 @@ namespace ContactAppCore.Api {
                 };
                 _contactRepository.Create(newEmployeeProfile);
                 return new Tuple<EmployeeProfile, string>(employeeProfile, listedName.Title);
-            } else {
-                var listedName = _dataWarehouseManager.GetFirstAndLastName(netid);
+            } else if (string.IsNullOrWhiteSpace(employeeProfile.ListedNameFirst) || string.IsNullOrWhiteSpace(employeeProfile.ListedNameLast)) {
+                var listedName = _dataWarehouseManager.GetDataWarehouseItem(netid);
                 employeeProfile.ListedNameFirst = listedName.FirstName;
                 employeeProfile.ListedNameLast = listedName.LastName;
                 _ = _contactRepository.Update(employeeProfile);
                 return new Tuple<EmployeeProfile, string>(employeeProfile, listedName.Title);
+            } else {
+                return new Tuple<EmployeeProfile, string>(employeeProfile, "");
             }
         }
     }

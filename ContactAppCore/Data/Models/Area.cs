@@ -40,7 +40,11 @@ namespace ContactAppCore.Data.Models {
         public virtual ICollection<Office> Offices { get; set; }
         public string PeopleRefreshUrl { get; set; }
         public int PictureHeight { get; set; }
+        public int PictureHeightMinimum { get; set; }
         public int PictureWidth { get; set; }
+        public int PictureWidthMinimum { get; set; }
         public string SearchTerms { get; set; }
+        public string SignatureExtension { get; set; }
+        public string SignatureUrl { get; set; }
     }
 }
