@@ -14,6 +14,7 @@ namespace ContactAppCore.Data.Models {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public override int Id { get; set; }
 
+        public bool? IsInExperts { get; set; }
         public bool? IsPhoneHidden { get; set; }
         public virtual ICollection<JobProfile> Jobs { get; set; }
 

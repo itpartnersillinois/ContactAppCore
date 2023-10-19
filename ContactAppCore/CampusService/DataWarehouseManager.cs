@@ -20,6 +20,7 @@ namespace ContactAppCore.CampusService {
             if (string.IsNullOrEmpty(netid)) {
                 return new DataWarehouseItem();
             }
+            //TODO Remove try/catch block when we enforce VPN / Campus connection
             try {
                 var url = _baseUrl + "/directory-person/person-lookup-query/" + netid;
                 using var client = new HttpClient();

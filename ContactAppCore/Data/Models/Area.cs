@@ -45,6 +45,5 @@ namespace ContactAppCore.Data.Models {
         public int PictureWidthMinimum { get; set; }
         public string SearchTerms { get; set; }
         public string SignatureExtension { get; set; }
-        public string SignatureUrl { get; set; }
     }
 }

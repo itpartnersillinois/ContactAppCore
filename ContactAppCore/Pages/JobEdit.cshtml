@@ -38,9 +38,11 @@
     </div>
 </form>
 
+<div id="profile-buttons">
 <p><button class="il-button" id="updateGeneral" onclick="return update();">Update Job Profile Information</button> <span class="message" id="updateGeneralMessage">Job Profile Updated</span></p>
-
 <p><button class="il-button" id="loadInformation" onclick="return load();">Load Information to Directory</button> <span class="message" id="loadInformationMessage">Directory Loaded</span></p>
+</div>
+
 
 <div id="profile-addition" style="display: none;">
     <div id='job-profile-group'>
@@ -104,6 +106,12 @@
     </div>
     <p><button class="il-button" id="updateEmployee" onclick="return updateEmployee();">Update Employee Information</button> <span class="message" id="updateEmployeeMessage">Employee Information Updated</span></p>
 </div>
+
+
+<div id="profile-no-access" style="display: none;">
+    <p>You do not have access to this office profile.</p>
+</div>
+
 <p><a href="" id="back">Back to Job Profile List</a></p>
 
 @section Scripts
@@ -157,7 +165,28 @@
                     headers: {
                         "Content-type": "application/x-www-form-urlencoded; charset=UTF-8"
                     }
-                }).then(res => res.json()).then(data => { if (data) { document.getElementById('profile-addition').style.display = ''; document.getElementById('profile-addition-2').style.display = ''; } else { document.getElementById('profile-addition').style.display = 'none'; document.getElementById('profile-addition-2').style.display = 'none'; } });
+                }).then(res => res.json()).then(data => {
+                    debugger;
+                    if (data) {
+                        document.getElementById('profile-addition').style.display = '';
+                        document.getElementById('profile-addition-2').style.display = '';
+                    } else {
+                        document.getElementById('profile-addition').style.display = 'none';
+                        document.getElementById('profile-addition-2').style.display = 'none';
+                        fetch('/Api/Security/AllowProfileEdit/' + officeId, {
+                            method: 'GET',
+                            headers: {
+                                "Content-type": "application/x-www-form-urlencoded; charset=UTF-8"
+                            }
+                        }).then(res => res.json()).then(data => {
+                             if (!data) {
+                                document.getElementById('profile').style.display = 'none';
+                                document.getElementById('profile-buttons').style.display = 'none';
+                                document.getElementById('profile-no-access').style.display = '';
+                             }
+                        });
+                    }
+                });
 
                 fetch('/Api/Job/' + id, {
                     method: 'GET',
