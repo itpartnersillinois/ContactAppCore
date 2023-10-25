@@ -43,6 +43,8 @@ namespace ContactAppCore.Api {
                 Biography = originalObject.Biography,
                 CVUrl = "",
                 PhotoUrl = PhotoHelper.DetermineImage(originalObject.PhotoUrl),
+                ListedNameFirst = originalObject.ListedNameFirst,
+                ListedNameLast = originalObject.ListedNameLast,
                 PreferredName = originalObject.PreferredName,
                 PreferredNameLast = originalObject.PreferredNameLast,
                 PreferredPronouns = originalObject.PreferredPronouns,
@@ -70,6 +72,8 @@ namespace ContactAppCore.Api {
                 Biography = originalObject.Biography,
                 CVUrl = originalObject.CVUrl,
                 PhotoUrl = PhotoHelper.DetermineImage(""),
+                ListedNameFirst = originalObject.ListedNameFirst,
+                ListedNameLast = originalObject.ListedNameLast,
                 PreferredName = originalObject.PreferredName,
                 PreferredNameLast = originalObject.PreferredNameLast,
                 PreferredPronouns = originalObject.PreferredPronouns,
@@ -108,6 +112,8 @@ namespace ContactAppCore.Api {
                     CVUrl = originalObject.CVUrl,
                     PrimaryProfile = originalObject.PrimaryProfile,
                     PhotoUrl = PhotoHelper.DetermineImage(originalObject.PhotoUrl),
+                    ListedNameFirst = string.IsNullOrWhiteSpace(jsonObject.firstName) ? originalObject.ListedNameFirst : jsonObject.firstName,
+                    ListedNameLast = string.IsNullOrWhiteSpace(jsonObject.lastName) ? originalObject.ListedNameLast : jsonObject.lastName,
                     PreferredName = jsonObject.firstName,
                     PreferredNameLast = jsonObject.lastName,
                     PreferredPronouns = jsonObject.pronouns,
@@ -133,6 +139,8 @@ namespace ContactAppCore.Api {
                 Biography = originalObject.Biography,
                 CVUrl = path.Result,
                 PhotoUrl = PhotoHelper.DetermineImage(originalObject.PhotoUrl),
+                ListedNameFirst = originalObject.ListedNameFirst,
+                ListedNameLast = originalObject.ListedNameLast,
                 PreferredName = originalObject.PreferredName,
                 PreferredNameLast = originalObject.PreferredNameLast,
                 PreferredPronouns = originalObject.PreferredPronouns,
@@ -173,6 +181,8 @@ namespace ContactAppCore.Api {
                     CVUrl = originalObject.CVUrl,
                     PrimaryProfile = originalObject.PrimaryProfile,
                     PhotoUrl = PhotoHelper.DetermineImage(originalObject.PhotoUrl),
+                    ListedNameFirst = string.IsNullOrWhiteSpace(jsonObject.firstName) ? originalObject.ListedNameFirst : jsonObject.firstName,
+                    ListedNameLast = string.IsNullOrWhiteSpace(jsonObject.lastName) ? originalObject.ListedNameLast : jsonObject.lastName,
                     PreferredName = jsonObject.firstName,
                     PreferredNameLast = jsonObject.lastName,
                     PreferredPronouns = jsonObject.pronouns,
@@ -194,19 +204,21 @@ namespace ContactAppCore.Api {
                 .FirstOrDefault(c => c.Id == id)
                 .Jobs.FirstOrDefault().Office.Area);
             string errorMessage;
-            var path = _fileHelper.AddPhoto(file.OpenReadStream(), originalObject.Title, file.FileName, area.PictureHeight, area.PictureWidth, out errorMessage);
+            var path = _fileHelper.AddPhoto(file.OpenReadStream(), originalObject.Title, file.FileName, area.PictureHeight, area.PictureWidth, area.PictureHeightMinimum, area.PictureWidthMinimum, out errorMessage);
             if (!string.IsNullOrWhiteSpace(errorMessage)) {
                 return errorMessage + (string.IsNullOrWhiteSpace(path) ? "" : " (" + path + ")");
             }
             await _contactRepository.UpdateAsync(new EmployeeProfile {
                 Id = originalObject.Id,
-                Title = originalObject.Title,
-                Biography = originalObject.Biography,
-                CVUrl = originalObject.CVUrl,
+                Title = originalObject.Title ?? "",
+                Biography = originalObject.Biography ?? "",
+                CVUrl = originalObject.CVUrl ?? "",
                 PhotoUrl = path,
-                PreferredName = originalObject.PreferredName,
-                PreferredNameLast = originalObject.PreferredNameLast,
-                PreferredPronouns = originalObject.PreferredPronouns,
+                PreferredName = originalObject.PreferredName ?? "",
+                ListedNameFirst = originalObject.ListedNameFirst ?? "",
+                ListedNameLast = originalObject.ListedNameLast ?? "",
+                PreferredNameLast = originalObject.PreferredNameLast ?? "",
+                PreferredPronouns = originalObject.PreferredPronouns ?? "",
                 IsPhoneHidden = originalObject.IsPhoneHidden,
                 LastUpdated = DateTime.Now,
                 IsActive = true
@@ -232,6 +244,8 @@ namespace ContactAppCore.Api {
                 CVUrl = originalObject.CVUrl,
                 PrimaryProfile = jsonObject.jobid,
                 PhotoUrl = PhotoHelper.DetermineImage(originalObject.PhotoUrl),
+                ListedNameFirst = originalObject.ListedNameFirst,
+                ListedNameLast = originalObject.ListedNameLast,
                 PreferredName = originalObject.PreferredName,
                 PreferredNameLast = originalObject.PreferredNameLast,
                 PreferredPronouns = originalObject.PreferredPronouns,

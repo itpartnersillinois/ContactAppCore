@@ -85,6 +85,9 @@
     </ul>
 </div>
 
+<button class="il-button" id="signature">Generate Signature</button>
+
+
 @section Scripts
 {
     <script src="~/js/quill.min.js" type="text/javascript"></script>
@@ -389,6 +392,17 @@
             return false;
         }
 
+        function generateSignature() {
+            fetch('/Api/Signature', {
+                method: 'GET'
+            }).then((response) => response.text()).then(function (text) {
+                if (text != '') {
+                    window.open(text, '_blank');
+                }
+            });
+            return false;
+        }
+
         function cleanQuill(s) {
             if (s == '<br />' || s == '<br>' || s == '<p><br></p>') {
                 return '';
@@ -406,6 +420,7 @@
             loadInformation();
             document.getElementById('picture-upload').addEventListener('change', picture);
             document.getElementById('cv-upload').addEventListener('change', cv);
+            document.getElementById('signature').addEventListener('click', generateSignature);
         });
     </script>
 }

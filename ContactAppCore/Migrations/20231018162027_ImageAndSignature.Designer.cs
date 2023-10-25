@@ -4,14 +4,16 @@ using ContactAppCore.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace ContactAppCore.Migrations
 {
     [DbContext(typeof(ContactContext))]
-    partial class ContactContextModelSnapshot : ModelSnapshot
+    [Migration("20231018162027_ImageAndSignature")]
+    partial class ImageAndSignature
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -84,6 +86,9 @@ namespace ContactAppCore.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("SignatureExtension")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("SignatureUrl")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Title")
@@ -184,9 +189,6 @@ namespace ContactAppCore.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
-                    b.Property<bool?>("IsInExperts")
                         .HasColumnType("bit");
 
                     b.Property<bool?>("IsPhoneHidden")
@@ -536,7 +538,7 @@ namespace ContactAppCore.Migrations
                             CanEditAllPeopleInUnit = false,
                             IsActive = true,
                             IsFullAdmin = true,
-                            LastUpdated = new DateTime(2023, 10, 19, 9, 30, 30, 30, DateTimeKind.Local).AddTicks(1133),
+                            LastUpdated = new DateTime(2023, 10, 18, 11, 20, 27, 137, DateTimeKind.Local).AddTicks(488),
                             Title = "jonker@illinois.edu"
                         },
                         new
@@ -545,7 +547,7 @@ namespace ContactAppCore.Migrations
                             CanEditAllPeopleInUnit = false,
                             IsActive = true,
                             IsFullAdmin = true,
-                            LastUpdated = new DateTime(2023, 10, 19, 9, 30, 30, 35, DateTimeKind.Local).AddTicks(1398),
+                            LastUpdated = new DateTime(2023, 10, 18, 11, 20, 27, 141, DateTimeKind.Local).AddTicks(6662),
                             Title = "rbwatson@illinois.edu"
                         });
                 });
