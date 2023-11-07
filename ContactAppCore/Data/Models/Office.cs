@@ -46,8 +46,6 @@ namespace ContactAppCore.Data.Models {
 
         public string City { get; set; }
 
-        public bool CovidSupport { get; set; }
-
         public string Email { get; set; }
 
         public string ExternalUrl { get; set; }

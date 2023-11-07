@@ -1,13 +1,12 @@
-﻿using ContactAppCore.Data.Models;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
+using ContactAppCore.Data.Models;
 
-namespace ContactAppCore.ViewModel
-{
-    public class AreaInformation
-    {
-        public AreaInformation(Area area, bool useInternal, bool isCovid, string search, OfficeTypeEnum? officeType)
-        {
+namespace ContactAppCore.ViewModel {
+
+    public class AreaInformation {
+
+        public AreaInformation(Area area, bool useInternal, string search, OfficeTypeEnum? officeType) {
             AreaType = area.AreaType == AreaTypeEnum.NotListed ? "" : area.AreaType.ToString();
             Audience = area.Audience;
             ExternalUrl = area.ExternalUrl;
@@ -18,22 +17,14 @@ namespace ContactAppCore.ViewModel
             Title = area.Title;
             var officeGroup = area.Offices == null ? new List<Office>() : area.Offices.Where(o => o.IsActive);
 
-            if (!useInternal)
-            {
+            if (!useInternal) {
                 officeGroup = officeGroup.Where(o => !o.InternalOnly);
             }
-            if (isCovid)
-            {
-                officeGroup = officeGroup.Where(o => o.CovidSupport);
-            }
-            if (officeType != null)
-            {
+            if (officeType != null) {
                 officeGroup = officeGroup.Where(o => o.OfficeType == officeType);
             }
-            if (!string.IsNullOrEmpty(search))
-            {
-                if (officeGroup.Any(o => (o.Title ?? "").Contains(search) || (o.SearchTerms ?? "").Contains(search) || (o.Audience ?? "").Contains(search)))
-                {
+            if (!string.IsNullOrEmpty(search)) {
+                if (officeGroup.Any(o => (o.Title ?? "").Contains(search) || (o.SearchTerms ?? "").Contains(search) || (o.Audience ?? "").Contains(search))) {
                     officeGroup = officeGroup.Where(o => (o.Title ?? "").Contains(search) || (o.SearchTerms ?? "").Contains(search) || (o.Audience ?? "").Contains(search));
                 }
             }
