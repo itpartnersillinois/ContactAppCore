@@ -1,47 +1,41 @@
-﻿using ContactAppCore.Data;
+﻿using System.Linq;
+using System.Threading.Tasks;
+using ContactAppCore.Data;
 using ContactAppCore.Data.Models;
 using ContactAppCore.Helpers;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using System.Linq;
-using System.Threading.Tasks;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
-namespace ContactAppCore.Api
-{
+namespace ContactAppCore.Api {
+
     [Route("api/[controller]")]
     [ApiController]
-    public class EditOfficeController : ControllerBase
-    {
+    public class EditOfficeController : ControllerBase {
         private IContactRepository contactRepository;
         private SecurityHelper securityHelper;
 
-        public EditOfficeController(IContactRepository contactRepository, SecurityHelper securityHelper)
-        {
+        public EditOfficeController(IContactRepository contactRepository, SecurityHelper securityHelper) {
             this.contactRepository = contactRepository;
             this.securityHelper = securityHelper;
         }
 
         [HttpGet("{id}")]
-        public async Task<Office> Get(int id)
-        {
-            if (!securityHelper.AllowOffice(User, id))
-            {
+        public async Task<Office> Get(int id) {
+            if (!securityHelper.AllowOffice(User, id)) {
                 return default;
             }
             return await contactRepository.ReadAsync(c => c.Offices.Include(o => o.Area).SingleOrDefault(o => o.Id == id));
         }
 
         [HttpPost("Update")]
-        public async Task<int> Update([FromBody] dynamic json)
-        {
-            var jsonObject = (dynamic)JObject.Parse(json.ToString());
+        public async Task<int> Update([FromBody] dynamic json) {
+            var jsonObject = (dynamic) JObject.Parse(json.ToString());
             int id = int.Parse(jsonObject.id.ToString());
-            if (!securityHelper.AllowOffice(User, id))
-            {
+            if (!securityHelper.AllowOffice(User, id)) {
                 return default;
             }
 
@@ -49,8 +43,7 @@ namespace ContactAppCore.Api
             var isAreaAdmin = securityHelper.AllowArea(User, originalObject.AreaId);
             await LogHelper.CreateLog(contactRepository, "Editing Area " + originalObject.AreaId.ToString(), User.Identity.Name, JsonConvert.SerializeObject(originalObject), json.ToString());
 
-            return await contactRepository.UpdateAsync(new Office
-            {
+            return await contactRepository.UpdateAsync(new Office {
                 Id = id,
                 AreaId = originalObject.AreaId,
                 Title = jsonObject.title,
@@ -89,8 +82,7 @@ namespace ContactAppCore.Api
                 InternalCode = jsonObject.internalcode,
                 InternalOrder = isAreaAdmin ? jsonObject.internalorder : originalObject.InternalOrder,
                 IsActive = JsonHelper.TranslateBoolean(jsonObject.isactive),
-                InternalOnly = isAreaAdmin ? JsonHelper.TranslateBoolean(jsonObject.internalonly) : originalObject.InternalOnly,
-                CovidSupport = JsonHelper.TranslateBoolean(jsonObject.covidsupport)
+                InternalOnly = isAreaAdmin ? JsonHelper.TranslateBoolean(jsonObject.internalonly) : originalObject.InternalOnly
             });
         }
     }

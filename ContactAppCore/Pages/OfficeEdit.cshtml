@@ -69,8 +69,6 @@
     <div><label for="hoursincludeholidaymessage">Include "Closed During University Holidays" message?:</label><input type="checkbox" id="hoursincludeholidaymessage" name="hoursincludeholidaymessage" /></div>
     <div><label for="hournotes">Notes:</label><input id="hournotes" name="hournotes" class="long" /></div>
     <h2>More Information</h2>
-    <div><label for="covidsupport">COVID-19 Vaccine Card upload support?:</label><input type="checkbox" id="covidsupport" name="covidsupport" /></div>
-        <div class="notes side">Check this box if your support team/help desk is able and willing to help faculty and staff upload their COVID-19 Vaccine records to the MyMcKinley Health Portal.</div>
     <div>General Notes:<div id='notes' class='fulltext'></div></div>
     <div>
         <label for="searchterms">Search Term Information:</label><input id="searchterms" name="searchterms" class="long" />
@@ -240,7 +238,6 @@
                 }
                 document.getElementById('searchterms').value = data.searchTerms;
                 document.getElementById('isactive').checked = data.isActive;
-                document.getElementById('covidsupport').checked = data.covidSupport;
                 document.getElementById('internalcode').value = data.internalCode;
                 document.getElementById('internalnotes').value = data.internalNotes;
                 document.getElementById('internalorder').value = data.internalOrder;

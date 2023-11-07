@@ -27,7 +27,6 @@ namespace ContactAppCore.ViewModel {
             Building = office.Building;
             BuildingUrl = string.IsNullOrWhiteSpace(office.BuildingCode) ? string.Empty : "https://map.illinois.edu/view?ACTION=MAP&buildingId=" + office.BuildingCode;
             City = office.City;
-            CovidSupport = office.CovidSupport;
             Email = office.Email;
             ExternalUrl = office.ExternalUrl;
             Id = office.Id;
@@ -106,8 +105,6 @@ namespace ContactAppCore.ViewModel {
         public string BuildingUrl { get; set; }
 
         public string City { get; set; }
-
-        public bool CovidSupport { get; set; }
 
         public string Email { get; set; }
 
