@@ -99,6 +99,8 @@ namespace ContactAppCore.Api {
             } else {
                 var originalObject = await _contactRepository.ReadAsync(c => c.EmployeeProfiles.SingleOrDefault(o => o.Id == id));
 
+                string firstPreferedName = jsonObject.firstName?.ToString();
+                string lastPreferedName = jsonObject.lastName?.ToString();
                 if (!_securityHelper.IsCurrentUser(User, originalObject.Title)) {
                     return default;
                 }
@@ -112,8 +114,8 @@ namespace ContactAppCore.Api {
                     CVUrl = originalObject.CVUrl,
                     PrimaryProfile = originalObject.PrimaryProfile,
                     PhotoUrl = PhotoHelper.DetermineImage(originalObject.PhotoUrl),
-                    ListedNameFirst = string.IsNullOrWhiteSpace(jsonObject.firstName) ? originalObject.ListedNameFirst : jsonObject.firstName,
-                    ListedNameLast = string.IsNullOrWhiteSpace(jsonObject.lastName) ? originalObject.ListedNameLast : jsonObject.lastName,
+                    ListedNameFirst = string.IsNullOrWhiteSpace(firstPreferedName) ? originalObject.ListedNameFirst : firstPreferedName,
+                    ListedNameLast = string.IsNullOrWhiteSpace(lastPreferedName) ? originalObject.ListedNameLast : lastPreferedName,
                     PreferredName = jsonObject.firstName,
                     PreferredNameLast = jsonObject.lastName,
                     PreferredPronouns = jsonObject.pronouns,
