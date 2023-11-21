@@ -32,6 +32,14 @@
                 }).then(res => res.json()).then(data => {
                     if (data.title != null) {
                         document.getElementById('profile').classList.remove('hide');
+                    }
+                });
+                fetch('/Api/Security/Admin', {
+                    method: 'GET',
+                    headers: { "Content-type": "application/x-www-form-urlencoded; charset=UTF-8" }
+                }).then(res => res.json()).then(data => {
+                    debugger;
+                    if (data) {
                         document.getElementById('lookup').classList.remove('hide');
                     }
                 });

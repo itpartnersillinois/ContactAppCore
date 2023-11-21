@@ -398,6 +398,8 @@
             }).then((response) => response.text()).then(function (text) {
                 if (text != '') {
                     window.open(text, '_blank');
+                } else {
+                    alert('There is an issue with the signature generation process or your profile, and a signature cannot be generated at this time');
                 }
             });
             return false;
