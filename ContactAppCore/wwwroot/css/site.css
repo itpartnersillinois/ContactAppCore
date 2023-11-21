@@ -212,6 +212,6 @@ form.large select, #employeeInformation select, .profile-preferences select {
     background: var(--il-cloud);
 }
 
-.hide {
+.il-button.hide, button.hide, .hide {
     display: none;
 }
