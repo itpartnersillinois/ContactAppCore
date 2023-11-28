@@ -57,21 +57,12 @@ namespace ContactAppCore.Helpers {
                     errorMessage = $"Error: File does not match minimum dimensions {minimumWidth} width and {minimumHeight} height (actual file is {img.Width}x{img.Height})";
                     return "";
                 }
-                if (img.Width != width || img.Height != height) {
-                    var originalHeight = img.Height;
-                    var originalWidth = img.Width;
-                    img.Mutate(i => i.Resize(width, 0));
-                    if (img.Height > height) {
-                        img.Mutate(i => i.Crop(new Rectangle(0, (img.Height - height) / 2, width, height)));
-                        using var memoryStreamWebP = new MemoryStream();
-                        img.SaveAsWebp(memoryStreamWebP);
-                        errorMessage = "";
-                        return AddFile(memoryStreamWebP, "profile_photo", name, Path.GetFileNameWithoutExtension(file) + ".webp").Result;
-                    } else {
-                        errorMessage = $"Error: File does not match dimensions and cannot be cropped (actual file is {originalWidth} width by {originalHeight} height)";
-                        return "";
-                    }
-                }
+                errorMessage = "";
+                img.Mutate(i => i.Resize(width, 0));
+                img.Mutate(i => i.Crop(new Rectangle(0, (img.Height - height) / 2, width, height)));
+                using var memoryStreamWebP = new MemoryStream();
+                img.SaveAsWebp(memoryStreamWebP);
+                return AddFile(memoryStreamWebP, "profile_photo", name, Path.GetFileNameWithoutExtension(file) + ".webp").Result;
             }
             errorMessage = "";
             return AddFile(stream, "profile_photo", name, file).Result;
